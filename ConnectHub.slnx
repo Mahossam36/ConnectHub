@@ -1,0 +1,6 @@
+<Solution>
+  <Project Path="ConnectHub.API/ConnectHub.API.csproj" />
+  <Project Path="ConnectHub.BLL/ConnectHub.BLL.csproj" />
+  <Project Path="ConnectHub.DAL/ConnectHub.DAL.csproj" />
+  <Project Path="ConnectHub.Domain/ConnectHub.Models.csproj" />
+</Solution>
