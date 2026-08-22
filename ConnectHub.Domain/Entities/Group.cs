@@ -17,16 +17,16 @@ namespace ConnectHub.Models.Entities
         /// <summary>
         /// Server-side path to the group's image.
         /// </summary>
-        public string? ImagePath { get; set; }
-
-        /// <summary>
-        /// Identifies the user who created the group.
-        /// </summary>
+        public string? CoverImagePath { get; set; }
         public Guid CreatedById { get; set; }
         public DateTime CreatedAt { get; set; }
         public DateTime? UpdatedAt { get; set; }
         public bool IsActive { get; set; }
         public User CreatedBy { get; set; } = null!;
+        public Guid CategoryId { get; set; }
+        public Category Category { get; set; } = null!;
         public ICollection<GroupMember> Members { get; set; } = new List<GroupMember>();
+        public ICollection<Post> Posts { get; set; } = new List<Post>();
+        public ICollection<Tag> Tags { get; set; } = new List<Tag>();
     }
 }

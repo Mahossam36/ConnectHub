@@ -1,0 +1,18 @@
+using ConnectHub.BLL.DTOs.Users;
+using ConnectHub.Models.Enums;
+
+namespace ConnectHub.BLL.DTOs.Groups;
+
+public class GroupDetailResponseDto
+{
+    public Guid Id { get; set; }
+    public string Name { get; set; } = string.Empty;
+    public string? Description { get; set; }
+    public string? CoverImageUrl { get; set; }
+    public CategoryDto Category { get; set; } = null!;
+    public List<TagDto> Tags { get; set; } = new();
+    public int MemberCount { get; set; }
+    public GroupRole? CurrentUserRole { get; set; }
+    public UserSummaryDto CreatedBy { get; set; } = null!;
+    public DateTime CreatedAt { get; set; }
+}
