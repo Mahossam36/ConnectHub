@@ -12,4 +12,5 @@ public class Category
     // Navigation
     /// <summary>All groups that belong to this category.</summary>
     public ICollection<Group> Groups { get; set; } = new List<Group>();
+    public int GroupCount { get; set; }
 }

@@ -25,8 +25,13 @@ namespace ConnectHub.Models.Entities
         public User CreatedBy { get; set; } = null!;
         public Guid CategoryId { get; set; }
         public Category Category { get; set; } = null!;
+
         public ICollection<GroupMember> Members { get; set; } = new List<GroupMember>();
+        public int CountMembers { get; set; }
+
         public ICollection<Post> Posts { get; set; } = new List<Post>();
+        public int PostCount { get; set; }
+
         public ICollection<Tag> Tags { get; set; } = new List<Tag>();
     }
 }

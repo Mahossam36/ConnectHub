@@ -20,6 +20,11 @@ public class Post
     public Group Group { get; set; } = null!;
 
     public ICollection<Comment> Comments { get; set; } = new List<Comment>();
+    public int CommentsCount { get; set; }
+
     public ICollection<PostLike> Likes { get; set; } = new List<PostLike>();
+    public int LikesCount { get; set; }
+
     public ICollection<Attachment> Attachments { get; set; } = new List<Attachment>();
+    public int AttachmentsCount { get; set; }
 }

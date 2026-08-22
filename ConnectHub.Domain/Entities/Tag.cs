@@ -8,4 +8,5 @@ public class Tag
 
     /// <summary>Groups with this tag.</summary>
     public ICollection<Group> Groups { get; set; } = new List<Group>();
+    public int GroupCount { get; set; }
 }
