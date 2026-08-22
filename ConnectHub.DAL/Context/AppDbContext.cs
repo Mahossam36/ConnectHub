@@ -1,4 +1,4 @@
-﻿using ConnectHub.DAL.Identity;
+using ConnectHub.DAL.Identity;
 using ConnectHub.Models.Entities;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
@@ -28,6 +28,8 @@ namespace ConnectHub.DAL.Context
         public DbSet<Attachment> Attachments => Set<Attachment>();
         public DbSet<Notification> Notifications => Set<Notification>();
         public DbSet<Report> Reports => Set<Report>();
+        public DbSet<RefreshToken> RefreshTokens => Set<RefreshToken>();
+        public DbSet<AuditLog> AuditLogs => Set<AuditLog>();
         protected override void OnModelCreating(ModelBuilder builder)
         {
             base.OnModelCreating(builder);

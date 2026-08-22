@@ -6,6 +6,8 @@ public class AuthResponseDto
     public string Email { get; set; } = string.Empty;
     public string DisplayName { get; set; } = string.Empty;
     public string? AvatarUrl { get; set; }
-    public string Token { get; set; } = string.Empty;
+    public string AccessToken { get; set; } = string.Empty;
+    public string Token { get => AccessToken; set => AccessToken = value; }
+    public string RefreshToken { get; set; } = string.Empty;
     public DateTime ExpiresAt { get; set; }
 }

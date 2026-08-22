@@ -38,4 +38,10 @@ public class User
 
     /// <summary>Reports filed by this user.</summary>
     public ICollection<Report> Reports { get; set; } = new List<Report>();
+
+    /// <summary>Active and historical refresh tokens belonging to this user.</summary>
+    public ICollection<RefreshToken> RefreshTokens { get; set; } = new List<RefreshToken>();
+
+    /// <summary>Audit log entries attributed to this user.</summary>
+    public ICollection<AuditLog> AuditLogs { get; set; } = new List<AuditLog>();
 }

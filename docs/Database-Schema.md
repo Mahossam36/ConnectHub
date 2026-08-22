@@ -28,6 +28,8 @@ This document serves as the complete, authoritative reference for the **`Connect
 | **Attachment** | Represents uploaded files/media associated with posts. |
 | **Notification** | Represents in-app activity notifications targeted at specific users. |
 | **Report** | Represents user-submitted moderation reports on posts or comments. |
+| **RefreshToken** | Represents persisted hashed refresh tokens for secure JWT token rotation and revocation. |
+| **AuditLog** | Represents historical security and business audit records. |
 
 ---
 
@@ -53,6 +55,8 @@ erDiagram
     POST ||--o{ ATTACHMENT : "attaches (0..1:N)"
     USER ||--o{ NOTIFICATION : "receives (1:N)"
     USER ||--o{ REPORT : "submits (1:N)"
+    USER ||--o{ REFRESH_TOKEN : "owns (1:N)"
+    USER ||--o{ AUDIT_LOG : "performs (0..1:N)"
 
     USER {
         Guid Id PK
@@ -63,6 +67,26 @@ erDiagram
         bool IsActive
         DateTime CreatedAt
         DateTime UpdatedAt
+    }
+
+    REFRESH_TOKEN {
+        Guid Id PK
+        string TokenHash
+        Guid UserId FK
+        DateTime ExpiresAt
+        DateTime CreatedAt
+        DateTime RevokedAt
+        string RevokedReason
+    }
+
+    AUDIT_LOG {
+        Guid Id PK
+        Guid UserId FK
+        string Action
+        string EntityType
+        Guid EntityId
+        DateTime Timestamp
+        string Metadata
     }
 
     CATEGORY {
@@ -544,9 +568,62 @@ Represents a user-submitted flag reporting abusive, offensive, or policy-violati
 
 ---
 
+### 4.13 RefreshToken
+
+#### Purpose
+Represents a cryptographically secure, persisted refresh token used for JWT access-token rotation and revocation. The raw token string is never persisted; only its SHA-256 hash is stored in `TokenHash`.
+
+#### Attributes Table
+
+| Attribute | Type | Nullable | Key | Database Role | What does it represent? |
+| :--- | :--- | :--- | :--- | :--- | :--- |
+| `Id` | `Guid` | No | PK | Primary Key | Unique identifier of the refresh token record. |
+| `TokenHash` | `string` | No | — | Scalar / Unique Index | SHA-256 hash of the 64-byte random refresh token. |
+| `UserId` | `Guid` | No | FK | Foreign Key | References `User.Id` (the token owner). |
+| `ExpiresAt` | `DateTime` | No | — | Expiration Column | UTC timestamp when the refresh token expires. |
+| `CreatedAt` | `DateTime` | No | — | Audit Column | UTC timestamp when the refresh token was issued. |
+| `RevokedAt` | `DateTime?` | Yes | — | Revocation Column | UTC timestamp when revoked (logout, rotation, or reuse detection). |
+| `RevokedReason` | `string?` | Yes | — | Scalar Column | Reason for revocation (e.g. "Rotated", "Logged out"). |
+| `User` | `User` | No | Navigation | Reference Nav | Navigation to the owning `User`. |
+
+#### Attribute Deep Dive
+1. **`Id`:** Primary key. Required.
+2. **`TokenHash`:** SHA-256 hash string (512 max length) with a unique index. Ensures fast lookup and prevents raw token leakage if the database is compromised.
+3. **`UserId` / `User`:** Foreign key linking to the domain user. Cascade delete enabled.
+4. **`ExpiresAt`:** Expiration timestamp (e.g. 7 days from creation).
+5. **`RevokedAt` / `RevokedReason`:** Nullable revocation timestamp and explanation. If set, the token cannot be used. If a revoked token is attempted to be reused, all active tokens for that user are revoked immediately for security.
+
+---
+
+### 4.14 AuditLog
+
+#### Purpose
+Records significant security and operational business events (user registration, logins, logouts, token rotation/revocation, group creation/deletion, content moderation).
+
+#### Attributes Table
+
+| Attribute | Type | Nullable | Key | Database Role | What does it represent? |
+| :--- | :--- | :--- | :--- | :--- | :--- |
+| `Id` | `Guid` | No | PK | Primary Key | Unique identifier of the audit entry. |
+| `UserId` | `Guid?` | Yes | FK | Foreign Key | References `User.Id` (acting user, null for system tasks). |
+| `Action` | `string` | No | — | Scalar Column | Name of the action (e.g. "Login", "Register", "CreateGroup"). |
+| `EntityType` | `string` | No | — | Scalar Column | The entity type affected (e.g. "User", "Group", "Post"). |
+| `EntityId` | `Guid?` | Yes | — | Scalar Column | The primary key ID of the affected entity. |
+| `Timestamp` | `DateTime` | No | — | Audit Column | UTC timestamp when the action occurred. |
+| `Metadata` | `string?` | Yes | — | Scalar Column | Additional non-sensitive context/payload in JSON format. |
+| `User` | `User?` | Yes | Navigation | Reference Nav | Navigation to the acting `User` record. |
+
+#### Attribute Deep Dive
+1. **`Id`:** Primary key. Required.
+2. **`UserId` / `User`:** Acting user ID. Nullable to permit system actions. Uses `SetNull` on user deletion to preserve historical logs.
+3. **`Action` / `EntityType` / `EntityId`:** Categorizes the event for security auditing.
+4. **`Timestamp`:** UTC timestamp of the event.
+5. **`Metadata`:** Optional JSON string for extra contextual metadata. **Never contains sensitive credentials, raw passwords, or tokens.**
+
+---
+
 ## 5. Relationships
 
-### Entity Relationships Matrix
 
 | Relationship | Cardinality | Foreign Key | Business Meaning |
 | :--- | :--- | :--- | :--- |

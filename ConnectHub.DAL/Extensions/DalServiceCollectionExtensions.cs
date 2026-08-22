@@ -35,7 +35,13 @@ public static class DalServiceCollectionExtensions
 
         // 3. Register Generic Repository, Specific Repositories, and Unit of Work
         services.AddScoped(typeof(IGenericRepository<>), typeof(GenericRepository<>));
+        services.AddScoped<IAttachmentRepository, AttachmentRepository>();
         services.AddScoped<ICommentRepository, CommentRepository>();
+        services.AddScoped<IRefreshTokenRepository, RefreshTokenRepository>();
+        services.AddScoped<IGroupRepository, GroupRepository>();
+        services.AddScoped<IPostRepository, PostRepository>();
+        services.AddScoped<INotificationRepository, NotificationRepository>();
+        services.AddScoped<IReportRepository, ReportRepository>();
         services.AddScoped<IUnitOfWork, UnitOfWork>();
 
         return services;

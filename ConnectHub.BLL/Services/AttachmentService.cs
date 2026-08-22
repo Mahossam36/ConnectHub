@@ -1,236 +1,106 @@
-﻿using ConnectHub.BLL.DTOs.Attachments;
+using Ardalis.Result;
+using AutoMapper;
+using ConnectHub.BLL.DTOs.Attachments;
 using ConnectHub.BLL.Interfaces.Services;
 using ConnectHub.BLL.Interfaces.Storage;
 using ConnectHub.DAL.Interfaces;
 using ConnectHub.Models.Entities;
-using Microsoft.AspNetCore.Hosting;
+using Microsoft.Extensions.Logging;
 
-namespace ConnectHub.BLL.Services
+namespace ConnectHub.BLL.Services;
+
+public class AttachmentService : IAttachmentService
 {
+    private readonly IAttachmentRepository _attachmentRepository;
+    private readonly IUnitOfWork _unitOfWork;
+    private readonly IFileStorageService _fileStorageService;
+    private readonly IMapper _mapper;
+    private readonly ILogger<AttachmentService> _logger;
 
-    public class AttachmentService : IAttachmentService
+    private const string AttachmentFolder = "uploads/attachments";
+
+    public AttachmentService(
+        IAttachmentRepository attachmentRepository,
+        IUnitOfWork unitOfWork,
+        IFileStorageService fileStorageService,
+        IMapper mapper,
+        ILogger<AttachmentService> logger)
     {
-        private readonly IAttachmentRepository _attachmentRepository;
-        private readonly IUnitOfWork _unitOfWork;
-        private readonly IFileStorageService _fileStorageService;
+        _attachmentRepository = attachmentRepository;
+        _unitOfWork = unitOfWork;
+        _fileStorageService = fileStorageService;
+        _mapper = mapper;
+        _logger = logger;
+    }
 
-        private const string AttachmentFolder = "uploads/attachments";
+    public async Task<Result<AttachmentResponseDto>> UploadAsync(
+        Guid currentUserId,
+        Stream stream,
+        string fileName,
+        string contentType,
+        long fileSize,
+        CancellationToken cancellationToken = default)
+    {
+        if (stream is null || stream.Length == 0)
+            return Result.Invalid(new ValidationError("File stream cannot be null or empty."));
 
-        public AttachmentService(
-            IAttachmentRepository attachmentRepository,
-            IUnitOfWork unitOfWork,
-            IFileStorageService fileStorageService)
+        if (string.IsNullOrWhiteSpace(fileName))
+            return Result.Invalid(new ValidationError("File name is required."));
+
+        if (string.IsNullOrWhiteSpace(contentType))
+            return Result.Invalid(new ValidationError("Content type is required."));
+
+        if (fileSize <= 0)
+            return Result.Invalid(new ValidationError("File size must be greater than zero."));
+
+        var attachmentId = Guid.NewGuid();
+        var extension = Path.GetExtension(fileName);
+        var storedFileName = $"{attachmentId}{extension}";
+
+        var relativePath = await _fileStorageService.SaveFileAsync(stream, storedFileName, AttachmentFolder);
+
+        var attachment = new Attachment
         {
-            _attachmentRepository = attachmentRepository;
-            _unitOfWork = unitOfWork;
-            _fileStorageService = fileStorageService;
+            Id = attachmentId,
+            FilePath = relativePath,
+            FileName = fileName,
+            ContentType = contentType,
+            FileSize = fileSize,
+            UploadedById = currentUserId,
+            UploadedAt = DateTime.UtcNow,
+            PostId = null
+        };
+
+        await _attachmentRepository.AddAsync(attachment);
+        await _unitOfWork.SaveChangesAsync();
+
+        _logger.LogInformation("Attachment {AttachmentId} uploaded by user {UserId}.", attachment.Id, currentUserId);
+
+        return Result.Success(_mapper.Map<AttachmentResponseDto>(attachment));
+    }
+
+    public async Task<Result> DeleteAsync(
+        Guid attachmentId,
+        Guid currentUserId,
+        CancellationToken cancellationToken = default)
+    {
+        var attachment = await _attachmentRepository.GetByIdAsync(attachmentId);
+        if (attachment is null)
+            return Result.NotFound($"Attachment with ID '{attachmentId}' was not found.");
+
+        if (attachment.UploadedById != currentUserId)
+            return Result.Forbidden("You are not allowed to delete this attachment.");
+
+        if (!string.IsNullOrWhiteSpace(attachment.FilePath))
+        {
+            await _fileStorageService.DeleteFileAsync(attachment.FilePath);
         }
 
-        public async Task<AttachmentResponseDto> UploadAsync(
-            Guid currentUserId,
-            Stream stream,
-            string fileName,
-            string contentType,
-            long fileSize)
-        {
-            ValidateUpload(stream, fileName, contentType, fileSize);
+        _attachmentRepository.Delete(attachment);
+        await _unitOfWork.SaveChangesAsync();
 
-            var attachmentId = Guid.NewGuid();
-            var storedFileName = GenerateStoredFileName(attachmentId, fileName);
+        _logger.LogInformation("Attachment {AttachmentId} deleted by user {UserId}.", attachmentId, currentUserId);
 
-            var physicalFilePath = GetPhysicalFilePath(storedFileName);
-
-            await SaveFileAsync(stream, physicalFilePath);
-
-            var attachment = CreateAttachment(
-                attachmentId,
-                currentUserId,
-                fileName,
-                contentType,
-                fileSize,
-                storedFileName);
-
-            await _attachmentRepository.AddAsync(attachment);
-            await _unitOfWork.SaveChangesAsync();
-
-            return MapToResponseDto(attachment);
-        }
-
-        public async Task DeleteAsync(
-            Guid attachmentId,
-            Guid currentUserId)
-        {
-            var attachment = await GetAttachmentAsync(attachmentId);
-
-            EnsureUserCanDelete(attachment, currentUserId);
-
-            DeletePhysicalFile(attachment.FilePath);
-
-            _attachmentRepository.Delete(attachment);
-
-            await _unitOfWork.SaveChangesAsync();
-        }
-
-        // -------------------------
-        // Validation
-        // -------------------------
-
-        private static void ValidateUpload(
-            Stream stream,
-            string fileName,
-            string contentType,
-            long fileSize)
-        {
-            if (stream is null)
-                throw new ArgumentNullException(nameof(stream));
-
-            if (stream.Length == 0)
-                throw new ArgumentException(
-                    "File cannot be empty.",
-                    nameof(stream));
-
-            if (string.IsNullOrWhiteSpace(fileName))
-                throw new ArgumentException(
-                    "File name is required.",
-                    nameof(fileName));
-
-            if (string.IsNullOrWhiteSpace(contentType))
-                throw new ArgumentException(
-                    "Content type is required.",
-                    nameof(contentType));
-
-            if (fileSize <= 0)
-                throw new ArgumentException(
-                    "File size must be greater than zero.",
-                    nameof(fileSize));
-        }
-
-        // -------------------------
-        // File handling
-        // -------------------------
-
-        private string GenerateStoredFileName(
-            Guid attachmentId,
-            string originalFileName)
-        {
-            var extension = Path.GetExtension(originalFileName);
-
-            return $"{attachmentId}{extension}";
-        }
-
-        //private string GetPhysicalFilePath(string storedFileName)
-        //{
-        //    var uploadDirectory = Path.Combine(
-        //        _fileStorageService.WebRootPath,
-        //        AttachmentFolder.Replace(
-        //            '/',
-        //            Path.DirectorySeparatorChar));
-
-        //    Directory.CreateDirectory(uploadDirectory);
-
-        //    return Path.Combine(
-        //        uploadDirectory,
-        //        storedFileName);
-        //}
-
-        private async Task SaveFileAsync(
-            Stream stream,
-            string physicalFilePath)
-        {
-            await using var fileStream = new FileStream(
-                physicalFilePath,
-                FileMode.CreateNew,
-                FileAccess.Write,
-                FileShare.None,
-                bufferSize: 81920,
-                useAsync: true);
-
-            await stream.CopyToAsync(fileStream);
-        }
-
-        //private void DeletePhysicalFile(string relativeFilePath)
-        //{
-        //    var physicalFilePath = Path.Combine(
-        //        _fileStorageService.WebRootPath,
-        //        relativeFilePath.Replace(
-        //            '/',
-        //            Path.DirectorySeparatorChar));
-
-        //    if (File.Exists(physicalFilePath))
-        //    {
-        //        File.Delete(physicalFilePath);
-        //    }
-        //}
-
-        // -------------------------
-        // Entity creation
-        // -------------------------
-
-        private static Attachment CreateAttachment(
-            Guid attachmentId,
-            Guid currentUserId,
-            string fileName,
-            string contentType,
-            long fileSize,
-            string storedFileName)
-        {
-            var filePath = $"{AttachmentFolder}/{storedFileName}";
-
-            return new Attachment
-            {
-                Id = attachmentId,
-                FilePath = filePath,
-                FileName = fileName,
-                ContentType = contentType,
-                FileSize = fileSize,
-                UploadedById = currentUserId,
-                UploadedAt = DateTime.UtcNow,
-                PostId = null
-            };
-        }
-
-        // -------------------------
-        // Delete / authorization
-        // -------------------------
-
-        private async Task<Attachment> GetAttachmentAsync(
-            Guid attachmentId)
-        {
-            var attachment = await _attachmentRepository
-                .GetByIdAsync(attachmentId);
-
-            return attachment
-                ?? throw new KeyNotFoundException(
-                    $"Attachment with ID '{attachmentId}' was not found.");
-        }
-
-        private static void EnsureUserCanDelete(
-            Attachment attachment,
-            Guid currentUserId)
-        {
-            if (attachment.UploadedById != currentUserId)
-            {
-                throw new UnauthorizedAccessException(
-                    "You are not allowed to delete this attachment.");
-            }
-        }
-
-        // -------------------------
-        // Mapping
-        // -------------------------
-
-        private static AttachmentResponseDto MapToResponseDto(
-            Attachment attachment)
-        {
-            return new AttachmentResponseDto
-            {
-                Id = attachment.Id,
-                FileName = attachment.FileName,
-                FileUrl = $"/{attachment.FilePath}",
-                ContentType = attachment.ContentType,
-                FileSize = attachment.FileSize,
-                UploadedAt = attachment.UploadedAt
-            };
-        }
+        return Result.Success();
     }
 }
