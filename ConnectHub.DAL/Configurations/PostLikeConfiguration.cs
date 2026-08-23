@@ -14,13 +14,15 @@ namespace ConnectHub.DAL.Configurations
             builder.ToTable("PostLikes");
             // Composite Primary Key
             builder.HasKey(x => new { x.PostId, x.UserId });
+
             builder.Property(x => x.LikedAt).IsRequired();
             builder.HasOne(pl => pl.Post)
                 .WithMany(p => p.Likes)
                 .HasForeignKey(pl => pl.PostId)
                 .OnDelete(DeleteBehavior.Cascade);
+
             builder.HasOne(pl => pl.User)
-                .WithMany()
+                .WithMany(x => x.PostLikes)
                 .HasForeignKey(pl => pl.UserId)
                 .OnDelete(DeleteBehavior.Restrict);
         }

@@ -20,7 +20,7 @@ namespace ConnectHub.DAL.Configurations
                 .HasForeignKey(cl => cl.CommentId)
                 .OnDelete(DeleteBehavior.Cascade);
             builder.HasOne(cl => cl.User)
-                .WithMany()
+                .WithMany(x => x.CommentLikes)
                 .HasForeignKey(cl => cl.UserId)
                 .OnDelete(DeleteBehavior.Restrict);
         }

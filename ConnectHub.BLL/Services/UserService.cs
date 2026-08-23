@@ -3,7 +3,6 @@ using AutoMapper;
 using ConnectHub.BLL.DTOs.Users;
 using ConnectHub.BLL.Interfaces.Services;
 using ConnectHub.BLL.Interfaces.Storage;
-using ConnectHub.DAL.Identity;
 using ConnectHub.DAL.Interfaces;
 using ConnectHub.Models.Entities;
 using Microsoft.AspNetCore.Identity;
@@ -14,7 +13,7 @@ namespace ConnectHub.BLL.Services;
 public class UserService : IUserService
 {
     private readonly IGenericRepository<User> _userRepository;
-    private readonly UserManager<ApplicationUser> _userManager;
+    private readonly UserManager<User> _userManager;
     private readonly IFileStorageService _fileStorageService;
     private readonly IUnitOfWork _unitOfWork;
     private readonly IMapper _mapper;
@@ -25,7 +24,7 @@ public class UserService : IUserService
 
     public UserService(
         IGenericRepository<User> userRepository,
-        UserManager<ApplicationUser> userManager,
+        UserManager<User> userManager,
         IFileStorageService fileStorageService,
         IUnitOfWork unitOfWork,
         IMapper mapper,

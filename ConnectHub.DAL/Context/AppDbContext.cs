@@ -1,4 +1,4 @@
-using ConnectHub.DAL.Identity;
+
 using ConnectHub.Models.Entities;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
@@ -10,13 +10,13 @@ using System.Text;
 
 namespace ConnectHub.DAL.Context
 {
-    public class AppDbContext : IdentityDbContext<ApplicationUser, IdentityRole<Guid>, Guid>
+    public class AppDbContext : IdentityDbContext<User, IdentityRole<Guid>, Guid>
     {
         public AppDbContext(DbContextOptions<AppDbContext> options)
             : base(options)
         {
         }
-        public DbSet<User> DomainUsers => Set<User>();
+        public DbSet<User> Users => Set<User>();
         public DbSet<Category> Categories => Set<Category>();
         public DbSet<Tag> Tags => Set<Tag>();
         public DbSet<Group> Groups => Set<Group>();

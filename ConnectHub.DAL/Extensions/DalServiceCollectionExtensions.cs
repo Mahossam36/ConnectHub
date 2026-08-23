@@ -1,7 +1,7 @@
 using ConnectHub.DAL.Context;
-using ConnectHub.DAL.Identity;
 using ConnectHub.DAL.Interfaces;
 using ConnectHub.DAL.Repositories;
+using ConnectHub.Models.Entities;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
@@ -21,7 +21,7 @@ public static class DalServiceCollectionExtensions
             options.UseSqlServer(connectionString));
 
         // 2. Configure ASP.NET Core Identity with ApplicationUser & Guid PKs
-        services.AddIdentityCore<ApplicationUser>(options =>
+        services.AddIdentityCore<User>(options =>
         {
             options.Password.RequireDigit = true;
             options.Password.RequireLowercase = true;
