@@ -18,6 +18,8 @@ public class UserService : IUserService
     private readonly IUnitOfWork _unitOfWork;
     private readonly IMapper _mapper;
     private readonly IAuditService _auditService;
+    private readonly IXssSanitizerService _xssSanitizer;
+    private readonly IContentModerationService _contentModeration;
     private readonly ILogger<UserService> _logger;
 
     private const string AvatarFolder = "uploads/avatars";
@@ -29,6 +31,8 @@ public class UserService : IUserService
         IUnitOfWork unitOfWork,
         IMapper mapper,
         IAuditService auditService,
+        IXssSanitizerService xssSanitizer,
+        IContentModerationService contentModeration,
         ILogger<UserService> logger)
     {
         _userRepository = userRepository;
@@ -37,6 +41,8 @@ public class UserService : IUserService
         _unitOfWork = unitOfWork;
         _mapper = mapper;
         _auditService = auditService;
+        _xssSanitizer = xssSanitizer;
+        _contentModeration = contentModeration;
         _logger = logger;
     }
 
@@ -64,13 +70,20 @@ public class UserService : IUserService
         if (user is null)
             return Result.NotFound($"User with ID '{currentUserId}' was not found.");
 
-        if (!string.IsNullOrWhiteSpace(request.FirstName))
-            user.FirstName = request.FirstName.Trim();
+        var firstName = _xssSanitizer.Sanitize(request.FirstName);
+        var lastName = _xssSanitizer.Sanitize(request.LastName);
+        var bio = _xssSanitizer.Sanitize(request.Bio);
+        if (string.IsNullOrWhiteSpace(firstName) || string.IsNullOrWhiteSpace(lastName))
+            return Result.Invalid(new ValidationError("First name and last name are required."));
 
-        if (!string.IsNullOrWhiteSpace(request.LastName))
-            user.LastName = request.LastName.Trim();
+        var moderationResult = await _contentModeration.IsContentSafeAsync(
+            $"{firstName} {lastName} {bio}", cancellationToken);
+        if (!moderationResult.IsSuccess)
+            return Result.Invalid(moderationResult.ValidationErrors);
 
-        user.Bio = request.Bio;
+        user.FirstName = firstName;
+        user.LastName = lastName;
+        user.Bio = string.IsNullOrWhiteSpace(bio) ? null : bio;
         user.UpdatedAt = DateTime.UtcNow;
 
         _userRepository.Update(user);

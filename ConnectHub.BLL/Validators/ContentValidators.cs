@@ -2,6 +2,7 @@ using ConnectHub.BLL.DTOs.Comments;
 using ConnectHub.BLL.DTOs.Posts;
 using ConnectHub.BLL.DTOs.Reports;
 using ConnectHub.BLL.DTOs.Users;
+using ConnectHub.Models.Enums;
 using FluentValidation;
 
 namespace ConnectHub.BLL.Validators;
@@ -13,6 +14,10 @@ public class CreatePostRequestDtoValidator : AbstractValidator<CreatePostRequest
         RuleFor(x => x.Content)
             .NotEmpty().WithMessage("Post content is required.")
             .MaximumLength(10000).WithMessage("Post content cannot exceed 10,000 characters.");
+
+        RuleFor(x => x.AttachmentIds)
+            .Must(ids => ids.Distinct().Count() == ids.Count)
+            .WithMessage("Attachment IDs must not contain duplicates.");
     }
 }
 
@@ -75,7 +80,7 @@ public class CreateReportRequestDtoValidator : AbstractValidator<CreateReportReq
 
         RuleFor(x => x.Reason)
             .NotEmpty().WithMessage("Report reason is required.")
-            .MinimumLength(5).WithMessage("Reason must be at least 5 characters.")
+            .MinimumLength(10).WithMessage("Reason must be at least 10 characters.")
             .MaximumLength(500).WithMessage("Reason cannot exceed 500 characters.");
     }
 }
@@ -85,6 +90,7 @@ public class ResolveReportRequestDtoValidator : AbstractValidator<ResolveReportR
     public ResolveReportRequestDtoValidator()
     {
         RuleFor(x => x.Status)
-            .IsInEnum().WithMessage("A valid resolution status must be specified.");
+            .Must(status => status is ReportStatus.ActionTaken or ReportStatus.Dismissed)
+            .WithMessage("Report status must be ActionTaken or Dismissed.");
     }
 }

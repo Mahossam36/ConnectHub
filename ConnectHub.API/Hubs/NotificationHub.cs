@@ -1,18 +1,20 @@
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.SignalR;
 
-namespace ConnectHub.API.Hubs;
-
-[Authorize]
-public class NotificationHub : Hub
+namespace ConnectHub.API.Hubs
 {
-    public override async Task OnConnectedAsync()
-    {
-        await base.OnConnectedAsync();
-    }
 
-    public override async Task OnDisconnectedAsync(Exception? exception)
+    [Authorize]
+    public class NotificationHub : Hub
     {
-        await base.OnDisconnectedAsync(exception);
+        public override async Task OnConnectedAsync()
+        {
+            await base.OnConnectedAsync();
+        }
+
+        public override async Task OnDisconnectedAsync(Exception? exception)
+        {
+            await base.OnDisconnectedAsync(exception);
+        }
     }
 }

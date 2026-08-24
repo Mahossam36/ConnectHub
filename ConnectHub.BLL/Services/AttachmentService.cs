@@ -12,6 +12,7 @@ namespace ConnectHub.BLL.Services;
 public class AttachmentService : IAttachmentService
 {
     private readonly IAttachmentRepository _attachmentRepository;
+    private readonly IPostRepository _postRepository;
     private readonly IUnitOfWork _unitOfWork;
     private readonly IFileStorageService _fileStorageService;
     private readonly IMapper _mapper;
@@ -21,12 +22,14 @@ public class AttachmentService : IAttachmentService
 
     public AttachmentService(
         IAttachmentRepository attachmentRepository,
+        IPostRepository postRepository,
         IUnitOfWork unitOfWork,
         IFileStorageService fileStorageService,
         IMapper mapper,
         ILogger<AttachmentService> logger)
     {
         _attachmentRepository = attachmentRepository;
+        _postRepository = postRepository;
         _unitOfWork = unitOfWork;
         _fileStorageService = fileStorageService;
         _mapper = mapper;
@@ -97,6 +100,17 @@ public class AttachmentService : IAttachmentService
         }
 
         _attachmentRepository.Delete(attachment);
+
+        if (attachment.PostId.HasValue)
+        {
+            var post = await _postRepository.GetByIdAsync(attachment.PostId.Value);
+            if (post is not null && post.AttachmentsCount > 0)
+            {
+                post.AttachmentsCount--;
+                _postRepository.Update(post);
+            }
+        }
+
         await _unitOfWork.SaveChangesAsync();
 
         _logger.LogInformation("Attachment {AttachmentId} deleted by user {UserId}.", attachmentId, currentUserId);

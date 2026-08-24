@@ -4,6 +4,7 @@ using ConnectHub.BLL.Common.Pagination;
 using ConnectHub.BLL.DTOs.Groups;
 using ConnectHub.BLL.DTOs.Users;
 using ConnectHub.BLL.Interfaces.Services;
+using ConnectHub.BLL.Interfaces.Storage;
 using ConnectHub.DAL.Interfaces;
 using ConnectHub.Models.Entities;
 using ConnectHub.Models.Enums;
@@ -25,10 +26,12 @@ public class GroupService : IGroupService
     private readonly IAuditService _auditService;
     private readonly IXssSanitizerService _xssSanitizer;
     private readonly IContentModerationService _contentModeration;
+    private readonly IFileStorageService _fileStorageService;
     private readonly IMemoryCache _memoryCache;
     private readonly ILogger<GroupService> _logger;
 
     private const string GroupCachePrefix = "group_detail_";
+    private const string GroupCoverImageFolder = "uploads/groups";
 
     public GroupService(
         IGroupRepository groupRepository,
@@ -41,6 +44,7 @@ public class GroupService : IGroupService
         IAuditService auditService,
         IXssSanitizerService xssSanitizer,
         IContentModerationService contentModeration,
+        IFileStorageService fileStorageService,
         IMemoryCache memoryCache,
         ILogger<GroupService> logger)
     {
@@ -54,6 +58,7 @@ public class GroupService : IGroupService
         _auditService = auditService;
         _xssSanitizer = xssSanitizer;
         _contentModeration = contentModeration;
+        _fileStorageService = fileStorageService;
         _memoryCache = memoryCache;
         _logger = logger;
     }
@@ -157,6 +162,8 @@ public class GroupService : IGroupService
     public async Task<Result<GroupDetailResponseDto>> CreateGroupAsync(
         Guid currentUserId,
         CreateGroupRequestDto request,
+        Stream? coverImageStream,
+        string? coverImageFileName,
         CancellationToken cancellationToken = default)
     {
         var sanitizedName = _xssSanitizer.Sanitize(request.Name);
@@ -182,7 +189,6 @@ public class GroupService : IGroupService
             Id = Guid.NewGuid(),
             Name = sanitizedName,
             Description = string.IsNullOrWhiteSpace(sanitizedDescription) ? null : sanitizedDescription,
-            CoverImagePath = request.CoverImageUrl,
             CategoryId = request.CategoryId,
             CreatedById = currentUserId,
             CreatedAt = DateTime.UtcNow,
@@ -191,11 +197,25 @@ public class GroupService : IGroupService
             PostCount = 0
         };
 
+        if (coverImageStream is not null)
+        {
+            var extension = Path.GetExtension(coverImageFileName);
+            group.CoverImagePath = await _fileStorageService.SaveFileAsync(
+                coverImageStream,
+                $"{group.Id}{extension}",
+                GroupCoverImageFolder);
+        }
+
         if (request.TagIds.Count > 0)
         {
             var tags = await _tagRepository.Query()
+                .AsTracking()
                 .Where(t => request.TagIds.Contains(t.Id))
                 .ToListAsync(cancellationToken);
+
+            if (tags.Count != request.TagIds.Distinct().Count())
+                return Result.Invalid(new ValidationError("One or more specified tags do not exist."));
+
             group.Tags = tags;
         }
 
@@ -256,6 +276,13 @@ public class GroupService : IGroupService
                 return Result.Invalid(new ValidationError("Specified category does not exist."));
             group.CategoryId = request.CategoryId;
         }
+
+        var tags = await _tagRepository.Query()
+            .Where(t => request.TagIds.Contains(t.Id))
+            .ToListAsync(cancellationToken);
+        if (tags.Count != request.TagIds.Distinct().Count())
+            return Result.Invalid(new ValidationError("One or more specified tags do not exist."));
+        group.Tags = tags;
 
         group.Description = string.IsNullOrWhiteSpace(sanitizedDescription) ? null : sanitizedDescription;
         if (request.CoverImageUrl is not null)

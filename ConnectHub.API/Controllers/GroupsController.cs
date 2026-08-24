@@ -1,6 +1,7 @@
 using ConnectHub.BLL.Common.Pagination;
 using ConnectHub.BLL.DTOs.Groups;
 using ConnectHub.BLL.Interfaces.Services;
+using ConnectHub.API.Models;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
@@ -54,14 +55,23 @@ public class GroupsController : BaseApiController
     /// Create a new community group.
     /// </summary>
     [HttpPost]
+    [Consumes("multipart/form-data")]
     [Authorize]
     [ProducesResponseType(typeof(GroupDetailResponseDto), StatusCodes.Status201Created)]
     [ProducesResponseType(typeof(ValidationProblemDetails), StatusCodes.Status400BadRequest)]
     [ProducesResponseType(typeof(ProblemDetails), StatusCodes.Status401Unauthorized)]
-    public async Task<ActionResult<GroupDetailResponseDto>> CreateGroup([FromBody] CreateGroupRequestDto request, CancellationToken cancellationToken)
+    public async Task<ActionResult<GroupDetailResponseDto>> CreateGroup(
+        [FromForm] CreateGroupFormRequest request,
+        CancellationToken cancellationToken)
     {
         var currentUserId = GetRequiredUserId();
-        var result = await _groupService.CreateGroupAsync(currentUserId, request, cancellationToken);
+        await using var coverImageStream = request.CoverImage?.OpenReadStream();
+        var result = await _groupService.CreateGroupAsync(
+            currentUserId,
+            request.ToDto(),
+            coverImageStream,
+            request.CoverImage?.FileName,
+            cancellationToken);
         return ToCreatedResult(result);
     }
 
@@ -100,6 +110,7 @@ public class GroupsController : BaseApiController
     /// Get paginated members list of a group.
     /// </summary>
     [HttpGet("{id:guid}/members")]
+    [Authorize]
     [ProducesResponseType(typeof(PagedResultDto<GroupMemberResponseDto>), StatusCodes.Status200OK)]
     [ProducesResponseType(typeof(ProblemDetails), StatusCodes.Status404NotFound)]
     public async Task<ActionResult<PagedResultDto<GroupMemberResponseDto>>> GetMembers(
@@ -108,8 +119,9 @@ public class GroupsController : BaseApiController
         [FromQuery] int take = 20,
         CancellationToken cancellationToken = default)
     {
+        var currentUserId = GetRequiredUserId();
         var pagination = new PaginationParams { Skip = skip, Take = take };
-        var result = await _groupMemberService.GetMembersAsync(id, pagination, cancellationToken);
+        var result = await _groupMemberService.GetMembersAsync(id, currentUserId, pagination, cancellationToken);
         return ToActionResult(result);
     }
 

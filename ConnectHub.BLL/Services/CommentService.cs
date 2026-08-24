@@ -238,8 +238,13 @@ public class CommentService : ICommentService
         if (comment is null)
             return Result.NotFound($"Comment with ID '{commentId}' was not found.");
 
-        if (comment.AuthorId != currentUserId)
-            return Result.Forbidden("Only the author can edit this comment.");
+        var post = await _postRepository.GetByIdAsync(comment.PostId);
+        var userRole = post is not null
+            ? await _groupRepository.GetUserRoleAsync(post.GroupId, currentUserId)
+            : null;
+        var canUpdate = comment.AuthorId == currentUserId || userRole is GroupRole.Owner or GroupRole.Admin;
+        if (!canUpdate)
+            return Result.Forbidden("Only the comment author, group owner, or group admin can edit this comment.");
 
         comment.Content = sanitizedContent;
         comment.UpdatedAt = DateTime.UtcNow;
@@ -308,6 +313,10 @@ public class CommentService : ICommentService
         if (comment is null)
             return Result.NotFound($"Comment with ID '{commentId}' was not found.");
 
+        var post = await _postRepository.GetByIdAsync(comment.PostId);
+        if (post is null || !await _groupRepository.IsUserMemberAsync(post.GroupId, currentUserId))
+            return Result.Forbidden("You must be an active member of the group to like this comment.");
+
         var alreadyLiked = await _commentRepository.HasUserLikedCommentAsync(commentId, currentUserId);
         if (alreadyLiked)
             return Result.Conflict("You have already liked this comment.");
@@ -339,6 +348,10 @@ public class CommentService : ICommentService
         var comment = await _commentRepository.GetByIdAsync(commentId);
         if (comment is null)
             return Result.NotFound($"Comment with ID '{commentId}' was not found.");
+
+        var post = await _postRepository.GetByIdAsync(comment.PostId);
+        if (post is null || !await _groupRepository.IsUserMemberAsync(post.GroupId, currentUserId))
+            return Result.Forbidden("You must be an active member of the group to unlike this comment.");
 
         var alreadyLiked = await _commentRepository.HasUserLikedCommentAsync(commentId, currentUserId);
         if (!alreadyLiked)

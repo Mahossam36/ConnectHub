@@ -240,7 +240,7 @@ Represents a platform member's business profile within ConnectHub. It maintains 
 ### 4.2 Category
 
 #### Purpose
-Represents a predefined topic classification (e.g., "Technology", "Sports", "General") under which community groups are organized.
+Represents an application-managed topic classification (for example, "Technology", "Sports", or "General") under which community groups are organized. Categories are dynamic data: authenticated users can create them through the API; they are not predefined or seeded reference data.
 
 #### Attributes Table
 
@@ -679,7 +679,7 @@ Records significant security and operational business events (user registration,
 | Entity | Primary Key | Foreign Key Columns | Main Purpose |
 | :--- | :--- | :--- | :--- |
 | **User** | `Id (Guid)` | — | User collaboration profile & audit anchor. |
-| **Category** | `Id (Guid)` | — | Predefined group taxonomy. |
+| **Category** | `Id (Guid)` | — | Application-managed group taxonomy. |
 | **Tag** | `Id (Guid)` | — | Search & filtering labels for groups. |
 | **Group** | `Id (Guid)` | `CategoryId`, `CreatedById` | Core community entity containing members & feed. |
 | **GroupMember** | `Id (Guid)` | `GroupId`, `UserId` | Explicit membership and role-based permissions. |

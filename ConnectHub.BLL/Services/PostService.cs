@@ -161,6 +161,9 @@ public class PostService : IPostService
                 .Where(a => request.AttachmentIds.Contains(a.Id) && a.UploadedById == currentUserId && a.PostId == null)
                 .ToListAsync(cancellationToken);
 
+            if (attachments.Count != request.AttachmentIds.Distinct().Count())
+                return Result.Invalid(new ValidationError("Each attachment must exist, belong to you, and be unassigned."));
+
             foreach (var att in attachments)
             {
                 att.PostId = post.Id;
@@ -208,8 +211,10 @@ public class PostService : IPostService
         if (post is null)
             return Result.NotFound($"Post with ID '{postId}' was not found.");
 
-        if (post.AuthorId != currentUserId)
-            return Result.Forbidden("Only the author can edit this post.");
+        var userRole = await _groupRepository.GetUserRoleAsync(post.GroupId, currentUserId);
+        var canUpdate = post.AuthorId == currentUserId || userRole is GroupRole.Owner or GroupRole.Admin;
+        if (!canUpdate)
+            return Result.Forbidden("Only the post author, group owner, or group admin can edit this post.");
 
         post.Content = sanitizedContent;
         post.UpdatedAt = DateTime.UtcNow;
@@ -310,6 +315,9 @@ public class PostService : IPostService
         if (post is null)
             return Result.NotFound($"Post with ID '{postId}' was not found.");
 
+        if (!await _groupRepository.IsUserMemberAsync(post.GroupId, currentUserId))
+            return Result.Forbidden("You must be an active member of the group to like this post.");
+
         var alreadyLiked = await _postRepository.HasUserLikedPostAsync(postId, currentUserId);
         if (alreadyLiked)
             return Result.Conflict("You have already liked this post.");
@@ -341,6 +349,9 @@ public class PostService : IPostService
         var post = await _postRepository.GetByIdAsync(postId);
         if (post is null)
             return Result.NotFound($"Post with ID '{postId}' was not found.");
+
+        if (!await _groupRepository.IsUserMemberAsync(post.GroupId, currentUserId))
+            return Result.Forbidden("You must be an active member of the group to unlike this post.");
 
         var alreadyLiked = await _postRepository.HasUserLikedPostAsync(postId, currentUserId);
         if (!alreadyLiked)

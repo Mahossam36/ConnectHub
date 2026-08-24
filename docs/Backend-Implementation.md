@@ -73,7 +73,7 @@ All entities standardize on `Guid` primary keys (`uniqueidentifier`) and maintai
 | Entity | Primary Key | Key Foreign Keys | Purpose |
 | :--- | :--- | :--- | :--- |
 | **`User`** | `Guid Id` | — | Platform business profile (matches `ApplicationUser.Id`). |
-| **`Category`** | `Guid Id` | — | Topic taxonomy for community groups. |
+| **`Category`** | `Guid Id` | — | Dynamic, application-managed taxonomy for community groups. |
 | **`Tag`** | `Guid Id` | — | Discovery tags for groups (Many-to-Many). |
 | **`Group`** | `Guid Id` | `CategoryId`, `CreatedById` | Interest-based community container. |
 | **`GroupMember`** | `Guid Id` | `GroupId`, `UserId` | Explicit membership and role (Owner, Admin, Member). |

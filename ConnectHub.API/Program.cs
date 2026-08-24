@@ -1,4 +1,5 @@
 using System.Text;
+using ConnectHub.API.Filters;
 using ConnectHub.API.Hubs;
 using ConnectHub.API.Middleware;
 using ConnectHub.API.Services;
@@ -12,7 +13,8 @@ using Microsoft.OpenApi.Models;
 var builder = WebApplication.CreateBuilder(args);
 
 // 1. Add Controllers
-builder.Services.AddControllers();
+builder.Services.AddScoped<FluentValidationFilter>();
+builder.Services.AddControllers(options => options.Filters.AddService<FluentValidationFilter>());
 
 // 2. Add DAL Services (DbContext, Identity, Repositories, UnitOfWork)
 builder.Services.AddDalServices(builder.Configuration);
@@ -79,11 +81,10 @@ builder.Services.AddSwaggerGen(c =>
 
     c.AddSecurityDefinition("Bearer", new OpenApiSecurityScheme
     {
-        Description = "JWT Authorization header using the Bearer scheme. Example: \"Bearer {token}\"",
-        Name = "Authorization",
-        In = ParameterLocation.Header,
-        Type = SecuritySchemeType.ApiKey,
-        Scheme = "Bearer"
+        Description = "Paste the JWT access token only. Swagger automatically sends: Bearer {token}.",
+        Type = SecuritySchemeType.Http,
+        Scheme = "bearer",
+        BearerFormat = "JWT"
     });
 
     c.AddSecurityRequirement(new OpenApiSecurityRequirement

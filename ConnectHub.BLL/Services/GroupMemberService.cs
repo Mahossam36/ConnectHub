@@ -38,12 +38,16 @@ public class GroupMemberService : IGroupMemberService
 
     public async Task<Result<PagedResultDto<GroupMemberResponseDto>>> GetMembersAsync(
         Guid groupId,
+        Guid currentUserId,
         PaginationParams pagination,
         CancellationToken cancellationToken = default)
     {
         var groupExists = await _groupRepository.ExistsAsync(g => g.Id == groupId && g.IsActive);
         if (!groupExists)
             return Result.NotFound($"Group with ID '{groupId}' was not found.");
+
+        if (!await _groupRepository.IsUserMemberAsync(groupId, currentUserId))
+            return Result.Forbidden("You must be an active member of this group to view its members.");
 
         var query = _groupMemberRepository.Query()
             .Where(gm => gm.GroupId == groupId && gm.IsActive);
@@ -170,6 +174,9 @@ public class GroupMemberService : IGroupMemberService
 
         if (targetMembership.Role == GroupRole.Owner)
             return Result.Forbidden("Cannot change the role of the group owner.");
+
+        if (request.Role == GroupRole.Owner)
+            return Result.Invalid(new ValidationError("The owner role cannot be assigned through this endpoint."));
 
         if (currentUserRole == GroupRole.Admin && (targetMembership.Role == GroupRole.Admin || request.Role == GroupRole.Owner))
             return Result.Forbidden("Admins cannot change the role of other admins or promote members to owner.");

@@ -1,4 +1,5 @@
 using ConnectHub.BLL.DTOs.Groups;
+using ConnectHub.Models.Enums;
 using FluentValidation;
 
 namespace ConnectHub.BLL.Validators;
@@ -17,6 +18,10 @@ public class CreateGroupRequestDtoValidator : AbstractValidator<CreateGroupReque
 
         RuleFor(x => x.CategoryId)
             .NotEmpty().WithMessage("CategoryId is required.");
+
+        RuleFor(x => x.TagIds)
+            .Must(tagIds => tagIds.Distinct().Count() == tagIds.Count)
+            .WithMessage("Tag IDs must not contain duplicates.");
     }
 }
 
@@ -34,6 +39,10 @@ public class UpdateGroupRequestDtoValidator : AbstractValidator<UpdateGroupReque
 
         RuleFor(x => x.CategoryId)
             .NotEmpty().WithMessage("CategoryId is required.");
+
+        RuleFor(x => x.TagIds)
+            .Must(tagIds => tagIds.Distinct().Count() == tagIds.Count)
+            .WithMessage("Tag IDs must not contain duplicates.");
     }
 }
 
@@ -42,6 +51,7 @@ public class ChangeMemberRoleRequestDtoValidator : AbstractValidator<ChangeMembe
     public ChangeMemberRoleRequestDtoValidator()
     {
         RuleFor(x => x.Role)
-            .IsInEnum().WithMessage("A valid group role must be specified.");
+            .Must(role => role is GroupRole.Admin or GroupRole.Member)
+            .WithMessage("Role must be Admin or Member.");
     }
 }

@@ -17,7 +17,6 @@ namespace ConnectHub.BLL.Services;
 public class AuthService : IAuthService
 {
     private readonly UserManager<User> _userManager;
-    private readonly IGenericRepository<User> _userRepository;
     private readonly IRefreshTokenRepository _refreshTokenRepository;
     private readonly IUnitOfWork _unitOfWork;
     private readonly IAuditService _auditService;
@@ -26,7 +25,6 @@ public class AuthService : IAuthService
 
     public AuthService(
         UserManager<User> userManager,
-        IGenericRepository<User> userRepository,
         IRefreshTokenRepository refreshTokenRepository,
         IUnitOfWork unitOfWork,
         IAuditService auditService,
@@ -34,7 +32,6 @@ public class AuthService : IAuthService
         ILogger<AuthService> logger)
     {
         _userManager = userManager;
-        _userRepository = userRepository;
         _refreshTokenRepository = refreshTokenRepository;
         _unitOfWork = unitOfWork;
         _auditService = auditService;
@@ -46,9 +43,6 @@ public class AuthService : IAuthService
         RegisterRequestDto request,
         CancellationToken cancellationToken = default)
     {
-        if (string.IsNullOrWhiteSpace(request.Email) || string.IsNullOrWhiteSpace(request.Password))
-            return Result.Invalid(new ValidationError("Email and Password are required."));
-
         var existingUser = await _userManager.FindByEmailAsync(request.Email);
         if (existingUser is not null)
             return Result.Conflict("A user with this email address already exists.");
@@ -99,9 +93,6 @@ public class AuthService : IAuthService
         LoginRequestDto request,
         CancellationToken cancellationToken = default)
     {
-        if (string.IsNullOrWhiteSpace(request.Email) || string.IsNullOrWhiteSpace(request.Password))
-            return Result.Invalid(new ValidationError("Email and Password are required."));
-
         var appUser = await _userManager.FindByEmailAsync(request.Email);
 
         if (appUser is null)
@@ -153,10 +144,6 @@ public class AuthService : IAuthService
     RefreshTokenRequestDto request,
     CancellationToken cancellationToken = default)
     {
-        if (string.IsNullOrWhiteSpace(request.RefreshToken))
-            return Result.Invalid(
-                new ValidationError("Refresh token is required."));
-
         var tokenHash = HashToken(request.RefreshToken);
 
         var existingRefreshToken =
@@ -262,10 +249,6 @@ public class AuthService : IAuthService
     Guid? currentUserId = null,
     CancellationToken cancellationToken = default)
     {
-        if (string.IsNullOrWhiteSpace(request.RefreshToken))
-            return Result.Invalid(
-                new ValidationError("Refresh token is required."));
-
         var tokenHash = HashToken(request.RefreshToken);
 
         var refreshToken =

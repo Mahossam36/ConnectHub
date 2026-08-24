@@ -6,5 +6,4 @@ public class CreateGroupRequestDto
     public string? Description { get; set; }
     public Guid CategoryId { get; set; }
     public List<Guid> TagIds { get; set; } = new();
-    public string? CoverImageUrl { get; set; }
 }

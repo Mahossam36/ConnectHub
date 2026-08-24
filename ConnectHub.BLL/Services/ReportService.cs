@@ -47,9 +47,6 @@ public class ReportService : IReportService
         CreateReportRequestDto request,
         CancellationToken cancellationToken = default)
     {
-        if (string.IsNullOrWhiteSpace(request.Reason))
-            return Result.Invalid(new ValidationError("Report reason is required."));
-
         if (request.TargetType == ReportTargetType.Post)
         {
             var postExists = await _postRepository.ExistsAsync(p => p.Id == request.TargetId);
