@@ -1,0 +1,4 @@
+<Solution>
+  <Project Path="BFF.csproj" />
+  <Project Path="BFF.Tests/BFF.Tests.csproj" />
+</Solution>

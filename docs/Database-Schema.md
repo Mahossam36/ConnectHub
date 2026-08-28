@@ -63,7 +63,7 @@ erDiagram
         string FirstName
         string LastName
         string Bio
-        string ProfileImagePath
+        string ProfileImage
         bool IsActive
         DateTime CreatedAt
         DateTime UpdatedAt
@@ -214,7 +214,7 @@ Represents a platform member's business profile within ConnectHub. It maintains 
 | `FirstName` | `string` | No | — | Scalar Column | The user's given/first name. |
 | `LastName` | `string` | No | — | Scalar Column | The user's family/last name. |
 | `Bio` | `string?` | Yes | — | Scalar Column | Optional self-description or biography. |
-| `ProfileImagePath` | `string?` | Yes | — | Scalar Column | Relative server file path to the user's avatar image. |
+| `ProfileImagePath` | `string?` | Yes | — | Scalar Column | Provider-neutral profile-image value: a relative local-storage path or an external HTTPS URL. |
 | `IsActive` | `bool` | No | — | Scalar Column | Flag indicating if the user account is active. |
 | `CreatedAt` | `DateTime` | No | — | Audit Column | UTC timestamp when the user profile was created. |
 | `UpdatedAt` | `DateTime?` | Yes | — | Audit Column | UTC timestamp when the profile was last modified. |
@@ -227,7 +227,7 @@ Represents a platform member's business profile within ConnectHub. It maintains 
 1. **`Id`:** Unique identifier. Serves as the primary key and maps 1:1 with ASP.NET Core Identity (`ApplicationUser.Id`). Required.
 2. **`FirstName` / `LastName`:** User's personal names. Required for display throughout UI/feed.
 3. **`Bio`:** Short biography. Optional (`string?`).
-4. **`ProfileImagePath`:** Relative storage path for the profile avatar (e.g., `/uploads/profiles/user-123.jpg`). Storing paths prevents database bloating.
+4. **`ProfileImagePath`:** The existing database column backs `User.ProfileImage`. Local users store a relative path such as `uploads/profile-images/{UserGuid}/profile.jpg`; external users store their provider's HTTPS image URL directly.
 5. **`IsActive`:** Soft-state flag. If `false`, user interactions are disabled.
 6. **`CreatedAt` / `UpdatedAt`:** Temporal audit metadata. `CreatedAt` is immutable; `UpdatedAt` is updated on profile changes.
 7. **`CreatedGroups`:** One-to-many navigation referencing all `Group` records where `CreatedById == User.Id`.

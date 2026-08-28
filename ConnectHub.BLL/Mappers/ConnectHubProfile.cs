@@ -17,10 +17,10 @@ public class ConnectHubProfile : Profile
         // User mappings
         CreateMap<User, UserSummaryDto>()
             .ForMember(dest => dest.DisplayName, opt => opt.MapFrom(src => $"{src.FirstName} {src.LastName}".Trim()))
-            .ForMember(dest => dest.AvatarUrl, opt => opt.MapFrom(src => src.ProfileImagePath));
+            .ForMember(dest => dest.AvatarUrl, opt => opt.MapFrom(src => ToAvatarUrl(src.ProfileImage)));
 
         CreateMap<User, UserProfileResponseDto>()
-            .ForMember(dest => dest.AvatarUrl, opt => opt.MapFrom(src => src.ProfileImagePath))
+            .ForMember(dest => dest.AvatarUrl, opt => opt.MapFrom(src => ToAvatarUrl(src.ProfileImage)))
             .ForMember(dest => dest.Email, opt => opt.Ignore()); // set from ApplicationUser if needed
 
         // Category & Tag
@@ -61,5 +61,16 @@ public class ConnectHubProfile : Profile
 
         // Report mappings
         CreateMap<Report, ReportResponseDto>();
+    }
+
+    private static string? ToAvatarUrl(string? profileImage)
+    {
+        if (string.IsNullOrWhiteSpace(profileImage))
+            return null;
+
+        return Uri.TryCreate(profileImage, UriKind.Absolute, out var uri) &&
+               (uri.Scheme == Uri.UriSchemeHttp || uri.Scheme == Uri.UriSchemeHttps)
+            ? profileImage
+            : $"/{profileImage.TrimStart('/')}";
     }
 }

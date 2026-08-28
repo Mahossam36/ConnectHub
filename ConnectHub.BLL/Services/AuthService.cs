@@ -1,16 +1,18 @@
-using System.IdentityModel.Tokens.Jwt;
-using System.Security.Claims;
-using System.Security.Cryptography;
-using System.Text;
 using Ardalis.Result;
 using ConnectHub.BLL.DTOs.Auth;
 using ConnectHub.BLL.Interfaces.Services;
 using ConnectHub.DAL.Interfaces;
 using ConnectHub.Models.Entities;
+using ConnectHub.Models.Enums;
 using Microsoft.AspNetCore.Identity;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Logging;
 using Microsoft.IdentityModel.Tokens;
+using System.IdentityModel.Tokens.Jwt;
+using System.Security.Claims;
+using System.Security.Cryptography;
+using System.Text;
 
 namespace ConnectHub.BLL.Services;
 
@@ -38,6 +40,8 @@ public class AuthService : IAuthService
         _configuration = configuration;
         _logger = logger;
     }
+
+
 
     public async Task<Result<AuthResponseDto>> RegisterAsync(
         RegisterRequestDto request,
@@ -140,6 +144,95 @@ public class AuthService : IAuthService
             cancellationToken);
     }
 
+
+
+    public async Task<Result<AuthResponseDto>> ExternalLoginAsync(
+    ExternalLoginRequest request,
+    CancellationToken cancellationToken = default)
+    {
+        var appUser = await _userManager.Users
+            .FirstOrDefaultAsync(
+                u => u.ExternalProvider == request.Provider &&
+                     u.ExternalProviderId == request.ProviderId,
+                cancellationToken);
+
+        // Existing external user
+        if (appUser is not null)
+        {
+            if (!appUser.IsActive)
+            {
+                return Result.Forbidden("Account is deactivated.");
+            }
+
+            await _auditService.LogAsync(
+                "External Login",
+                "User",
+                appUser.Id,
+                appUser.Id,
+                null,
+                cancellationToken);
+
+            return await GenerateAuthResponseAsync(
+                appUser,
+                appUser.Email ?? string.Empty,
+                cancellationToken);
+        }
+
+        // Email already belongs to another account
+        if (!string.IsNullOrWhiteSpace(request.Email))
+        {
+            var existingEmailUser =
+                await _userManager.FindByEmailAsync(request.Email);
+
+            if (existingEmailUser is not null)
+            {
+                return Result.Conflict(
+                    "An account with this email already exists.");
+            }
+        }
+
+        // Create new external user
+        var newUser = new User
+        {
+            UserName = request.Email,
+            Email = request.Email,
+            FirstName = request.FirstName ?? string.Empty,
+            LastName = request.LastName ?? string.Empty,
+            ProfileImage = request.Provider == ExternalProvider.Local
+                ? null
+                : request.ProfileImageUrl,
+            IsActive = true,
+            ExternalProvider = request.Provider,
+            ExternalProviderId = request.ProviderId,
+            CreatedAt = DateTime.UtcNow
+        };
+
+        var createResult = await _userManager.CreateAsync(newUser);
+
+        if (!createResult.Succeeded)
+        {
+            _logger.LogError(
+                "Failed to create external user for provider {Provider}.",
+                request.Provider);
+
+            return Result.Error(
+                string.Join("; ", createResult.Errors.Select(e => e.Description)));
+        }
+
+        await _auditService.LogAsync(
+            "External Registration",
+            "User",
+            newUser.Id,
+            newUser.Id,
+            null,
+            cancellationToken);
+
+        return await GenerateAuthResponseAsync(
+            newUser,
+            newUser.Email ?? string.Empty,
+            cancellationToken);
+    }
+
     public async Task<Result<AuthResponseDto>> RefreshTokenAsync(
     RefreshTokenRequestDto request,
     CancellationToken cancellationToken = default)
@@ -237,7 +330,7 @@ public class AuthService : IAuthService
             UserId = user.Id,
             Email = email,
             DisplayName = $"{user.FirstName} {user.LastName}".Trim(),
-            AvatarUrl = user.ProfileImagePath,
+            AvatarUrl = ToAvatarUrl(user.ProfileImage),
             AccessToken = accessToken,
             RefreshToken = rawRefreshToken,
             ExpiresAt = expiresAt
@@ -291,7 +384,7 @@ public class AuthService : IAuthService
     }
 
     /// <summary>
-    /// Common token generation pipeline used by both local authentication and future Google SSO.
+    /// Common token generation pipeline used by both local authentication and Google SSO
     /// </summary>
     public async Task<Result<AuthResponseDto>> GenerateAuthResponseAsync(
     User user,
@@ -317,7 +410,7 @@ public class AuthService : IAuthService
             UserId = user.Id,
             Email = email,
             DisplayName = displayName,
-            AvatarUrl = user.ProfileImagePath,
+            AvatarUrl = ToAvatarUrl(user.ProfileImage),
             AccessToken = accessToken,
             RefreshToken = rawRefreshToken,
             ExpiresAt = expiresAt
@@ -388,5 +481,16 @@ public class AuthService : IAuthService
         var bytes = Encoding.UTF8.GetBytes(rawToken);
         var hash = SHA256.HashData(bytes);
         return Convert.ToHexString(hash);
+    }
+
+    private static string? ToAvatarUrl(string? profileImage)
+    {
+        if (string.IsNullOrWhiteSpace(profileImage))
+            return null;
+
+        return Uri.TryCreate(profileImage, UriKind.Absolute, out var uri) &&
+               (uri.Scheme == Uri.UriSchemeHttp || uri.Scheme == Uri.UriSchemeHttps)
+            ? profileImage
+            : $"/{profileImage.TrimStart('/')}";
     }
 }

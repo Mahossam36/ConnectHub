@@ -41,6 +41,28 @@ public class AuthController : BaseApiController
         return ToActionResult(result);
     }
 
+
+
+    /// <summary>
+    /// Authenticate user using an external identity provider.
+    /// </summary>
+    [HttpPost("external")]
+    [ProducesResponseType(typeof(AuthResponseDto), StatusCodes.Status200OK)]
+    [ProducesResponseType(typeof(ValidationProblemDetails), StatusCodes.Status400BadRequest)]
+    [ProducesResponseType(typeof(ProblemDetails), StatusCodes.Status401Unauthorized)]
+    [ProducesResponseType(typeof(ProblemDetails), StatusCodes.Status403Forbidden)]
+    [ProducesResponseType(typeof(ProblemDetails), StatusCodes.Status409Conflict)]
+    public async Task<ActionResult<AuthResponseDto>> ExternalLogin(
+        [FromBody] ExternalLoginRequest request,
+        CancellationToken cancellationToken)
+    {
+        var result = await _authService.ExternalLoginAsync(
+            request,
+            cancellationToken);
+
+        return ToActionResult(result);
+    }
+
     /// <summary>
     /// Rotate an active refresh token to obtain a new JWT access token and refresh token.
     /// </summary>

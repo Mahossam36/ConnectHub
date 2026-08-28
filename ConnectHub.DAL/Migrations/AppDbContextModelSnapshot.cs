@@ -490,6 +490,12 @@ namespace ConnectHub.DAL.Migrations
                     b.Property<bool>("EmailConfirmed")
                         .HasColumnType("bit");
 
+                    b.Property<int>("ExternalProvider")
+                        .HasColumnType("int");
+
+                    b.Property<string>("ExternalProviderId")
+                        .HasColumnType("nvarchar(450)");
+
                     b.Property<string>("FirstName")
                         .IsRequired()
                         .HasMaxLength(100)
@@ -554,6 +560,10 @@ namespace ConnectHub.DAL.Migrations
                         .IsUnique()
                         .HasDatabaseName("UserNameIndex")
                         .HasFilter("[NormalizedUserName] IS NOT NULL");
+
+                    b.HasIndex("ExternalProvider", "ExternalProviderId")
+                        .IsUnique()
+                        .HasFilter("[ExternalProviderId] IS NOT NULL");
 
                     b.ToTable("Users", (string)null);
                 });

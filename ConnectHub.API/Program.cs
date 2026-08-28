@@ -1,4 +1,3 @@
-using System.Text;
 using ConnectHub.API.Filters;
 using ConnectHub.API.Hubs;
 using ConnectHub.API.Middleware;
@@ -9,13 +8,20 @@ using ConnectHub.DAL.Extensions;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.IdentityModel.Tokens;
 using Microsoft.OpenApi.Models;
+using System.Text;
+using System.Text.Json.Serialization;
 
 var builder = WebApplication.CreateBuilder(args);
 
 // 1. Add Controllers
 builder.Services.AddScoped<FluentValidationFilter>();
-builder.Services.AddControllers(options => options.Filters.AddService<FluentValidationFilter>());
-
+builder.Services
+    .AddControllers(options => options.Filters.AddService<FluentValidationFilter>())
+    .AddJsonOptions(options =>
+    {
+        options.JsonSerializerOptions.Converters.Add(
+            new JsonStringEnumConverter());
+    });
 // 2. Add DAL Services (DbContext, Identity, Repositories, UnitOfWork)
 builder.Services.AddDalServices(builder.Configuration);
 

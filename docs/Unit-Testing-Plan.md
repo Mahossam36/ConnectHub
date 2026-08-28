@@ -166,7 +166,7 @@ Follow the standard **`MethodName_Condition_ExpectedResult`** convention:
 * `GetProfileAsync_WhenNotFound_ReturnsNotFound`
 * `UpdateProfileAsync_WhenValid_UpdatesBioAndNameAndSaves`
 * `UpdateProfileAsync_WhenUserNotFound_ReturnsNotFound`
-* `UpdateAvatarAsync_WhenValidStream_DeletesOldFileSavesNewAndUpdatesProfileImagePath`
+* `UpdateAvatarAsync_WhenValidStream_DeletesOldFileSavesNewAndUpdatesProfileImage`
 * `UpdateAvatarAsync_WhenStreamEmpty_ReturnsInvalid`
 
 ### 4.7 `AttachmentServiceTests` (P1 — Important)

@@ -22,7 +22,7 @@ public class UserService : IUserService
     private readonly IContentModerationService _contentModeration;
     private readonly ILogger<UserService> _logger;
 
-    private const string AvatarFolder = "uploads/avatars";
+    private const string AvatarFolder = "uploads/profile-images";
 
     public UserService(
         IGenericRepository<User> userRepository,
@@ -113,16 +113,17 @@ public class UserService : IUserService
             return Result.NotFound($"User with ID '{currentUserId}' was not found.");
 
         var extension = Path.GetExtension(fileName);
-        var storedFileName = $"{currentUserId}_{Guid.NewGuid():N}{extension}";
+        var storedFileName = $"profile{extension}";
+        var userAvatarFolder = $"{AvatarFolder}/{currentUserId}";
 
-        // Delete old avatar physical file if exists
-        if (!string.IsNullOrWhiteSpace(user.ProfileImagePath))
+        // External profile images are URLs and must never be used as local file-system paths.
+        if (IsLocalProfileImage(user.ProfileImage))
         {
-            await _fileStorageService.DeleteFileAsync(user.ProfileImagePath);
+            await _fileStorageService.DeleteFileAsync(user.ProfileImage!);
         }
 
-        var relativePath = await _fileStorageService.SaveFileAsync(imageStream, storedFileName, AvatarFolder);
-        user.ProfileImagePath = relativePath;
+        var relativePath = await _fileStorageService.SaveFileAsync(imageStream, storedFileName, userAvatarFolder);
+        user.ProfileImage = relativePath;
         user.UpdatedAt = DateTime.UtcNow;
 
         _userRepository.Update(user);
@@ -137,4 +138,9 @@ public class UserService : IUserService
 
         return Result.Success(dto);
     }
+
+    private static bool IsLocalProfileImage(string? profileImage) =>
+        !string.IsNullOrWhiteSpace(profileImage) &&
+        (!Uri.TryCreate(profileImage, UriKind.Absolute, out var uri) ||
+         (uri.Scheme != Uri.UriSchemeHttp && uri.Scheme != Uri.UriSchemeHttps));
 }

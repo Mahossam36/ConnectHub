@@ -24,7 +24,8 @@ namespace ConnectHub.DAL.Configurations
             builder.Property(x => x.Bio)
                 .HasMaxLength(500);
 
-            builder.Property(x => x.ProfileImagePath)
+            builder.Property(x => x.ProfileImage)
+                .HasColumnName("ProfileImagePath")
                 .HasMaxLength(500);
 
             builder.Property(x => x.IsActive)
@@ -35,6 +36,13 @@ namespace ConnectHub.DAL.Configurations
                 .IsRequired();
 
             builder.Property(x => x.UpdatedAt);
+
+            builder.HasIndex(u => new
+            {
+                u.ExternalProvider,
+                u.ExternalProviderId
+            }).IsUnique();
+
         }
     }
 }

@@ -1,3 +1,4 @@
+using ConnectHub.Models.Enums;
 using Microsoft.AspNetCore.Identity;
 
 namespace ConnectHub.Models.Entities
@@ -11,8 +12,10 @@ namespace ConnectHub.Models.Entities
         public string FirstName { get; set; } = string.Empty;
         public string LastName { get; set; } = string.Empty;
         public string? Bio { get; set; }
-        public string? ProfileImagePath { get; set; }
+        public string? ProfileImage { get; set; }
         public bool IsActive { get; set; }
+        public ExternalProvider ExternalProvider { get; set; } = ExternalProvider.Local;
+        public string? ExternalProviderId { get; set; }
         public DateTime CreatedAt { get; set; }
         public DateTime? UpdatedAt { get; set; }
 
