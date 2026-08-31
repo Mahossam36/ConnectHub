@@ -150,10 +150,13 @@ public class AuthService : IAuthService
     ExternalLoginRequest request,
     CancellationToken cancellationToken = default)
     {
+        var providerId = request.ProviderId.Trim();
+        var email = request.Email?.Trim() ?? string.Empty;
+
         var appUser = await _userManager.Users
             .FirstOrDefaultAsync(
                 u => u.ExternalProvider == request.Provider &&
-                     u.ExternalProviderId == request.ProviderId,
+                     u.ExternalProviderId == providerId,
                 cancellationToken);
 
         // Existing external user
@@ -178,24 +181,56 @@ public class AuthService : IAuthService
                 cancellationToken);
         }
 
-        // Email already belongs to another account
-        if (!string.IsNullOrWhiteSpace(request.Email))
+        // A validated Google identity with an existing Yalla email links to that account.
+        if (!string.IsNullOrWhiteSpace(email))
         {
             var existingEmailUser =
-                await _userManager.FindByEmailAsync(request.Email);
+                await _userManager.FindByEmailAsync(email);
 
             if (existingEmailUser is not null)
             {
-                return Result.Conflict(
-                    "An account with this email already exists.");
+                if (!existingEmailUser.IsActive)
+                    return Result.Forbidden("Account is deactivated.");
+
+                if (existingEmailUser.ExternalProvider == request.Provider &&
+                    !string.IsNullOrWhiteSpace(existingEmailUser.ExternalProviderId) &&
+                    !string.Equals(existingEmailUser.ExternalProviderId, providerId, StringComparison.Ordinal))
+                {
+                    return Result.Conflict("This email is already linked to a different external identity.");
+                }
+
+                existingEmailUser.ExternalProvider = request.Provider;
+                existingEmailUser.ExternalProviderId = providerId;
+                if (string.IsNullOrWhiteSpace(existingEmailUser.ProfileImage))
+                    existingEmailUser.ProfileImage = request.ProfileImageUrl;
+                existingEmailUser.UpdatedAt = DateTime.UtcNow;
+
+                var updateResult = await _userManager.UpdateAsync(existingEmailUser);
+                if (!updateResult.Succeeded)
+                {
+                    _logger.LogError("Failed to link external provider {Provider} for user {UserId}.", request.Provider, existingEmailUser.Id);
+                    return Result.Error(string.Join("; ", updateResult.Errors.Select(e => e.Description)));
+                }
+
+                await _auditService.LogAsync(
+                    "LinkExternalLogin",
+                    "User",
+                    existingEmailUser.Id,
+                    existingEmailUser.Id,
+                    $"Provider:{request.Provider}",
+                    cancellationToken);
+
+                _logger.LogInformation("External provider {Provider} linked to existing user {UserId}.", request.Provider, existingEmailUser.Id);
+
+                return await GenerateAuthResponseAsync(existingEmailUser, email, cancellationToken);
             }
         }
 
         // Create new external user
         var newUser = new User
         {
-            UserName = request.Email,
-            Email = request.Email,
+            UserName = email,
+            Email = email,
             FirstName = request.FirstName ?? string.Empty,
             LastName = request.LastName ?? string.Empty,
             ProfileImage = request.Provider == ExternalProvider.Local
@@ -203,7 +238,7 @@ public class AuthService : IAuthService
                 : request.ProfileImageUrl,
             IsActive = true,
             ExternalProvider = request.Provider,
-            ExternalProviderId = request.ProviderId,
+            ExternalProviderId = providerId,
             CreatedAt = DateTime.UtcNow
         };
 

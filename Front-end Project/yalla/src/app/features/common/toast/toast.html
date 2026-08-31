@@ -1,0 +1,40 @@
+@if (visible) {
+  <div
+    class="toast"
+    [class.toast--success]="type === 'success'"
+    [class.toast--error]="type === 'error'"
+    [class.toast--warning]="type === 'warning'"
+    [class.toast--info]="type === 'info'"
+    role="alert"
+    aria-live="polite"
+  >
+    <div class="toast__icon">
+      {{ icon }}
+    </div>
+
+    <div class="toast__content">
+      @if (title) {
+        <div class="toast__title">
+          {{ title }}
+        </div>
+      }
+
+      @if (message) {
+        <div class="toast__message">
+          {{ message }}
+        </div>
+      }
+    </div>
+
+    @if (dismissible) {
+      <button
+        type="button"
+        class="toast__close"
+        aria-label="Close notification"
+        (click)="close()"
+      >
+        ×
+      </button>
+    }
+  </div>
+}

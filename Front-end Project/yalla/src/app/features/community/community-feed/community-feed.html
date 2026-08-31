@@ -1,0 +1,212 @@
+<div class="feed-layout">
+  <!-- Feed Column -->
+  <div class="feed-column">
+
+    <!-- Create Post Box -->
+    <div class="create-post" [class.create-post--announce]="announcementMode()">
+      @if (announcementMode()) {
+        <div class="create-post__announce-bar">
+          <span class="create-post__announce-label">
+            <span class="material-symbols-outlined">campaign</span>
+            Creating Pinned Announcement
+          </span>
+          <button type="button" class="create-post__announce-cancel" (click)="announcementMode.set(false)">Cancel</button>
+        </div>
+      }
+
+      <div class="create-post__body">
+        <div class="create-post__avatar">
+          {{ session.session()?.user?.displayName?.slice(0, 1)?.toUpperCase() || 'U' }}
+        </div>
+        <div class="create-post__editor">
+          <textarea
+            [formControl]="postText"
+            class="create-post__textarea"
+            [placeholder]="announcementMode() ? 'Write an announcement for the community...' : 'What\'s on your mind?'"
+            rows="2">
+          </textarea>
+
+          @if (pendingPreviewUrl()) {
+            <div class="create-post__preview">
+              <img [src]="pendingPreviewUrl()!" class="create-post__preview-img" alt="Media Preview" />
+              <button type="button" class="create-post__preview-remove" (click)="removePendingFile()">
+                <span class="material-symbols-outlined">close</span>
+              </button>
+            </div>
+          }
+
+          <div class="create-post__toolbar">
+            <label class="create-post__attach-btn">
+              <span class="material-symbols-outlined">image</span>
+              <span>Photo/Video</span>
+              <input type="file" class="sr-only" accept="image/*,video/*" (change)="onFileSelected($event)" />
+            </label>
+            <button
+              class="create-post__submit"
+              type="button"
+              [disabled]="loading || (!postText.value.trim() && !pendingFile())"
+              (click)="createPost()">
+              {{ announcementMode() ? 'Publish Announcement' : 'Post' }}
+            </button>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Posts List -->
+    @for (post of posts; track post.id) {
+      <article class="post-card" [id]="'post-' + post.id">
+        <div class="post-card__inner">
+          <!-- Author avatar -->
+          @if (post.author.profileImageUrl || post.author.profileImage) {
+            <img
+              [src]="resolveMediaUrl(post.author.profileImageUrl || post.author.profileImage)"
+              [alt]="post.author.displayName"
+              class="post-card__avatar post-card__avatar--img" />
+          } @else {
+            <div class="post-card__avatar post-card__avatar--initials">
+              {{ post.author.displayName.slice(0, 1).toUpperCase() }}
+            </div>
+          }
+
+          <div class="post-card__content">
+            <!-- Header row -->
+            <div class="post-card__header">
+              <div>
+                <div class="post-card__author-row">
+                  <h4 class="post-card__author">{{ post.author.displayName }}</h4>
+                  @if (post.isPinned) {
+                    <span class="post-card__pinned-badge">
+                      <span class="material-symbols-outlined">push_pin</span> Announcement
+                    </span>
+                  }
+                </div>
+                <p class="post-card__date">{{ post.createdAt | date:'short' }}</p>
+              </div>
+
+              <div class="post-card__controls">
+                @if (canAnnounce) {
+                  <button
+                    class="post-card__control-btn"
+                    type="button"
+                    [title]="post.isPinned ? 'Unpin' : 'Pin Announcement'"
+                    (click)="togglePin(post)">
+                    <span class="material-symbols-outlined">{{ post.isPinned ? 'keep_off' : 'push_pin' }}</span>
+                  </button>
+                }
+                @if (canModerate || post.author.id === currentUserId()) {
+                  <button
+                    class="post-card__control-btn post-card__control-btn--delete"
+                    type="button"
+                    title="Delete post"
+                    (click)="deletePost(post.id)">
+                    <span class="material-symbols-outlined">delete</span>
+                  </button>
+                }
+              </div>
+            </div>
+
+            <!-- Body -->
+            <p class="post-card__text">{{ post.content }}</p>
+
+            <!-- Attachments -->
+            @if (post.attachments && post.attachments.length > 0) {
+              <div class="post-card__attachments">
+                @for (attachment of post.attachments; track $index) {
+                  @let mediaUrl = getAttachmentMediaUrl(attachment);
+                  @if (isImage(attachment) && !hasMediaError(mediaUrl)) {
+                    <img [src]="mediaUrl" [alt]="attachment.fileName || 'Post image'" class="post-card__media" (error)="onMediaError(mediaUrl)" />
+                  } @else if (isVideo(attachment) && !hasMediaError(mediaUrl)) {
+                    <video [src]="mediaUrl" controls preload="metadata" class="post-card__media" (error)="onMediaError(mediaUrl)"></video>
+                  } @else {
+                    <a [href]="mediaUrl" target="_blank" rel="noopener noreferrer" class="post-card__file-link">
+                      <span class="material-symbols-outlined">attach_file</span>
+                      {{ attachment.fileName || 'Download Attachment' }}
+                    </a>
+                  }
+                }
+              </div>
+            }
+
+            <!-- Actions -->
+            <div class="post-card__actions">
+              <div class="post-card__reactions">
+                <button
+                  class="post-card__reaction-btn"
+                  type="button"
+                  [class.post-card__reaction-btn--active]="post.isLikedByCurrentUser"
+                  (click)="toggleLike(post)">
+                  <span class="material-symbols-outlined"
+                    [style.font-variation-settings]="post.isLikedByCurrentUser ? '\'FILL\' 1' : '\'FILL\' 0'">favorite</span>
+                  <span>{{ post.likeCount }}</span>
+                </button>
+
+                <button
+                  class="post-card__reaction-btn"
+                  type="button"
+                  (click)="openComments.emit(post)">
+                  <span class="material-symbols-outlined">chat_bubble</span>
+                  <span>{{ post.commentCount }}</span>
+                </button>
+
+                <button
+                  class="post-card__reaction-btn post-card__reaction-btn--report"
+                  type="button"
+                  title="Report post"
+                  (click)="openReportModal(ReportTargetType.Post, post.id, post.author.displayName)">
+                  <span class="material-symbols-outlined">flag</span>
+                </button>
+              </div>
+
+              <button
+                class="post-card__reaction-btn"
+                type="button"
+                (click)="shareRequested.emit()">
+                <span class="material-symbols-outlined">share</span>
+              </button>
+            </div>
+          </div>
+        </div>
+      </article>
+    } @empty {
+      <div class="feed-empty">
+        <span class="material-symbols-outlined feed-empty__icon">forum</span>
+        <h3 class="feed-empty__title">No posts yet</h3>
+        <p class="feed-empty__body">Be the first to share something with this community!</p>
+      </div>
+    }
+  </div>
+
+  <!-- About Widget (right column) -->
+  <div class="about-widget">
+    <div class="about-card">
+      <h3 class="about-card__title">About Community</h3>
+      <p class="about-card__description">
+        {{ community?.description || 'A curated space for professionals and community members.' }}
+      </p>
+
+      <div class="about-card__row">
+        <div class="about-card__label">Category</div>
+        <div class="about-card__value">{{ community?.category?.name || 'General' }}</div>
+      </div>
+
+      @if (community?.tags && community!.tags!.length > 0) {
+        <div class="about-card__row">
+          <div class="about-card__label">Tags</div>
+          <div class="about-card__tags">
+            @for (tag of community!.tags!; track tag.id) {
+              <span class="about-tag">{{ tag.name }}</span>
+            }
+          </div>
+        </div>
+      }
+
+      <div class="about-card__footer">
+        <span class="about-card__member-count">{{ community?.memberCount || 0 }} Members</span>
+        <button type="button" class="about-card__members-link" (click)="tabSwitchRequest.emit('tab-members')">
+          View All Members <span class="material-symbols-outlined">arrow_forward</span>
+        </button>
+      </div>
+    </div>
+  </div>
+</div>

@@ -1,0 +1,307 @@
+<div
+  class="modal-overlay"
+  role="presentation"
+  (click)="close()"
+>
+  <div
+    class="create-modal"
+    role="dialog"
+    aria-modal="true"
+    aria-labelledby="create-post-title"
+    (click)="$event.stopPropagation()"
+  >
+
+    <!-- Header -->
+    <div class="modal-header">
+      <h2 id="create-post-title">Create Post</h2>
+
+      <button
+        class="close-button"
+        type="button"
+        aria-label="Close"
+        [disabled]="isLoading || isUploading"
+        (click)="close()"
+      >
+        <span class="material-symbols-outlined">
+          close
+        </span>
+      </button>
+    </div>
+
+    <!-- Body -->
+    <div class="modal-body">
+
+      <!-- Current user + community -->
+      <div class="modal-user">
+
+        <div class="avatar-wrapper">
+          <img
+            *ngIf="currentUser?.avatarUrl; else userInitials"
+            class="avatar avatar-lg"
+            [src]="currentUser?.avatarUrl ?? ''"
+            [alt]="getUserDisplayName()"
+          />
+
+          <ng-template #userInitials>
+            <div class="avatar avatar-lg letter-avatar">
+              {{ getUserDisplayName().charAt(0).toUpperCase() }}
+            </div>
+          </ng-template>
+        </div>
+
+        <div class="user-details">
+          <strong>
+            {{ getUserDisplayName() }}
+          </strong>
+
+          <select
+            [(ngModel)]="selectedGroupId"
+            [disabled]="isLoading || isUploading || isLoadingGroups"
+            aria-label="Select community"
+          >
+            <option value="">
+              Select Community...
+            </option>
+
+            <option
+              *ngFor="let group of groups"
+              [value]="group.id"
+              [disabled]="!canCreatePostInGroup(group)"
+            >
+              {{ group.name }}
+            </option>
+          </select>
+        </div>
+
+      </div>
+
+      <!-- Loading groups -->
+      <div
+        *ngIf="isLoadingGroups"
+        class="loading-message"
+      >
+        Loading communities...
+      </div>
+
+      <!-- Error -->
+      <div
+        *ngIf="errorMessage"
+        class="error-message"
+        role="alert"
+      >
+        {{ errorMessage }}
+      </div>
+
+      <!-- Formatting editor -->
+      <div class="editor-wrapper">
+
+        <div
+          #contentEditor
+          class="content-editor"
+          contenteditable="true"
+          role="textbox"
+          aria-multiline="true"
+          data-placeholder="Share your thoughts, discoveries, or questions..."
+          (input)="onEditorInput()"
+        ></div>
+
+      </div>
+
+      <!-- Upload -->
+      <div
+        class="upload-box"
+        [class.dragging]="isDragging"
+        [class.disabled]="isLoading || isUploading"
+        role="button"
+        tabindex="0"
+        aria-label="Add photos, videos, or documents"
+        (click)="openFilePicker()"
+        (keydown.enter)="openFilePicker()"
+        (keydown.space)="openFilePicker(); $event.preventDefault()"
+        (dragenter)="onDragEnter($event)"
+        (dragover)="onDragOver($event)"
+        (dragleave)="onDragLeave($event)"
+        (drop)="onDrop($event)"
+      >
+
+        <input
+          #fileInput
+          class="file-input"
+          type="file"
+          multiple
+          accept="image/*,video/*,.pdf,.doc,.docx,.xls,.xlsx,.txt,.csv"
+          (change)="onFileInputChange($event)"
+          (click)="$event.stopPropagation()"
+        />
+
+        <div class="upload-icon">
+          <span class="material-symbols-outlined">
+            add_photo_alternate
+          </span>
+        </div>
+
+        <strong>
+          Add photos, videos, or documents
+        </strong>
+
+        <span>
+          {{ isDragging ? 'Drop files here' : 'Drag and drop or click to upload' }}
+        </span>
+      </div>
+
+      <!-- Selected files -->
+      <div
+        *ngIf="selectedFiles.length"
+        class="selected-files"
+      >
+        <div
+          class="selected-file"
+          *ngFor="let file of selectedFiles; let i = index"
+        >
+
+          <div class="file-preview">
+
+            <img
+              *ngIf="isImage(file)"
+              [src]="getFilePreview(file)"
+              [alt]="file.name"
+            />
+
+            <span
+              *ngIf="isVideo(file)"
+              class="material-symbols-outlined"
+            >
+              movie
+            </span>
+
+            <span
+              *ngIf="!isImage(file) && !isVideo(file)"
+              class="material-symbols-outlined"
+            >
+              description
+            </span>
+
+          </div>
+
+          <div class="file-info">
+            <strong>{{ file.name }}</strong>
+
+            <span>
+              {{ file.size / 1024 / 1024 | number:'1.0-2' }} MB
+            </span>
+          </div>
+
+          <button
+            type="button"
+            class="remove-file-button"
+            [disabled]="isLoading || isUploading"
+            aria-label="Remove file"
+            (click)="removeFile(i); $event.stopPropagation()"
+          >
+            <span class="material-symbols-outlined">
+              close
+            </span>
+          </button>
+
+        </div>
+      </div>
+
+    </div>
+
+    <!-- Footer -->
+    <div class="modal-footer">
+
+      <div class="format-actions">
+
+        <button
+          type="button"
+          title="Bold"
+          aria-label="Bold"
+          [disabled]="isLoading || isUploading"
+          (click)="formatBold()"
+        >
+          <span class="material-symbols-outlined">
+            format_bold
+          </span>
+        </button>
+
+        <button
+          type="button"
+          title="Italic"
+          aria-label="Italic"
+          [disabled]="isLoading || isUploading"
+          (click)="formatItalic()"
+        >
+          <span class="material-symbols-outlined">
+            format_italic
+          </span>
+        </button>
+
+        <button
+          type="button"
+          title="Underline"
+          aria-label="Underline"
+          [disabled]="isLoading || isUploading"
+          (click)="formatUnderline()"
+        >
+          <span class="material-symbols-outlined">
+            format_underlined
+          </span>
+        </button>
+
+        <button
+          type="button"
+          title="Bullet list"
+          aria-label="Bullet list"
+          [disabled]="isLoading || isUploading"
+          (click)="formatUnorderedList()"
+        >
+          <span class="material-symbols-outlined">
+            format_list_bulleted
+          </span>
+        </button>
+
+        <button
+          type="button"
+          title="Numbered list"
+          aria-label="Numbered list"
+          [disabled]="isLoading || isUploading"
+          (click)="formatOrderedList()"
+        >
+          <span class="material-symbols-outlined">
+            format_list_numbered
+          </span>
+        </button>
+
+      </div>
+
+      <button
+        class="primary-button"
+        type="button"
+        [disabled]="
+          isLoading ||
+          isUploading ||
+          isLoadingGroups ||
+          !selectedGroupId ||
+          !plainTextContent
+        "
+        (click)="publishPost()"
+      >
+        <span
+          *ngIf="isLoading || isUploading"
+          class="button-spinner"
+        ></span>
+
+        {{
+          isUploading
+            ? 'Uploading...'
+            : isLoading
+              ? 'Posting...'
+              : 'Post to Community'
+        }}
+      </button>
+
+    </div>
+
+  </div>
+</div>

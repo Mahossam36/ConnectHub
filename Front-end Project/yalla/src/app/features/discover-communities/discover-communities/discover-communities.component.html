@@ -1,0 +1,36 @@
+<div class="discover-communities">
+  <!-- Global TopAppBar (header) and the left <aside> nav from the mockup are your
+       existing common/navbar and common/side-panel (or fixed-side-panel) components.
+       They belong in main-layout, not duplicated here. -->
+
+  <app-discover-header
+    title="Discover Communities"
+    subtitle="Find your people. Join communities that match your interests."
+    (searchChange)="onSearchChange($event)">
+  </app-discover-header>
+
+  <app-category-filter
+    [categories]="categories()"
+    [selectedCategoryId]="selectedCategoryId()"
+    (categorySelected)="onCategorySelected($event)">
+  </app-category-filter>
+
+  @if (featuredCommunity()) {
+    <app-featured-community-card
+      [community]="featuredCommunity()!"
+      (join)="onJoinCommunity($event)">
+    </app-featured-community-card>
+  }
+
+  <app-community-grid
+    heading="Explore Communities"
+    subtitle="Discover communities and find a place where you belong."
+    [communities]="communities()"
+    (join)="onJoinCommunity($event)"
+    (loadMore)="onLoadMore()">
+  </app-community-grid>
+
+  <app-create-community-cta
+    (create)="onCreateCommunity()">
+  </app-create-community-cta>
+</div>

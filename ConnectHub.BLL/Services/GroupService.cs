@@ -83,7 +83,10 @@ public class GroupService : IGroupService
         if (!string.IsNullOrWhiteSpace(search))
         {
             var term = search.Trim();
-            query = query.Where(g => g.Name.Contains(term) || (g.Description != null && g.Description.Contains(term)));
+            query = query.Where(g =>
+                g.Name.Contains(term) ||
+                (g.Description != null && g.Description.Contains(term)) ||
+                g.Tags.Any(t => t.Name.Contains(term)));
         }
 
         var total = await query.CountAsync(cancellationToken);

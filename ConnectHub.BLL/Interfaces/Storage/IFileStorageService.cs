@@ -9,4 +9,7 @@ public interface IFileStorageService
 
     Task DeleteFileAsync(
         string relativePath);
+
+    Task<Stream?> GetFileStreamAsync(
+        string relativePath);
 }

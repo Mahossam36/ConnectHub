@@ -56,16 +56,23 @@ builder.Services.AddAuthentication(options =>
         ClockSkew = TimeSpan.Zero
     };
 
-    // Support token in query string for SignalR WebSocket connections
+    // Support token in Access-Token header (BFF forwarded) or query string for SignalR WebSocket connections
     options.Events = new JwtBearerEvents
     {
         OnMessageReceived = context =>
         {
-            var accessToken = context.Request.Query["access_token"];
-            var path = context.HttpContext.Request.Path;
-            if (!string.IsNullOrEmpty(accessToken) && path.StartsWithSegments("/hubs"))
+            if (context.Request.Headers.TryGetValue("Access-Token", out var headerToken) && !string.IsNullOrWhiteSpace(headerToken))
             {
-                context.Token = accessToken;
+                context.Token = headerToken.ToString();
+            }
+            else
+            {
+                var accessToken = context.Request.Query["access_token"];
+                var path = context.HttpContext.Request.Path;
+                if (!string.IsNullOrEmpty(accessToken) && path.StartsWithSegments("/hubs"))
+                {
+                    context.Token = accessToken;
+                }
             }
             return Task.CompletedTask;
         }

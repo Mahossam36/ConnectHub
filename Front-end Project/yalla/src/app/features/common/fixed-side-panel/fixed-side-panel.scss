@@ -1,0 +1,471 @@
+:host {
+  display: block;
+}
+
+
+// =====================================================
+// FIXED SIDE PANEL
+// =====================================================
+
+.side-panel {
+  position: fixed;
+
+  top: 0;
+  left: 0;
+
+  z-index: 900;
+
+  width: 320px;
+  max-width: 86vw;
+  height: 100dvh;
+
+  display: flex;
+  flex-direction: column;
+
+  box-sizing: border-box;
+
+  background: #fdfbf7;
+
+  border-right: 1px solid rgba(128, 0, 32, 0.08);
+
+  box-shadow:
+    12px 0 35px rgba(40, 23, 23, 0.10);
+
+  font-family: "Be Vietnam Pro", sans-serif;
+}
+
+
+// =====================================================
+// HEADER
+// =====================================================
+
+.panel-header {
+  min-height: 72px;
+
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+
+  padding: 0 20px 0 28px;
+
+  box-sizing: border-box;
+
+  background: #ffffff;
+
+  border-bottom: 1px solid rgba(128, 0, 32, 0.08);
+
+  p {
+    margin: 8px 0 0;
+
+    color: #584141;
+
+    font-size: 12px;
+    font-weight: 500;
+  }
+}
+
+
+// =====================================================
+// LOGO
+// =====================================================
+
+.panel-logo {
+  display: flex;
+  align-items: center;
+
+  height: 42px;
+
+  text-decoration: none;
+}
+
+.panel-logo-image {
+  display: block;
+
+  width: auto;
+  height: 38px;
+
+  max-width: 145px;
+
+  object-fit: contain;
+}
+
+
+// =====================================================
+// CLOSE BUTTON
+// =====================================================
+
+.close-button {
+  width: 38px;
+  height: 38px;
+
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  flex-shrink: 0;
+
+  padding: 0;
+
+  border: 0;
+  border-radius: 50%;
+
+  background: transparent;
+
+  color: #570013;
+
+  cursor: pointer;
+
+  transition:
+    background-color 0.2s ease,
+    color 0.2s ease;
+
+  &:hover {
+    background: #fff0ef;
+    color: #800020;
+  }
+
+  &:focus-visible {
+    outline: 2px solid #d4af37;
+    outline-offset: 2px;
+  }
+
+  .material-symbols-outlined {
+    font-size: 21px;
+  }
+}
+
+
+// =====================================================
+// NAVIGATION
+// =====================================================
+
+.panel-navigation {
+  flex: 1;
+
+  overflow-y: auto;
+
+  padding: 20px 12px;
+
+  box-sizing: border-box;
+
+  display: flex;
+  flex-direction: column;
+
+  gap: 5px;
+
+  scrollbar-width: thin;
+  scrollbar-color: rgba(128, 0, 32, 0.15) transparent;
+}
+
+
+// =====================================================
+// MAIN NAVIGATION LINKS
+// =====================================================
+
+.panel-navigation > a,
+.panel-link {
+  width: 100%;
+  min-height: 44px;
+
+  display: flex;
+  align-items: center;
+
+  gap: 13px;
+
+  padding: 0 14px;
+
+  box-sizing: border-box;
+
+  border: 0;
+  border-radius: 9px;
+
+  background: transparent;
+
+  color: #493838;
+
+  text-decoration: none;
+
+  font-family: inherit;
+
+  font-size: 13px;
+  font-weight: 600;
+
+  text-align: left;
+
+  cursor: pointer;
+
+  transition:
+    background-color 0.18s ease,
+    color 0.18s ease,
+    transform 0.18s ease;
+
+  .material-symbols-outlined {
+    width: 20px;
+
+    flex-shrink: 0;
+
+    color: #800020;
+
+    font-size: 18px;
+
+    transition: color 0.18s ease;
+  }
+
+  &:hover {
+    background: #fff0ef;
+    color: #800020;
+  }
+
+  &:focus-visible {
+    outline: 2px solid #d4af37;
+    outline-offset: -2px;
+  }
+
+  &.active {
+    background: #fff7f6;
+
+    color: #800020;
+
+    box-shadow:
+      0 2px 8px rgba(128, 0, 32, 0.05);
+
+    .material-symbols-outlined {
+      color: #800020;
+    }
+  }
+}
+
+
+// =====================================================
+// COMMUNITIES
+// =====================================================
+
+.communities-button {
+  justify-content: space-between;
+}
+
+.link-content {
+  display: flex;
+  align-items: center;
+
+  gap: 13px;
+
+  min-width: 0;
+}
+
+
+// =====================================================
+// EXPAND ICON
+// =====================================================
+
+.expand-icon {
+  width: auto !important;
+
+  color: #8a7777 !important;
+
+  font-size: 19px !important;
+
+  transition:
+    transform 0.2s ease,
+    color 0.18s ease;
+
+  &.expanded {
+    transform: rotate(180deg);
+
+    color: #800020 !important;
+  }
+}
+
+
+// =====================================================
+// COMMUNITY LIST
+// =====================================================
+
+.communities-list {
+  display: grid;
+
+  grid-template-rows: 0fr;
+
+  padding-left: 20px;
+
+  overflow: hidden;
+
+  transition:
+    grid-template-rows 0.25s ease;
+
+  > .communities-list__content {
+    min-height: 0;
+    overflow: hidden;
+  }
+
+  &.expanded {
+    grid-template-rows: 1fr;
+  }
+}
+
+
+// =====================================================
+// VIEW ALL
+// =====================================================
+
+.community-view-all {
+  min-height: 40px;
+
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+
+  gap: 10px;
+
+  padding: 0 12px;
+
+  border-radius: 8px;
+
+  color: #800020;
+
+  text-decoration: none;
+
+  font-size: 12px;
+  font-weight: 700;
+
+  transition:
+    background-color 0.18s ease,
+    color 0.18s ease;
+
+  &:hover {
+    background: #fff0ef;
+  }
+
+  .material-symbols-outlined {
+    font-size: 17px;
+
+    transition:
+      transform 0.18s ease;
+  }
+
+  &:hover .material-symbols-outlined {
+    transform: translateX(3px);
+  }
+}
+
+
+// =====================================================
+// DIVIDER
+// =====================================================
+
+.divider {
+  height: 1px;
+
+  flex-shrink: 0;
+
+  margin: 10px 12px;
+
+  background: rgba(128, 0, 32, 0.1);
+}
+
+
+// =====================================================
+// FOOTER
+// =====================================================
+
+.panel-footer {
+  flex-shrink: 0;
+
+  padding: 12px 16px 18px;
+
+  background: #ffffff;
+
+  border-top: 1px solid rgba(128, 0, 32, 0.08);
+}
+
+
+// =====================================================
+// LOGOUT
+// =====================================================
+
+.logout-button {
+  width: 100%;
+  height: 42px;
+
+  display: flex;
+  align-items: center;
+  justify-content: flex-start;
+
+  gap: 12px;
+
+  padding: 0 14px;
+
+  border: 0;
+  border-radius: 8px;
+
+  background: transparent;
+
+  color: #ba1a1a;
+
+  font-family: inherit;
+
+  font-size: 13px;
+  font-weight: 600;
+
+  cursor: pointer;
+
+  transition:
+    background-color 0.18s ease,
+    color 0.18s ease;
+
+  &:hover {
+    background: #ffdad6;
+    color: #a32121;
+  }
+
+  &:focus-visible {
+    outline: 2px solid #d4af37;
+    outline-offset: -2px;
+  }
+
+  .material-symbols-outlined {
+    font-size: 19px;
+  }
+}
+
+
+// =====================================================
+// MOBILE
+// =====================================================
+
+@media (max-width: 480px) {
+
+  .side-panel {
+    width: 290px;
+  }
+
+  .panel-header {
+    padding-left: 20px;
+    padding-right: 14px;
+  }
+
+  .panel-navigation {
+    padding-left: 8px;
+    padding-right: 8px;
+  }
+
+  .panel-footer {
+    padding-left: 12px;
+    padding-right: 12px;
+  }
+}
+
+
+// =====================================================
+// REDUCED MOTION
+// =====================================================
+
+@media (prefers-reduced-motion: reduce) {
+
+  .communities-list,
+  .panel-link,
+  .close-button,
+  .logout-button {
+    transition: none;
+  }
+}

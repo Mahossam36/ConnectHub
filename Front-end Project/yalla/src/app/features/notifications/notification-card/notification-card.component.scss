@@ -1,0 +1,80 @@
+.notif-card {
+  position: relative;
+  display: block;
+  padding: 20px 22px;
+  border-radius: 14px;
+  background: #fff;
+  border: 1px solid rgba(224, 191, 191, 0.4);
+  box-shadow: 0 2px 12px rgba(128, 0, 32, 0.03);
+  cursor: pointer;
+  transition: box-shadow 0.25s, transform 0.25s;
+  overflow: hidden;
+
+  &:hover {
+    box-shadow: 0 8px 24px rgba(128, 0, 32, 0.07);
+    transform: translateY(-1px);
+  }
+
+  &--read {
+    opacity: 0.75;
+  }
+
+  &--unread {
+    padding-left: 26px;
+  }
+
+  &__accent {
+    position: absolute;
+    left: 0;
+    top: 0;
+    bottom: 0;
+    width: 4px;
+    background: #800020;
+  }
+
+  &__body {
+    display: flex;
+    align-items: flex-start;
+    gap: 16px;
+  }
+
+  &__icon {
+    display: grid;
+    place-items: center;
+    flex-shrink: 0;
+    width: 48px;
+    height: 48px;
+    border-radius: 999px;
+    background: #f9f6f1;
+    border: 1px solid #e0bfbf;
+
+    .material-symbols-outlined {
+      font-size: 22px;
+    }
+
+    // colorClass hooks set in notification-card.component.ts
+    .icon-like { color: #ba1a1a; }
+    .icon-comment { color: #800020; }
+    .icon-invite { color: #d4af37; }
+    .icon-mention { color: #5e1914; }
+    .icon-default { color: #765d5e; }
+  }
+
+  &__content {
+    flex: 1;
+    min-width: 0;
+  }
+
+  &__message {
+    margin: 0 0 6px;
+    color: #281717;
+    font-size: 0.95rem;
+    line-height: 1.5;
+  }
+
+  &__time {
+    margin: 0;
+    color: #765d5e;
+    font-size: 0.78rem;
+  }
+}

@@ -1,0 +1,14 @@
+<main class="notifications-page">
+  <!-- Top nav (mobile), side nav (desktop) and bottom nav (mobile) from the mockup are
+       your existing common/navbar + common/side-panel components, not duplicated here. -->
+
+  <app-notifications-header
+    title="Notifications"
+    subtitle="Stay updated with your communities and connections.">
+  </app-notifications-header>
+
+  <app-notification-list
+    [notifications]="notifications()"
+    (selectNotification)="onSelectNotification($event)">
+  </app-notification-list>
+</main>

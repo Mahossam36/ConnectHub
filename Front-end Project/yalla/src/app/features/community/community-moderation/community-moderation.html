@@ -1,0 +1,87 @@
+<div class="mod-panel">
+  <!-- Header -->
+  <div class="mod-panel__header">
+    <div>
+      <h2 class="mod-panel__title">Moderation</h2>
+      <p class="mod-panel__subtitle">Review reports and keep your community safe</p>
+    </div>
+    <span class="mod-panel__pending-badge">{{ pendingCount() }} pending reports</span>
+  </div>
+
+  <!-- Filter Pills -->
+  <div class="mod-filters">
+    @for (label of ['All', 'Pending', 'Resolved', 'Dismissed']; track label) {
+      <button
+        class="mod-filter-pill"
+        type="button"
+        [class.mod-filter-pill--active]="moderationFilter() === label"
+        (click)="moderationFilter.set($any(label))">
+        {{ label }}
+      </button>
+    }
+  </div>
+
+  <!-- Reports List -->
+  <div class="mod-reports">
+    @for (report of filteredReports(); track report.id) {
+      <div class="report-card">
+        <!-- Report Meta -->
+        <div class="report-card__top">
+          <div class="report-card__meta">
+            <span class="report-type-badge">
+              {{ targetNum(report.targetType) === ReportTargetType.Post ? 'POST' : 'COMMENT' }}
+            </span>
+            <span class="report-card__date">{{ report.createdAt | date:'short' }}</span>
+          </div>
+          <span class="report-status-badge"
+            [class.report-status-badge--pending]="statusNum(report.status) === ReportStatus.Pending"
+            [class.report-status-badge--resolved]="statusNum(report.status) === ReportStatus.ActionTaken"
+            [class.report-status-badge--dismissed]="statusNum(report.status) === ReportStatus.Dismissed">
+            {{ statusLabel(report.status) }}
+          </span>
+        </div>
+
+        <!-- Content -->
+        <div class="report-card__body">
+          <div class="report-card__detail">
+            <p class="report-card__reason">
+              <strong>Reason:</strong> {{ report.reason }}
+            </p>
+            <p class="report-card__reporter">
+              Reported by <strong>{{ report.reportedBy.displayName }}</strong>
+            </p>
+            <div class="report-card__snippet">
+              "{{ report.contentSnippet || 'Target content ID: ' + report.targetId }}"
+              <div class="report-card__snippet-badge">⚠ REPORTED</div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Actions -->
+        <div class="report-card__actions">
+          @if (statusNum(report.status) !== ReportStatus.ActionTaken) {
+            <button class="report-btn report-btn--ghost" type="button" (click)="viewReportedContent(report)">
+              View Content
+            </button>
+          }
+          @if (statusNum(report.status) === ReportStatus.Pending) {
+            <button class="report-btn report-btn--ghost" type="button" (click)="dismissReport(report)">
+              Dismiss
+            </button>
+            <button class="report-btn report-btn--primary" type="button" (click)="removeReportedContent(report)">
+              Remove Content
+            </button>
+            <button class="report-btn report-btn--danger" type="button" (click)="removeReportedUser(report)">
+              Remove User
+            </button>
+          }
+        </div>
+      </div>
+    } @empty {
+      <div class="mod-empty">
+        <span class="material-symbols-outlined mod-empty__icon">verified</span>
+        <p class="mod-empty__text">No reports in this category.</p>
+      </div>
+    }
+  </div>
+</div>

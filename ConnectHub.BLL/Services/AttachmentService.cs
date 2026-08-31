@@ -117,4 +117,26 @@ public class AttachmentService : IAttachmentService
 
         return Result.Success();
     }
+
+    public async Task<Result<(Stream Stream, string ContentType, string FileName)>> GetFileAsync(
+        Guid attachmentId,
+        CancellationToken cancellationToken = default)
+    {
+        var attachment = await _attachmentRepository.GetByIdAsync(attachmentId);
+        if (attachment is null)
+            return Result.NotFound($"Attachment with ID '{attachmentId}' was not found.");
+
+        if (string.IsNullOrWhiteSpace(attachment.FilePath))
+            return Result.NotFound("Attachment file path is missing.");
+
+        var stream = await _fileStorageService.GetFileStreamAsync(attachment.FilePath);
+        if (stream is null)
+            return Result.NotFound("Attachment file was not found on server.");
+
+        var contentType = !string.IsNullOrWhiteSpace(attachment.ContentType)
+            ? attachment.ContentType
+            : "application/octet-stream";
+
+        return Result.Success((stream, contentType, attachment.FileName));
+    }
 }

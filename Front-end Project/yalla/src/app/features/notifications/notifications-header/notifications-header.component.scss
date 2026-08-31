@@ -1,0 +1,16 @@
+.notif-header {
+  margin-bottom: 28px;
+
+  &__title {
+    margin: 0 0 8px;
+    font: 800 2rem 'Plus Jakarta Sans', sans-serif;
+    letter-spacing: -0.02em;
+    color: #800020;
+  }
+
+  &__subtitle {
+    margin: 0;
+    color: #765d5e;
+    font-size: 0.95rem;
+  }
+}

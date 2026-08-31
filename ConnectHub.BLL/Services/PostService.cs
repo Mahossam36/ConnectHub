@@ -158,6 +158,7 @@ public class PostService : IPostService
         if (request.AttachmentIds.Count > 0)
         {
             var attachments = await _attachmentRepository.Query()
+                .AsTracking()
                 .Where(a => request.AttachmentIds.Contains(a.Id) && a.UploadedById == currentUserId && a.PostId == null)
                 .ToListAsync(cancellationToken);
 

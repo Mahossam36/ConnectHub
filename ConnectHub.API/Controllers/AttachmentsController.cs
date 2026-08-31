@@ -56,4 +56,25 @@ public class AttachmentsController : BaseApiController
         var result = await _attachmentService.DeleteAsync(id, currentUserId, cancellationToken);
         return ToActionResult(result);
     }
+
+    /// <summary>
+    /// Stream/download an uploaded attachment file by ID.
+    /// </summary>
+    [HttpGet("{id:guid}")]
+    [AllowAnonymous]
+    [ProducesResponseType(StatusCodes.Status200OK)]
+    [ProducesResponseType(typeof(ProblemDetails), StatusCodes.Status404NotFound)]
+    public async Task<IActionResult> GetFile(Guid id, CancellationToken cancellationToken)
+    {
+        var result = await _attachmentService.GetFileAsync(id, cancellationToken);
+        if (!result.IsSuccess)
+        {
+            return result.Status == Ardalis.Result.ResultStatus.NotFound
+                ? NotFound(new ProblemDetails { Status = 404, Title = "Attachment not found." })
+                : BadRequest(new ProblemDetails { Status = 400, Title = string.Join("; ", result.Errors) });
+        }
+
+        var (stream, contentType, fileName) = result.Value;
+        return File(stream, contentType, fileName, enableRangeProcessing: true);
+    }
 }

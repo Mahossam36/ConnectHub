@@ -58,4 +58,20 @@ public class FileStorageService : IFileStorageService
 
         return Task.CompletedTask;
     }
+
+    public Task<Stream?> GetFileStreamAsync(string relativePath)
+    {
+        if (string.IsNullOrWhiteSpace(relativePath))
+            return Task.FromResult<Stream?>(null);
+
+        var fullPath = Path.Combine(_baseStoragePath, relativePath.Replace('/', Path.DirectorySeparatorChar));
+        if (!File.Exists(fullPath))
+        {
+            _logger.LogWarning("File not found at physical path: {FullPath}", fullPath);
+            return Task.FromResult<Stream?>(null);
+        }
+
+        Stream stream = new FileStream(fullPath, FileMode.Open, FileAccess.Read, FileShare.Read);
+        return Task.FromResult<Stream?>(stream);
+    }
 }

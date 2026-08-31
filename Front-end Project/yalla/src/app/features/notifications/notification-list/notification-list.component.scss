@@ -1,0 +1,12 @@
+.notif-list {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+
+  &__empty {
+    text-align: center;
+    padding: 48px 0;
+    color: #765d5e;
+    font-size: 0.95rem;
+  }
+}

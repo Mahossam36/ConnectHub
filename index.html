@@ -1,0 +1,956 @@
+<!DOCTYPE html>
+<html class="light" lang="en">
+<head>
+    <meta charset="utf-8">
+    <meta content="width=device-width, initial-scale=1.0" name="viewport">
+    <title>Yalla - Home</title>
+    <script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;600;700&family=Be+Vietnam+Pro:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <script id="tailwind-config">
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    colors: {
+                        tertiary: "#510f0b",
+                        "error-container": "#ffdad6",
+                        "on-surface-variant": "#584141",
+                        "surface-bright": "#fff8f7",
+                        "surface-dim": "#f3d3d2",
+                        "on-tertiary-fixed": "#3f0303",
+                        "surface-tint": "#af2b3e",
+                        "primary-container": "#800020",
+                        "on-tertiary-fixed-variant": "#7a2e27",
+                        "background-cream": "#FDFBF7",
+                        outline: "#8c7071",
+                        "inverse-on-surface": "#ffedec",
+                        "on-error": "#ffffff",
+                        background: "#fff8f7",
+                        primary: "#570013",
+                        "inverse-primary": "#ffb3b5",
+                        "surface-variant": "#fcdbda",
+                        surface: "#fff8f7",
+                        "on-secondary": "#ffffff",
+                        "inverse-surface": "#3f2b2b",
+                        error: "#ba1a1a",
+                        "gold-metallic": "#D4AF37",
+                        "on-primary-fixed": "#40000b",
+                        "tertiary-fixed-dim": "#ffb4aa",
+                        "on-primary-container": "#ff828a",
+                        "on-error-container": "#93000a",
+                        "secondary-fixed": "#ffe088",
+                        "on-surface": "#281717",
+                        "secondary-container": "#fed65b",
+                        "outline-variant": "#e0bfbf",
+                        "wine-dark": "#5E1914",
+                        "coral-soft": "#F08080",
+                        secondary: "#735c00",
+                        "secondary-fixed-dim": "#e9c349",
+                        "on-primary-fixed-variant": "#8e0f28",
+                        "primary-fixed-dim": "#ffb3b5",
+                        "on-primary": "#ffffff",
+                        "on-tertiary": "#ffffff",
+                        "tertiary-container": "#6e251f",
+                        "primary-fixed": "#ffdada",
+                        "surface-container": "#ffe9e8",
+                        "surface-container-highest": "#fcdbda",
+                        "on-secondary-fixed": "#241a00",
+                        burgundy: "#800020",
+                        "surface-container-low": "#fff0ef",
+                        "on-tertiary-container": "#f38c80",
+                        "on-secondary-container": "#745c00",
+                        "on-background": "#281717",
+                        "surface-container-lowest": "#ffffff",
+                        "on-secondary-fixed-variant": "#574500",
+                        "ivory-surface": "#F9F6F1",
+                        "surface-container-high": "#ffe1e0",
+                        "tertiary-fixed": "#ffdad5"
+                    },
+                    borderRadius: {
+                        DEFAULT: "0.5rem",
+                        lg: "0.75rem",
+                        xl: "1rem",
+                        "2xl": "1.25rem",
+                        full: "9999px"
+                    },
+                    spacing: {
+                        lg: "24px",
+                        unit: "4px",
+                        "2xl": "48px",
+                        md: "16px",
+                        "3xl": "64px",
+                        xl: "32px",
+                        xs: "4px",
+                        sm: "8px",
+                        "margin-mobile": "16px",
+                        gutter: "24px",
+                        "margin-desktop": "40px"
+                    },
+                    fontFamily: {
+                        "headline-md": ["Plus Jakarta Sans", "sans-serif"],
+                        "display-lg": ["Plus Jakarta Sans", "sans-serif"],
+                        "headline-lg": ["Plus Jakarta Sans", "sans-serif"],
+                        "label-md": ["Be Vietnam Pro", "sans-serif"],
+                        "label-sm": ["Be Vietnam Pro", "sans-serif"],
+                        "body-lg": ["Be Vietnam Pro", "sans-serif"],
+                        "headline-lg-mobile": ["Plus Jakarta Sans", "sans-serif"],
+                        "body-md": ["Be Vietnam Pro", "sans-serif"]
+                    },
+                    fontSize: {
+                        "headline-md": ["24px", { lineHeight: "32px", fontWeight: "600" }],
+                        "display-lg": ["48px", { lineHeight: "56px", letterSpacing: "-0.02em", fontWeight: "700" }],
+                        "headline-lg": ["32px", { lineHeight: "40px", letterSpacing: "-0.01em", fontWeight: "700" }],
+                        "label-md": ["14px", { lineHeight: "20px", letterSpacing: "0.01em", fontWeight: "600" }],
+                        "label-sm": ["12px", { lineHeight: "16px", letterSpacing: "0.02em", fontWeight: "500" }],
+                        "body-lg": ["18px", { lineHeight: "28px", fontWeight: "400" }],
+                        "headline-lg-mobile": ["28px", { lineHeight: "36px", fontWeight: "700" }],
+                        "body-md": ["16px", { lineHeight: "24px", fontWeight: "400" }]
+                    }
+                }
+            }
+        }
+    </script>
+    <style>
+        .glass-panel {
+            background-color: rgba(255, 255, 255, 0.8);
+            backdrop-filter: blur(16px);
+            -webkit-backdrop-filter: blur(16px);
+            border: 1px solid rgba(115, 92, 0, 0.15);
+        }
+        .card-shadow {
+            box-shadow: 0 4px 24px rgba(128, 0, 32, 0.06), 0 1px 4px rgba(128, 0, 32, 0.04);
+        }
+        .card-shadow-hover {
+            box-shadow: 0 8px 32px rgba(128, 0, 32, 0.1), 0 2px 8px rgba(128, 0, 32, 0.06);
+        }
+        .glass-nav {
+            background-color: rgba(255, 248, 247, 0.85);
+            backdrop-filter: blur(20px);
+            -webkit-backdrop-filter: blur(20px);
+            border-bottom: 1px solid rgba(115, 92, 0, 0.12);
+        }
+        body {
+            background-color: #FDFBF7;
+        }
+        .page-container {
+            max-width: 1280px;
+            margin: 0 auto;
+        }
+        .modal-active { display: flex; }
+        .modal-inactive { display: none; }
+        .nav-item-active {
+            background-color: #fff0ef;
+            color: #800020;
+            border: 1px solid rgba(128, 0, 32, 0.1);
+            transform: translateX(4px);
+        }
+        .nav-item-active .nav-icon {
+            color: #800020;
+        }
+        .stitch-card {
+            border-radius: 1rem;
+            background: white;
+            border: 1px solid rgba(128, 0, 32, 0.06);
+            transition: all 0.2s ease;
+        }
+        .stitch-card:hover {
+            box-shadow: 0 8px 32px rgba(128, 0, 32, 0.08);
+            transform: translateY(-1px);
+        }
+        .bento-grid {
+            display: grid;
+            gap: 0.75rem;
+        }
+        .scrollbar-hide::-webkit-scrollbar {
+            display: none;
+        }
+        .scrollbar-hide {
+            -ms-overflow-style: none;
+            scrollbar-width: none;
+        }
+        @keyframes pulse-soft {
+            0%, 100% { opacity: 1; }
+            50% { opacity: 0.6; }
+        }
+        .animate-pulse-soft {
+            animation: pulse-soft 2s ease-in-out infinite;
+        }
+        .notification-dot {
+            position: absolute;
+            top: 2px;
+            right: 2px;
+            width: 8px;
+            height: 8px;
+            background-color: #D4AF37;
+            border-radius: 50%;
+            border: 2px solid #fff8f7;
+        }
+    </style>
+</head>
+<body class="text-on-surface antialiased flex flex-col min-h-screen">
+
+<!-- ==================== COMMON: TOP NAVIGATION BAR ==================== -->
+<!-- This header is shared across all pages -->
+<header id="top-navbar" class="glass-nav fixed top-0 left-0 w-full z-50 flex justify-between items-center px-4 lg:px-10 h-16">
+    <div class="flex items-center gap-4">
+        <button class="lg:hidden text-primary hover:bg-surface-variant/50 p-2 rounded-full transition-colors focus:outline-none" onclick="toggleMobileNav()" aria-label="Open menu">
+            <span class="material-symbols-outlined">menu</span>
+        </button>
+        <a class="flex items-center gap-2" href="#">
+            <img alt="Yalla Logo" class="h-8 object-contain" src="https://lh3.googleusercontent.com/aida-public/AB6AXuCAlgSdDmjeTfMYbXLV06ys0s0XYpwm9CFT4pmgj7em9_mcW_29Ofcblxb5Lo2yRwADnY1a_1crrVAqcNKhGASHsAHfmchkGoqGJ7gqFRkT82Z5JZc8RIdeUjqoTAuDpZo1w4isuBA83yoyiE49oDhZutOchvjUbe7PuOsAR8BgVmEOAPlUfZokr2XcOmpmiYXdaFxbc4wiwJZnxp2Wrdc8O6P0nYnyZqNGto8GfqCTET4tOTZUK9ZHIWJYzjo2wmNzZA">
+        </a>
+    </div>
+    <!-- Desktop Center Nav -->
+    <nav class="hidden lg:flex items-center gap-8 mx-6 flex-1 justify-center">
+        <a class="text-label-md text-primary border-b-2 border-primary pb-1 font-semibold" href="#">Home</a>
+        <a class="text-label-md font-medium text-on-surface-variant hover:text-primary transition-colors" href="#">Discover</a>
+        <a class="text-label-md font-medium text-on-surface-variant hover:text-primary transition-colors" href="#">Communities</a>
+    </nav>
+    <!-- Right Actions -->
+    <div class="flex items-center gap-2 md:gap-4 relative">
+        <button class="text-primary hover:bg-surface-variant/50 p-2 rounded-full transition-colors focus:outline-none" aria-label="Search">
+            <span class="material-symbols-outlined">search</span>
+        </button>
+        <!-- Notifications -->
+        <div class="relative">
+            <button class="text-primary hover:bg-surface-variant/50 p-2 rounded-full transition-colors relative focus:outline-none" onclick="toggleDropdown('notifications-dropdown')" aria-label="Notifications">
+                <span class="material-symbols-outlined">notifications</span>
+                <span class="notification-dot"></span>
+            </button>
+            <!-- Notifications Dropdown -->
+            <div id="notifications-dropdown" class="hidden absolute right-0 mt-2 w-80 glass-panel rounded-xl shadow-lg border border-surface-variant/50 py-2 z-50 max-h-96 overflow-y-auto">
+                <div class="px-4 py-3 border-b border-surface-variant/30 flex justify-between items-center">
+                    <h3 class="text-label-md font-bold text-primary">Notifications</h3>
+                    <button class="text-label-sm text-primary hover:underline">Mark all read</button>
+                </div>
+                <div class="flex flex-col">
+                    <a href="#" class="flex gap-3 px-4 py-3 hover:bg-surface-container-low transition-colors border-l-2 border-gold-metallic">
+                        <img class="w-8 h-8 rounded-full object-cover" src="https://lh3.googleusercontent.com/aida-public/AB6AXuAfSXhha1SYTBWmKg9tfhiIWMkvfV9Dvrfett9nqbhtmr_1Kj7HL_jTUeeC3_2hBx65vUr9g1XKKQCaQLLrTYqQ8rMY6YSxg445gHM7YjnRZGDa0yIP3VXEZjSduDi8ItPZXdG-rF5EA-6Jad4WYm0qM7444F8jw76sxhxd3fbsahK1PgwdontSaJktUIIR3npKhbkxEXr18awWg7vrOVil6K3wuxqcw1Mbac4Qjoie62tfcTpEFzxJ">
+                        <div class="flex-1 min-w-0">
+                            <p class="text-label-md text-on-surface"><span class="font-bold">Fatima</span> liked your post</p>
+                            <p class="text-label-sm text-on-surface-variant mt-0.5">2 min ago</p>
+                        </div>
+                    </a>
+                    <a href="#" class="flex gap-3 px-4 py-3 hover:bg-surface-container-low transition-colors">
+                        <div class="w-8 h-8 rounded-full bg-primary-container flex items-center justify-center">
+                            <span class="material-symbols-outlined text-on-primary text-sm">groups</span>
+                        </div>
+                        <div class="flex-1 min-w-0">
+                            <p class="text-label-md text-on-surface">New member in <span class="font-bold">AI & ML</span></p>
+                            <p class="text-label-sm text-on-surface-variant mt-0.5">15 min ago</p>
+                        </div>
+                    </a>
+                    <a href="#" class="flex gap-3 px-4 py-3 hover:bg-surface-container-low transition-colors">
+                        <img class="w-8 h-8 rounded-full object-cover" src="https://lh3.googleusercontent.com/aida-public/AB6AXuBPCeUlmkVe4LqgPHZwDYBo2jJ1RBbzfXMVPO5njZb7t4qqSlXkXsGUSUyDYNRrYl8_Y7IK-kJYbBh4L3CA5nQ38btNc5nBf4gTRWmK2t-BroFNGB5dQH54u52daRQPXBEDYrn3OiWGC_7B0AoBSkFdUSBfo-SrdyNNtnzFAF_0uB3KkR6wfxERNnvd0upzp3FTRHpL-oQgzYLYh7R8APzw8JTqFpTehmsFMQ2aLVIx8xo9XNXez1IL">
+                        <div class="flex-1 min-w-0">
+                            <p class="text-label-md text-on-surface"><span class="font-bold">Dr. Tariq</span> commented on your post</p>
+                            <p class="text-label-sm text-on-surface-variant mt-0.5">1h ago</p>
+                        </div>
+                    </a>
+                </div>
+                <div class="px-4 py-2 border-t border-surface-variant/30">
+                    <a href="#" class="text-label-md text-primary font-semibold hover:underline block text-center">View all notifications</a>
+                </div>
+            </div>
+        </div>
+        <!-- Profile -->
+        <div class="relative">
+            <button class="rounded-full overflow-hidden border-2 border-transparent hover:border-gold-metallic transition-colors focus:outline-none" onclick="toggleDropdown('profile-dropdown')" aria-label="Profile menu">
+                <img alt="User profile" class="w-8 h-8 md:w-10 md:h-10 object-cover" src="https://lh3.googleusercontent.com/aida-public/AB6AXuD4tJiaH-2bMPuzStNKUl71VT-H9u-CTCY_EtW609n3H7H0vaZPoX0sYrex3bXgHB6NMfkDRIWwUMUo47zmzvsau-CpPN9yhmJXyW_mS24K0DVnKx5yW7Nxdgd0-i7AEwQaAIcgJBhJwQcY1bFvj3bAr-2J8KsrqGn3aohTN4_fUuT31sNrKxcIac467_CcNbt050YJ5q53ZOfkIp9HZO_0Dysxj_OMBjHWo-sQxP_CmGRNzuH5APSD">
+            </button>
+            <!-- Profile Dropdown -->
+            <div id="profile-dropdown" class="hidden absolute right-0 mt-2 w-64 glass-panel rounded-xl shadow-lg border border-surface-variant/50 py-2 z-50">
+                <div class="px-4 py-3 border-b border-surface-variant/30">
+                    <p class="text-label-md font-bold text-on-surface">Omar K.</p>
+                    <p class="text-label-sm text-on-surface-variant">omar@yalla.app</p>
+                </div>
+                <div class="flex flex-col py-1">
+                    <a href="#" class="flex items-center gap-3 px-4 py-2.5 text-label-md text-on-surface hover:bg-surface-container-low transition-colors">
+                        <span class="material-symbols-outlined text-lg">account_circle</span> Profile
+                    </a>
+                    <a href="#" class="flex items-center gap-3 px-4 py-2.5 text-label-md text-on-surface hover:bg-surface-container-low transition-colors">
+                        <span class="material-symbols-outlined text-lg">settings</span> Settings
+                    </a>
+                    <a href="#" class="flex items-center gap-3 px-4 py-2.5 text-label-md text-on-surface hover:bg-surface-container-low transition-colors">
+                        <span class="material-symbols-outlined text-lg">bookmark</span> Saved Posts
+                    </a>
+                </div>
+                <div class="border-t border-surface-variant/30 py-1">
+                    <button class="flex items-center gap-3 w-full px-4 py-2.5 text-label-md text-error hover:bg-error-container/30 transition-colors">
+                        <span class="material-symbols-outlined text-lg">logout</span> Logout
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+</header>
+
+<!-- ==================== COMMON: MOBILE NAVIGATION DRAWER ==================== -->
+<!-- This drawer is shared across all pages -->
+<div class="fixed inset-0 bg-on-surface/30 backdrop-blur-sm z-[100] hidden opacity-0 transition-opacity duration-300" id="mobile-nav" onclick="if(event.target === this) toggleMobileNav()">
+    <div class="fixed left-0 top-0 h-full w-[300px] max-w-[85vw] bg-background-cream shadow-2xl transform -translate-x-full transition-transform duration-300 flex flex-col" id="mobile-nav-panel">
+        <div class="p-4 border-b border-primary/10 flex flex-col gap-2 bg-surface-container-lowest">
+            <div class="flex justify-between items-center">
+                <img alt="Yalla Logo" class="h-8 object-contain" src="https://lh3.googleusercontent.com/aida-public/AB6AXuDXod-1Cj8CrHcWtP7zI3uLjeyz_itOwaE8akBVBEU6CvqlmHb8WR6CzWoWHcoFTWMqgo3i_J8z8v70ZAzINkcfOncsnro8QaN2J4mIb1Mt17CWsaCDwnHBkp4GtzOXYmiWi4UqP4h92-9p5jRcRu90AjvNLhnoXEN6oafE0fLUEVcZE4987vRM1bDPp7gPXQaR_R-WA7aC-_YbRZYBSnXCnHsuTWG37XPCXWBTfFIwGqJl0MSylpdziy2u7rgXS4u8Sw">
+                <button class="text-on-surface-variant hover:text-primary focus:outline-none p-1" onclick="toggleMobileNav()" aria-label="Close menu">
+                    <span class="material-symbols-outlined">close</span>
+                </button>
+            </div>
+            <p class="text-label-sm text-on-surface-variant font-medium">Connect. Talk. Belong.</p>
+        </div>
+        <nav class="flex-1 overflow-y-auto py-4 px-3 flex flex-col gap-1">
+            <a class="flex items-center gap-3 px-4 py-3 rounded-xl nav-item-active transition-all" href="#">
+                <span class="material-symbols-outlined nav-icon">home</span>
+                <span class="text-label-md font-semibold">Home</span>
+            </a>
+            <a class="flex items-center gap-3 px-4 py-3 text-on-surface-variant font-medium hover:bg-surface-container-low hover:text-primary rounded-xl transition-all" href="#">
+                <span class="material-symbols-outlined">explore</span>
+                <span class="text-label-md">Discover</span>
+            </a>
+            <div class="flex flex-col">
+                <button class="flex items-center justify-between w-full px-4 py-3 text-on-surface-variant font-medium hover:bg-surface-container-low hover:text-primary rounded-xl transition-all" onclick="document.getElementById('mobile-communities-list').classList.toggle('hidden'); this.querySelector('.expand-icon').classList.toggle('rotate-180')">
+                    <div class="flex items-center gap-3">
+                        <span class="material-symbols-outlined">groups</span>
+                        <span class="text-label-md">Communities</span>
+                    </div>
+                    <span class="material-symbols-outlined expand-icon transition-transform duration-200">expand_more</span>
+                </button>
+                <div class="hidden flex flex-col pl-11 gap-1 mt-1" id="mobile-communities-list">
+                    <a class="py-2 text-label-md text-on-surface-variant hover:text-primary" href="#">AI & Machine Learning</a>
+                    <a class="py-2 text-label-md text-on-surface-variant hover:text-primary" href="#">Computer Science</a>
+                    <a class="py-2 text-label-md text-on-surface-variant hover:text-primary" href="#">Robotics</a>
+                    <a class="py-2 text-label-md text-on-surface-variant hover:text-primary" href="#">Football</a>
+                    <a class="py-2 text-label-sm font-bold text-gold-metallic" href="#">View all communities &rarr;</a>
+                </div>
+            </div>
+            <a class="flex items-center gap-3 px-4 py-3 text-on-surface-variant font-medium hover:bg-surface-container-low hover:text-primary rounded-xl transition-all" href="#">
+                <span class="material-symbols-outlined">account_circle</span>
+                <span class="text-label-md">Profile</span>
+            </a>
+            <div class="h-px bg-primary/10 my-2 mx-4"></div>
+            <a class="flex items-center gap-3 px-4 py-3 text-on-surface-variant font-medium hover:bg-surface-container-low hover:text-primary rounded-xl transition-all" href="#">
+                <span class="material-symbols-outlined">settings</span>
+                <span class="text-label-md">Settings</span>
+            </a>
+        </nav>
+        <div class="p-4 border-t border-primary/10">
+            <button class="flex items-center gap-3 w-full px-4 py-3 text-error font-medium hover:bg-error-container/50 rounded-xl transition-all">
+                <span class="material-symbols-outlined">logout</span>
+                <span class="text-label-md">Logout</span>
+            </button>
+        </div>
+    </div>
+</div>
+
+<!-- ==================== MAIN LAYOUT ==================== -->
+<main class="flex-1 pt-16 lg:pt-20 page-container w-full px-4 lg:px-10 pb-12">
+    <div class="grid grid-cols-1 lg:grid-cols-12 gap-6 lg:gap-8">
+        
+        <!-- ==================== COMMON: LEFT SIDEBAR (Desktop) ==================== -->
+        <!-- This sidebar is shared across all pages -->
+        <aside class="hidden lg:flex flex-col gap-6 col-span-3 sticky top-24 h-[calc(100vh-7rem)]">
+            <!-- Brand Header -->
+            <div>
+                <img alt="Yalla Logo" class="h-10 mb-3 object-contain" src="https://lh3.googleusercontent.com/aida-public/AB6AXuAxA2RKNEAnaKPzpFTAyd3gVoABWz_nF03w2E-CpqJ04TqFc4n2LO46Hw1fbxDF3fmPSxaRefA4_j1_VfqirnBICyMyCWDa3_KQn2PyDAXTsUQT9lZaNy7gl1QgM8F1OB6C5OZB2VyAdYeXDtxYR36eg747aAtidklYw3GbaTKdLVQslKFb35NsuKVpPomsDG4wXXXbyry4tgg0MkThdEu_Qtkd1DZYA6yr0iQAsN4T6Keo9xnA3_2LSEBGfdiJnzetxQ">
+                <p class="text-body-md text-on-surface-variant font-medium">Connect. Talk. Belong.</p>
+            </div>
+            
+            <!-- Primary Navigation -->
+            <nav class="flex flex-col gap-1">
+                <a class="flex items-center gap-3 p-3 rounded-xl nav-item-active transition-all" href="#">
+                    <span class="material-symbols-outlined nav-icon">home</span>
+                    <span class="text-label-md font-semibold">Home</span>
+                </a>
+                <a class="flex items-center gap-3 p-3 text-on-surface-variant font-medium hover:bg-surface-container-low hover:text-primary rounded-xl transition-all" href="#">
+                    <span class="material-symbols-outlined">explore</span>
+                    <span class="text-label-md">Discover</span>
+                </a>
+                <a class="flex items-center gap-3 p-3 text-on-surface-variant font-medium hover:bg-surface-container-low hover:text-primary rounded-xl transition-all" href="#">
+                    <span class="material-symbols-outlined">groups</span>
+                    <span class="text-label-md">Communities</span>
+                </a>
+                <a class="flex items-center gap-3 p-3 text-on-surface-variant font-medium hover:bg-surface-container-low hover:text-primary rounded-xl transition-all" href="#">
+                    <span class="material-symbols-outlined">bookmark</span>
+                    <span class="text-label-md">Saved</span>
+                </a>
+            </nav>
+            
+            <!-- My Communities Bento -->
+            <div class="flex flex-col gap-3">
+                <h4 class="text-label-sm font-bold text-on-surface-variant uppercase tracking-wider px-1">My Communities</h4>
+                <div class="bento-grid">
+                    <a href="#" class="flex items-center gap-3 p-3 bg-surface rounded-xl border border-surface-variant/20 hover:border-primary/20 hover:shadow-md transition-all group">
+                        <div class="w-9 h-9 rounded-lg bg-primary-container flex items-center justify-center flex-shrink-0">
+                            <span class="material-symbols-outlined text-on-primary text-sm">psychology</span>
+                        </div>
+                        <div class="min-w-0">
+                            <p class="text-label-md font-semibold text-on-surface truncate">AI & Machine Learning</p>
+                            <p class="text-label-sm text-on-surface-variant">12.4k members</p>
+                        </div>
+                    </a>
+                    <a href="#" class="flex items-center gap-3 p-3 bg-surface rounded-xl border border-surface-variant/20 hover:border-primary/20 hover:shadow-md transition-all group">
+                        <div class="w-9 h-9 rounded-lg bg-secondary-container flex items-center justify-center flex-shrink-0">
+                            <span class="material-symbols-outlined text-on-secondary-container text-sm">computer</span>
+                        </div>
+                        <div class="min-w-0">
+                            <p class="text-label-md font-semibold text-on-surface truncate">Computer Science</p>
+                            <p class="text-label-sm text-on-surface-variant">8.2k members</p>
+                        </div>
+                    </a>
+                    <a href="#" class="flex items-center gap-3 p-3 bg-surface rounded-xl border border-surface-variant/20 hover:border-primary/20 hover:shadow-md transition-all group">
+                        <div class="w-9 h-9 rounded-lg bg-tertiary-container flex items-center justify-center flex-shrink-0">
+                            <span class="material-symbols-outlined text-on-tertiary text-sm">precision_manufacturing</span>
+                        </div>
+                        <div class="min-w-0">
+                            <p class="text-label-md font-semibold text-on-surface truncate">Robotics</p>
+                            <p class="text-label-sm text-on-surface-variant">3.1k members</p>
+                        </div>
+                    </a>
+                </div>
+            </div>
+            
+            <!-- Create Community CTA -->
+            <a href="#" class="flex items-center justify-center gap-2 p-4 bg-primary-container text-on-primary rounded-xl shadow-md hover:bg-primary-container/90 transition-all active:scale-95 mt-auto">
+                <span class="material-symbols-outlined">add</span>
+                <span class="text-label-md font-bold uppercase tracking-wider">Create Community</span>
+            </a>
+        </aside>
+        
+        <!-- ==================== PAGE: HOME FEED ==================== -->
+        <!-- This section is unique to the Home page -->
+        <section class="col-span-1 lg:col-span-6 flex flex-col gap-6">
+            
+            <!-- Composer Widget -->
+            <div class="stitch-card p-5">
+                <div class="flex gap-4 items-start">
+                    <img class="w-10 h-10 rounded-full object-cover shadow-sm hidden sm:block" alt="User avatar" src="https://lh3.googleusercontent.com/aida-public/AB6AXuCnacRywaK0-0ILiuS4lGF6HnByYw9_3nNi1EvOP0BOUVxpv6aGlCHts-7lNULUgOoiU0mFKvZLAxTMlYz83-IxExawtf_c5kb6FyvJp9cNdK8OTYtNi_8JrG960OwPBxN58SmxEpy-KPRlw4gqmg95bR7uB0C5JjQevD0A4SeZR5Qimixx0kebnhmT6Xv-8Bg5NIBVRiscn6BTkEUoDqxv5lfxDl8KW7YMv9EXPHv8C2ANlM8Xfge_">
+                    <div class="flex-1 flex flex-col gap-3">
+                        <button class="w-full text-left bg-surface-container-lowest border border-outline-variant hover:border-primary/50 text-on-surface-variant/70 text-body-md py-3 px-4 rounded-full transition-colors cursor-text focus:outline-none focus:ring-1 focus:ring-primary" onclick="openModal('create-post-modal')">
+                            What's on your mind?
+                        </button>
+                        <div class="flex justify-between items-center pt-2 border-t border-surface-variant/30">
+                            <button class="flex items-center gap-2 text-label-md text-on-surface-variant hover:text-primary transition-colors px-2 py-1 rounded-lg hover:bg-surface-container-low focus:outline-none" onclick="openModal('create-post-modal')">
+                                <span class="material-symbols-outlined text-primary">image</span>
+                                Add media
+                            </button>
+                            <button class="bg-primary-container text-on-primary hover:bg-primary-container/90 active:scale-95 transition-all text-label-md font-bold py-2 px-6 rounded-full shadow-sm" onclick="openModal('create-post-modal')">
+                                Post
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Feed Section -->
+            <div>
+                <h3 class="text-label-sm font-bold text-on-surface-variant uppercase tracking-widest mb-4 flex items-center gap-2">
+                    <span class="w-6 h-px bg-gold-metallic"></span>
+                    Latest Posts
+                </h3>
+                <div class="flex flex-col gap-6">
+                    
+                    <!-- Post Card 1 -->
+                    <article class="stitch-card overflow-hidden group">
+                        <!-- Post Header -->
+                        <div class="p-5 pb-3 flex justify-between items-start">
+                            <div class="flex gap-3">
+                                <img class="w-12 h-12 rounded-full object-cover border-2 border-surface-container-high" alt="Fatima Al-Sayed" src="https://lh3.googleusercontent.com/aida-public/AB6AXuAfSXhha1SYTBWmKg9tfhiIWMkvfV9Dvrfett9nqbhtmr_1Kj7HL_jTUeeC3_2hBx65vUr9g1XKKQCaQLLrTYqQ8rMY6YSxg445gHM7YjnRZGDa0yIP3VXEZjSduDi8ItPZXdG-rF5EA-6Jad4WYm0qM7444F8jw76sxhxd3fbsahK1PgwdontSaJktUIIR3npKhbkxEXr18awWg7vrOVil6K3wuxqcw1Mbac4Qjoie62tfcTpEFzxJ">
+                                <div>
+                                    <h4 class="text-label-md font-bold text-on-surface">Fatima Al-Sayed</h4>
+                                    <div class="flex items-center gap-2 text-label-sm text-on-surface-variant flex-wrap">
+                                        <a class="text-primary hover:underline font-medium" href="#">AI & Machine Learning</a>
+                                        <span>&bull;</span>
+                                        <span>2h ago</span>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="relative">
+                                <button class="text-on-surface-variant hover:text-primary hover:bg-surface-container-low p-1.5 rounded-full transition-colors focus:outline-none" onclick="toggleDropdown('post-menu-1')">
+                                    <span class="material-symbols-outlined">more_horiz</span>
+                                </button>
+                                <div class="hidden absolute right-0 mt-1 w-48 glass-panel rounded-xl shadow-md border border-surface-variant/50 py-1 z-10" id="post-menu-1">
+                                    <button class="w-full text-left px-4 py-2 text-label-md text-on-surface hover:bg-surface-container-low flex items-center gap-2 transition-colors">
+                                        <span class="material-symbols-outlined text-lg">bookmark</span> Save Post
+                                    </button>
+                                    <button class="w-full text-left px-4 py-2 text-label-md text-on-surface hover:bg-surface-container-low flex items-center gap-2 transition-colors">
+                                        <span class="material-symbols-outlined text-lg">share</span> Share
+                                    </button>
+                                    <button class="w-full text-left px-4 py-2 text-label-md text-error hover:bg-error-container/20 flex items-center gap-2 transition-colors">
+                                        <span class="material-symbols-outlined text-lg">flag</span> Report
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+                        <!-- Post Content -->
+                        <div class="px-5 py-2">
+                            <p class="text-body-md text-on-surface mb-3 leading-relaxed">
+                                Just finished reading the latest paper on transformer optimizations. The approach they take to sparse attention mechanisms could significantly reduce computational overhead for edge deployments. What are your thoughts on integrating this into our current pipelines?
+                            </p>
+                        </div>
+                        <!-- Rich Media -->
+                        <div class="px-5 pb-2">
+                            <div class="rounded-xl overflow-hidden border border-surface-variant/20 shadow-sm relative group cursor-pointer">
+                                <div class="bg-cover bg-center w-full h-56 sm:h-64 hover:scale-105 transition-transform duration-500" style="background-image: url('https://lh3.googleusercontent.com/aida-public/AB6AXuDlWWLJzx_8-PF3URitGxq8piLFrDixcUxD_I2UO3K9GIqE4jAy1Jl0kpafAGDdk355YFRXSs9jMV_gtpSdkpVDoU7HnxmriCXWfqwzihSvOADX-grgRUOLO727RwEWFrI6jv-PQKbfqUkgSbmKo4FJO2niTyuNw3KejnGuHspwADMDYncWYmEPRacy0NpK7odcQM65g_U0VPe47zKoZPXA2dF1egIW7grL6JQ-JCswKiIiMWoHfhZU');"></div>
+                                <div class="absolute bottom-3 left-3 bg-surface/90 backdrop-blur-sm px-3 py-1.5 rounded-lg text-label-sm font-bold text-primary flex items-center gap-1.5 border border-secondary/20">
+                                    <span class="material-symbols-outlined text-sm">link</span> Research_Paper.pdf
+                                </div>
+                            </div>
+                        </div>
+                        <!-- Interaction Bar -->
+                        <div class="px-5 py-3 border-t border-surface-variant/20 flex justify-between items-center bg-surface-container-lowest">
+                            <div class="flex gap-6">
+                                <button class="flex items-center gap-1.5 text-primary transition-colors group">
+                                    <span class="material-symbols-outlined group-hover:scale-110 transition-transform">favorite</span>
+                                    <span class="text-label-md font-medium">124</span>
+                                </button>
+                                <button class="flex items-center gap-1.5 text-primary transition-colors group" onclick="toggleComments('comments-drawer')">
+                                    <span class="material-symbols-outlined group-hover:scale-110 transition-transform">chat_bubble</span>
+                                    <span class="text-label-md font-medium">42</span>
+                                </button>
+                            </div>
+                            <button class="text-primary hover:scale-110 transition-transform">
+                                <span class="material-symbols-outlined">share</span>
+                            </button>
+                        </div>
+                    </article>
+                    
+                    <!-- Post Card 2 (Text Only) -->
+                    <article class="stitch-card overflow-hidden group">
+                        <div class="p-5 pb-3 flex justify-between items-start">
+                            <div class="flex gap-3">
+                                <img class="w-12 h-12 rounded-full object-cover border-2 border-surface-container-high" alt="Dr. Tariq M." src="https://lh3.googleusercontent.com/aida-public/AB6AXuBPCeUlmkVe4LqgPHZwDYBo2jJ1RBbzfXMVPO5njZb7t4qqSlXkXsGUSUyDYNRrYl8_Y7IK-kJYbBh4L3CA5nQ38btNc5nBf4gTRWmK2t-BroFNGB5dQH54u52daRQPXBEDYrn3OiWGC_7B0AoBSkFdUSBfo-SrdyNNtnzFAF_0uB3KkR6wfxERNnvd0upzp3FTRHpL-oQgzYLYh7R8APzw8JTqFpTehmsFMQ2aLVIx8xo9XNXez1IL">
+                                <div>
+                                    <h4 class="text-label-md font-bold text-on-surface">Dr. Tariq M.</h4>
+                                    <div class="flex items-center gap-2 text-label-sm text-on-surface-variant flex-wrap">
+                                        <a class="text-primary hover:underline font-medium" href="#">Computer Science</a>
+                                        <span>&bull;</span>
+                                        <span>5h ago</span>
+                                    </div>
+                                </div>
+                            </div>
+                            <button class="text-on-surface-variant hover:text-primary hover:bg-surface-container-low p-1.5 rounded-full transition-colors focus:outline-none">
+                                <span class="material-symbols-outlined">more_horiz</span>
+                            </button>
+                        </div>
+                        <div class="px-5 py-2">
+                            <p class="text-body-md text-on-surface mb-3 leading-relaxed">
+                                Reminder: The guest lecture on Quantum Computing implications for modern cryptography starts in 30 minutes in the main hall. Virtual link is pinned in the community resources.
+                            </p>
+                        </div>
+                        <div class="px-5 py-3 border-t border-surface-variant/20 flex justify-between items-center bg-surface-container-lowest">
+                            <div class="flex gap-6">
+                                <button class="flex items-center gap-1.5 text-primary transition-colors group">
+                                    <span class="material-symbols-outlined group-hover:scale-110 transition-transform" style="font-variation-settings: 'FILL' 1;">favorite</span>
+                                    <span class="text-label-md font-medium">89</span>
+                                </button>
+                                <button class="flex items-center gap-1.5 text-primary transition-colors group" onclick="toggleComments('comments-drawer')">
+                                    <span class="material-symbols-outlined group-hover:scale-110 transition-transform">chat_bubble</span>
+                                    <span class="text-label-md font-medium">12</span>
+                                </button>
+                            </div>
+                            <button class="text-gold-metallic hover:scale-110 transition-transform">
+                                <span class="material-symbols-outlined" style="font-variation-settings: 'FILL' 1;">share</span>
+                            </button>
+                        </div>
+                    </article>
+                </div>
+                
+                <div class="text-center mt-8 mb-4">
+                    <button class="text-label-md font-bold text-primary border border-primary/30 rounded-full px-8 py-2.5 hover:bg-primary/5 transition-colors">
+                        Load More
+                    </button>
+                </div>
+            </div>
+        </section>
+        
+        <!-- ==================== COMMON: RIGHT SIDEBAR ==================== -->
+        <!-- This sidebar is shared across all pages -->
+        <aside class="hidden lg:flex flex-col gap-6 col-span-3 sticky top-24 h-[calc(100vh-7rem)] overflow-y-auto scrollbar-hide">
+            
+            <!-- Trending Topics Widget -->
+            <div class="stitch-card p-5">
+                <div class="flex items-center gap-2 mb-4">
+                    <span class="material-symbols-outlined text-primary text-lg">trending_up</span>
+                    <h4 class="text-label-md font-bold text-on-surface">Trending Now</h4>
+                </div>
+                <div class="flex flex-col gap-3">
+                    <a href="#" class="group">
+                        <div class="flex items-start gap-3">
+                            <span class="text-label-sm font-bold text-gold-metallic mt-0.5">01</span>
+                            <div>
+                                <p class="text-label-md font-semibold text-on-surface group-hover:text-primary transition-colors">Transformer Optimizations</p>
+                                <p class="text-label-sm text-on-surface-variant">2.4k posts</p>
+                            </div>
+                        </div>
+                    </a>
+                    <div class="h-px bg-surface-variant/30"></div>
+                    <a href="#" class="group">
+                        <div class="flex items-start gap-3">
+                            <span class="text-label-sm font-bold text-gold-metallic mt-0.5">02</span>
+                            <div>
+                                <p class="text-label-md font-semibold text-on-surface group-hover:text-primary transition-colors">Quantum Cryptography</p>
+                                <p class="text-label-sm text-on-surface-variant">1.8k posts</p>
+                            </div>
+                        </div>
+                    </a>
+                    <div class="h-px bg-surface-variant/30"></div>
+                    <a href="#" class="group">
+                        <div class="flex items-start gap-3">
+                            <span class="text-label-sm font-bold text-gold-metallic mt-0.5">03</span>
+                            <div>
+                                <p class="text-label-md font-semibold text-on-surface group-hover:text-primary transition-colors">Edge AI Deployment</p>
+                                <p class="text-label-sm text-on-surface-variant">1.2k posts</p>
+                            </div>
+                        </div>
+                    </a>
+                </div>
+            </div>
+            
+            <!-- Suggested Users Widget -->
+            <div class="stitch-card p-5">
+                <div class="flex items-center justify-between mb-4">
+                    <div class="flex items-center gap-2">
+                        <span class="material-symbols-outlined text-primary text-lg">person_add</span>
+                        <h4 class="text-label-md font-bold text-on-surface">Suggested</h4>
+                    </div>
+                    <a href="#" class="text-label-sm text-primary hover:underline">See all</a>
+                </div>
+                <div class="flex flex-col gap-3">
+                    <div class="flex items-center gap-3">
+                        <img class="w-10 h-10 rounded-full object-cover" alt="Layla S." src="https://lh3.googleusercontent.com/aida-public/AB6AXuDYIJK6vWCPW67ByNmkXwtaS5mUf0qcXwh43HKPUNsoVuwZZicvm5ZEumUsme7GFWgWab3uydR6KrXc62gPiJ9ZA-r3IsprXeXaeQMijOFiK1c2DErEzfhofRTfRBE2NsrLm0fkKonl3kASbux-3piaDNfkUXDcTpyauy2KuHK6mmXkBtyndAK3OEqHrxKJ3f8Ud7OspG1pI1tnALKcJSAOpy1LHnmEh47itEpocuaDshJb8LdDtVVX">
+                        <div class="flex-1 min-w-0">
+                            <p class="text-label-md font-semibold text-on-surface truncate">Layla S.</p>
+                            <p class="text-label-sm text-on-surface-variant">AI Researcher</p>
+                        </div>
+                        <button class="text-primary hover:bg-surface-variant/50 p-1.5 rounded-full transition-colors">
+                            <span class="material-symbols-outlined text-lg">person_add</span>
+                        </button>
+                    </div>
+                    <div class="flex items-center gap-3">
+                        <div class="w-10 h-10 rounded-full bg-secondary-container flex items-center justify-center text-on-secondary-container font-bold text-label-md">
+                            Z
+                        </div>
+                        <div class="flex-1 min-w-0">
+                            <p class="text-label-md font-semibold text-on-surface truncate">Zain B.</p>
+                            <p class="text-label-sm text-on-surface-variant">Data Scientist</p>
+                        </div>
+                        <button class="text-primary hover:bg-surface-variant/50 p-1.5 rounded-full transition-colors">
+                            <span class="material-symbols-outlined text-lg">person_add</span>
+                        </button>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Active Now Widget -->
+            <div class="stitch-card p-5">
+                <div class="flex items-center gap-2 mb-4">
+                    <span class="material-symbols-outlined text-primary text-lg">groups</span>
+                    <h4 class="text-label-md font-bold text-on-surface">Active Now</h4>
+                    <span class="w-2 h-2 bg-green-500 rounded-full animate-pulse-soft ml-auto"></span>
+                </div>
+                <div class="flex flex-col gap-3">
+                    <div class="flex items-center gap-3">
+                        <div class="relative">
+                            <img class="w-9 h-9 rounded-full object-cover" alt="Fatima" src="https://lh3.googleusercontent.com/aida-public/AB6AXuAfSXhha1SYTBWmKg9tfhiIWMkvfV9Dvrfett9nqbhtmr_1Kj7HL_jTUeeC3_2hBx65vUr9g1XKKQCaQLLrTYqQ8rMY6YSxg445gHM7YjnRZGDa0yIP3VXEZjSduDi8ItPZXdG-rF5EA-6Jad4WYm0qM7444F8jw76sxhxd3fbsahK1PgwdontSaJktUIIR3npKhbkxEXr18awWg7vrOVil6K3wuxqcw1Mbac4Qjoie62tfcTpEFzxJ">
+                            <span class="absolute -bottom-0.5 -right-0.5 w-3 h-3 bg-green-500 rounded-full border-2 border-white"></span>
+                        </div>
+                        <div class="flex-1 min-w-0">
+                            <p class="text-label-md font-semibold text-on-surface">Fatima Al-Sayed</p>
+                            <p class="text-label-sm text-on-surface-variant">Online</p>
+                        </div>
+                    </div>
+                    <div class="flex items-center gap-3">
+                        <div class="relative">
+                            <img class="w-9 h-9 rounded-full object-cover" alt="Layla" src="https://lh3.googleusercontent.com/aida-public/AB6AXuDYIJK6vWCPW67ByNmkXwtaS5mUf0qcXwh43HKPUNsoVuwZZicvm5ZEumUsme7GFWgWab3uydR6KrXc62gPiJ9ZA-r3IsprXeXaeQMijOFiK1c2DErEzfhofRTfRBE2NsrLm0fkKonl3kASbux-3piaDNfkUXDcTpyauy2KuHK6mmXkBtyndAK3OEqHrxKJ3f8Ud7OspG1pI1tnALKcJSAOpy1LHnmEh47itEpocuaDshJb8LdDtVVX">
+                            <span class="absolute -bottom-0.5 -right-0.5 w-3 h-3 bg-green-500 rounded-full border-2 border-white"></span>
+                        </div>
+                        <div class="flex-1 min-w-0">
+                            <p class="text-label-md font-semibold text-on-surface">Layla S.</p>
+                            <p class="text-label-sm text-on-surface-variant">In a meeting</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Footer Links -->
+            <div class="px-2">
+                <div class="flex flex-wrap gap-x-3 gap-y-1 text-label-sm text-on-surface-variant/70">
+                    <a href="#" class="hover:text-primary transition-colors">About</a>
+                    <a href="#" class="hover:text-primary transition-colors">Privacy</a>
+                    <a href="#" class="hover:text-primary transition-colors">Terms</a>
+                    <a href="#" class="hover:text-primary transition-colors">Help</a>
+                </div>
+                <p class="text-label-sm text-on-surface-variant/50 mt-2">&copy; 2026 Yalla. All rights reserved.</p>
+            </div>
+        </aside>
+    </div>
+</main>
+
+<!-- ==================== MODALS & DRAWERS ==================== -->
+
+<!-- Create Post Modal -->
+<div class="fixed inset-0 bg-on-surface/40 backdrop-blur-sm z-[110] hidden items-center justify-center p-4" id="create-post-modal">
+    <div class="bg-surface rounded-2xl shadow-2xl border border-surface-variant/30 w-full max-w-2xl overflow-hidden transform scale-95 opacity-0 transition-all duration-200" id="create-post-content">
+        <!-- Modal Header -->
+        <div class="px-6 py-4 border-b border-surface-variant/30 flex justify-between items-center glass-panel">
+            <h2 class="text-headline-md font-headline-md text-primary">Create Post</h2>
+            <button class="text-on-surface-variant hover:text-error bg-surface-container-low hover:bg-error-container/20 p-2 rounded-full transition-colors" onclick="closeModal('create-post-modal')">
+                <span class="material-symbols-outlined">close</span>
+            </button>
+        </div>
+        <!-- Modal Body -->
+        <div class="p-6 flex flex-col gap-4">
+            <!-- User Info & Community Selector -->
+            <div class="flex items-center gap-3">
+                <img class="w-12 h-12 rounded-full object-cover border border-surface-variant" alt="Omar K." src="https://lh3.googleusercontent.com/aida-public/AB6AXuAz_oUAR7A1tBendCYXbFmw80BpbBp-KRjy_k6khe0Cw--ngRDZacAk9GOMc4OyCqO6IVhWqn8ete7lLzA4ELUWaFvX51crT_gThB8sz9IG896Jo_TdITbsRonmDDsGOtaAQ622st_oXAsiXTJUM1io20ykEMjottd_BMzwY-44FWkr-lHYwsU5O_HxCy16RuUyBqzSsOhEVFAjl9IJzVpDz3mDhr58UW2TEWLSXaZDCQ-AzZhNJ9YH">
+                <div>
+                    <p class="text-label-md font-bold text-on-surface">Omar K.</p>
+                    <select class="mt-1 block w-full pl-3 pr-10 py-1 text-label-sm border-surface-variant focus:outline-none focus:ring-primary focus:border-primary sm:text-sm rounded-lg bg-surface-container-low text-primary font-medium cursor-pointer">
+                        <option>Select Community...</option>
+                        <option>AI & Machine Learning</option>
+                        <option>Computer Science</option>
+                        <option>Robotics</option>
+                    </select>
+                </div>
+            </div>
+            <!-- Text Area -->
+            <textarea class="w-full border-0 focus:ring-0 p-0 text-body-lg text-on-surface placeholder:text-on-surface-variant/50 resize-none bg-transparent" placeholder="Share your thoughts, discoveries, or questions..." rows="4"></textarea>
+            <!-- Media Preview Area -->
+            <div class="border-2 border-dashed border-outline-variant/50 rounded-xl p-8 flex flex-col items-center justify-center text-on-surface-variant hover:bg-surface-container-low hover:border-primary/50 transition-colors cursor-pointer group">
+                <div class="w-12 h-12 bg-surface-container-high rounded-full flex items-center justify-center group-hover:bg-primary-container group-hover:text-on-primary transition-colors mb-3">
+                    <span class="material-symbols-outlined">add_photo_alternate</span>
+                </div>
+                <p class="text-label-md font-medium">Add photos, videos, or documents</p>
+                <p class="text-label-sm mt-1 opacity-70">Drag and drop or click to upload</p>
+            </div>
+        </div>
+        <!-- Modal Footer -->
+        <div class="px-6 py-4 bg-surface-container-lowest border-t border-surface-variant/30 flex justify-between items-center">
+            <div class="flex gap-2">
+                <button class="text-primary hover:bg-surface-variant/50 p-2 rounded-full transition-colors" title="Format Text">
+                    <span class="material-symbols-outlined">format_bold</span>
+                </button>
+                <button class="text-primary hover:bg-surface-variant/50 p-2 rounded-full transition-colors" title="Add Poll">
+                    <span class="material-symbols-outlined">poll</span>
+                </button>
+                <button class="text-primary hover:bg-surface-variant/50 p-2 rounded-full transition-colors" title="Add Code">
+                    <span class="material-symbols-outlined">code</span>
+                </button>
+            </div>
+            <button class="bg-primary-container text-on-primary hover:bg-primary-container/90 active:scale-95 transition-all text-label-md font-bold py-2.5 px-8 rounded-full shadow-md" onclick="closeModal('create-post-modal')">
+                Post to Community
+            </button>
+        </div>
+    </div>
+</div>
+
+<!-- Comments Drawer -->
+<div class="fixed inset-0 bg-on-surface/20 backdrop-blur-sm z-[105] hidden opacity-0 transition-opacity duration-300" id="comments-drawer-overlay" onclick="toggleComments('comments-drawer')"></div>
+<div class="fixed right-0 top-0 h-full w-full sm:w-[420px] bg-background-cream shadow-2xl transform translate-x-full transition-transform duration-300 z-[110] flex flex-col border-l border-surface-variant/50" id="comments-drawer">
+    <div class="p-4 border-b border-surface-variant/30 flex justify-between items-center glass-panel">
+        <h2 class="text-headline-md font-headline-md text-primary flex items-center gap-2">
+            <span class="material-symbols-outlined">forum</span> Comments
+        </h2>
+        <button class="text-on-surface-variant hover:text-primary bg-surface-container-low p-2 rounded-full transition-colors focus:outline-none" onclick="toggleComments('comments-drawer')">
+            <span class="material-symbols-outlined">close</span>
+        </button>
+    </div>
+    <div class="flex-1 overflow-y-auto p-4 flex flex-col gap-6">
+        <!-- Comment 1 -->
+        <div class="flex gap-3">
+            <img class="w-8 h-8 rounded-full object-cover" alt="Layla S." src="https://lh3.googleusercontent.com/aida-public/AB6AXuDYIJK6vWCPW67ByNmkXwtaS5mUf0qcXwh43HKPUNsoVuwZZicvm5ZEumUsme7GFWgWab3uydR6KrXc62gPiJ9ZA-r3IsprXeXaeQMijOFiK1c2DErEzfhofRTfRBE2NsrLm0fkKonl3kASbux-3piaDNfkUXDcTpyauy2KuHK6mmXkBtyndAK3OEqHrxKJ3f8Ud7OspG1pI1tnALKcJSAOpy1LHnmEh47itEpocuaDshJb8LdDtVVX">
+            <div class="flex-1">
+                <div class="bg-surface rounded-xl rounded-tl-none p-3 border border-surface-variant/20 shadow-sm">
+                    <div class="flex justify-between items-start mb-1">
+                        <span class="text-label-md font-bold text-on-surface">Layla S.</span>
+                        <span class="text-label-sm text-on-surface-variant">1h ago</span>
+                    </div>
+                    <p class="text-body-md text-on-surface">This is exactly what we needed for the upcoming sprint. I think sparse attention is the way to go.</p>
+                </div>
+                <div class="flex gap-4 mt-2 px-2">
+                    <button class="text-label-sm font-bold text-on-surface-variant hover:text-primary transition-colors">Reply</button>
+                    <button class="text-label-sm font-bold text-on-surface-variant hover:text-primary transition-colors flex items-center gap-1">
+                        <span class="material-symbols-outlined text-sm">favorite</span> 5
+                    </button>
+                </div>
+                <!-- Nested Reply -->
+                <div class="flex gap-3 mt-4">
+                    <img class="w-8 h-8 rounded-full object-cover" alt="Omar K." src="https://lh3.googleusercontent.com/aida-public/AB6AXuB4QgOT9Z7u2Tx-yb_U0cpdH_7W5cR0r8qIDuM12GZfX3__gmVw3WJe9KoCREMa_SVROD9ebbWDfzTtI_USyAy4JqRr7jNlknzIwYI4v5UEXOGfCSz7ZFXoglI4IYN9uaSUH5ceP8mrKYXlBKGXeAS2xWCaKs64kF-r6C8VcePBCi5aRdVSVRcpd4otYBDV0hOCsWvRJxCgw0DDXg8-0IQuQo4PST8x0YG2jKu_M4fXrSH3VOiEIuh1">
+                    <div class="flex-1">
+                        <div class="bg-surface-container-lowest rounded-xl rounded-tl-none p-3 border border-surface-variant/10 shadow-sm">
+                            <div class="flex justify-between items-start mb-1">
+                                <span class="text-label-md font-bold text-primary">Omar K. <span class="font-normal text-on-surface-variant text-label-sm">(Author)</span></span>
+                                <span class="text-label-sm text-on-surface-variant">45m ago</span>
+                            </div>
+                            <p class="text-body-md text-on-surface">Agreed! Let's discuss integration at tomorrow's standup.</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <!-- Comment 2 -->
+        <div class="flex gap-3">
+            <div class="w-8 h-8 rounded-full bg-secondary-container text-on-secondary-container flex items-center justify-center font-bold text-label-md">
+                Z
+            </div>
+            <div class="flex-1">
+                <div class="bg-surface rounded-xl rounded-tl-none p-3 border border-surface-variant/20 shadow-sm">
+                    <div class="flex justify-between items-start mb-1">
+                        <span class="text-label-md font-bold text-on-surface">Zain B.</span>
+                        <span class="text-label-sm text-on-surface-variant">30m ago</span>
+                    </div>
+                    <p class="text-body-md text-on-surface">Did they release the codebase for this paper yet?</p>
+                </div>
+                <div class="flex gap-4 mt-2 px-2">
+                    <button class="text-label-sm font-bold text-on-surface-variant hover:text-primary transition-colors">Reply</button>
+                    <button class="text-label-sm font-bold text-on-surface-variant hover:text-primary transition-colors flex items-center gap-1">
+                        <span class="material-symbols-outlined text-sm">favorite</span> 1
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="p-4 border-t border-surface-variant/30 bg-surface">
+        <div class="relative">
+            <input class="w-full pl-4 pr-12 py-3 bg-surface-container-low border border-outline-variant rounded-full text-body-md focus:outline-none focus:border-primary focus:ring-1 focus:ring-primary transition-colors" placeholder="Write a comment..." type="text">
+            <button class="absolute right-2 top-1/2 transform -translate-y-1/2 text-primary hover:bg-surface-variant p-1.5 rounded-full transition-colors focus:outline-none">
+                <span class="material-symbols-outlined">send</span>
+            </button>
+        </div>
+    </div>
+</div>
+
+<!-- ==================== SCRIPTS ==================== -->
+<script>
+    // Dropdown toggles
+    function toggleDropdown(id) {
+        const el = document.getElementById(id);
+        if (!el) return;
+        const isHidden = el.classList.contains('hidden');
+        
+        // Close all dropdowns first
+        document.querySelectorAll('[id$="-dropdown"]').forEach(drop => {
+            if (drop.id !== id) drop.classList.add('hidden');
+        });
+        document.querySelectorAll('[id^="post-menu-"]').forEach(drop => {
+            if (drop.id !== id) drop.classList.add('hidden');
+        });
+
+        if (isHidden) {
+            el.classList.remove('hidden');
+        } else {
+            el.classList.add('hidden');
+        }
+    }
+
+    // Close dropdowns when clicking outside
+    window.addEventListener('click', function(event) {
+        if (!event.target.closest('.relative')) {
+            document.querySelectorAll('[id$="-dropdown"], [id^="post-menu-"]').forEach(drop => {
+                drop.classList.add('hidden');
+            });
+        }
+    });
+
+    // Mobile Nav Drawer
+    function toggleMobileNav() {
+        const nav = document.getElementById('mobile-nav');
+        const panel = document.getElementById('mobile-nav-panel');
+        
+        if (nav.classList.contains('hidden')) {
+            nav.classList.remove('hidden');
+            // Trigger reflow for transition
+            void nav.offsetWidth;
+            nav.classList.remove('opacity-0');
+            panel.classList.remove('-translate-x-full');
+            document.body.style.overflow = 'hidden';
+        } else {
+            nav.classList.add('opacity-0');
+            panel.classList.add('-translate-x-full');
+            setTimeout(() => {
+                nav.classList.add('hidden');
+                document.body.style.overflow = '';
+            }, 300);
+        }
+    }
+
+    // Modal Logic
+    function openModal(id) {
+        const modal = document.getElementById(id);
+        const contentId = id.replace('modal', 'content');
+        const content = document.getElementById(contentId);
+        
+        if (!modal || !content) return;
+        
+        modal.classList.remove('hidden');
+        modal.classList.add('flex');
+        document.body.style.overflow = 'hidden';
+        
+        // Trigger reflow
+        void modal.offsetWidth;
+        
+        setTimeout(() => {
+            content.classList.remove('scale-95', 'opacity-0');
+            content.classList.add('scale-100', 'opacity-100');
+        }, 10);
+    }
+
+    function closeModal(id) {
+        const modal = document.getElementById(id);
+        const contentId = id.replace('modal', 'content');
+        const content = document.getElementById(contentId);
+        
+        if (!modal || !content) return;
+        
+        content.classList.remove('scale-100', 'opacity-100');
+        content.classList.add('scale-95', 'opacity-0');
+        
+        setTimeout(() => {
+            modal.classList.add('hidden');
+            modal.classList.remove('flex');
+            document.body.style.overflow = '';
+        }, 200);
+    }
+
+    // Comments Drawer Logic
+    function toggleComments(id) {
+        const drawer = document.getElementById(id);
+        const overlay = document.getElementById('comments-drawer-overlay');
+        
+        if (!drawer || !overlay) return;
+        
+        if (drawer.classList.contains('translate-x-full')) {
+            overlay.classList.remove('hidden');
+            // Trigger reflow
+            void overlay.offsetWidth;
+            overlay.classList.remove('opacity-0');
+            drawer.classList.remove('translate-x-full');
+            document.body.style.overflow = 'hidden';
+        } else {
+            overlay.classList.add('opacity-0');
+            drawer.classList.add('translate-x-full');
+            setTimeout(() => {
+                overlay.classList.add('hidden');
+                document.body.style.overflow = '';
+            }, 300);
+        }
+    }
+
+    // Escape key to close modals and drawers
+    document.addEventListener('keydown', function(e) {
+        if (e.key === 'Escape') {
+            const openModal = document.querySelector('[id$="-modal"]:not(.hidden)');
+            const openDrawer = document.getElementById('comments-drawer');
+            
+            if (openModal) {
+                closeModal(openModal.id);
+            } else if (openDrawer && !openDrawer.classList.contains('translate-x-full')) {
+                toggleComments('comments-drawer');
+            }
+        }
+    });
+</script>
+
+</body>
+</html>

@@ -1,0 +1,37 @@
+<section class="mb-3xl">
+  <div class="bg-surface-container-lowest rounded-[24px] border border-surface-variant/20 overflow-hidden shadow-[0_4px_24px_rgba(128,0,32,0.04)] flex flex-col md:flex-row">
+    <div class="md:w-1/2 h-64 md:h-auto relative">
+      @if (community.coverImageUrl) {
+        <img class="absolute inset-0 w-full h-full object-cover" [src]="community.coverImageUrl" [alt]="community.name" />
+      }
+      <div class="absolute inset-0 bg-gradient-to-r from-transparent to-surface-container-lowest md:hidden"></div>
+    </div>
+
+    <div class="md:w-1/2 p-xl flex flex-col justify-center bg-surface-container-lowest relative z-10">
+      <div class="flex items-center gap-xs mb-md flex-wrap">
+        @for (tag of community.tags; track tag) {
+          <span class="bg-surface-container px-3 py-1 rounded-full font-label-sm text-label-sm text-on-surface-variant">
+            {{ tag }}
+          </span>
+        }
+      </div>
+
+      <h3 class="font-headline-lg text-headline-lg text-on-background mb-sm">{{ community.name }}</h3>
+      <p class="font-body-md text-body-md text-on-surface-variant mb-lg">{{ community.description }}</p>
+
+      <div class="flex items-center justify-between mt-auto">
+        <span class="font-label-md text-label-md text-on-surface-variant flex items-center gap-xs">
+          <span class="material-symbols-outlined text-[20px]">group</span>
+          {{ community.memberCount }} members
+        </span>
+
+        <button
+          type="button"
+          class="bg-burgundy-deep text-white px-8 py-3 rounded-full font-label-md text-label-md hover:bg-wine-dark transition-colors shadow-sm border border-burgundy-deep/20 hover:-translate-y-px"
+          (click)="onJoin()">
+          + Join
+        </button>
+      </div>
+    </div>
+  </div>
+</section>

@@ -1,0 +1,33 @@
+<div class="main-layout">
+
+  <!-- NAVBAR -->
+  <app-navbar
+    (menuClicked)="sidePanelOpen = true">
+  </app-navbar>
+
+
+  <!-- PAGE AREA -->
+  <div class="page-area">
+
+    <!-- ALWAYS VISIBLE SIDE PANEL -->
+    <!-- This was commented out, so the "Yalla" left nav (Home/Discover/Communities/
+         Notifications/Settings/Help + Create Post button) from every mockup screen
+         was never actually rendered. Re-enabled. -->
+    <app-fixed-side-panel></app-fixed-side-panel>
+
+
+    <!-- MAIN CONTENT -->
+    <main class="main-content">
+      <router-outlet></router-outlet>
+    </main>
+
+  </div>
+
+
+  <!-- OVERLAY SIDE PANEL (mobile) -->
+  <app-side-panel
+    [isOpen]="sidePanelOpen"
+    (closed)="sidePanelOpen = false">
+  </app-side-panel>
+
+</div>

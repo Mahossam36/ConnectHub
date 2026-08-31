@@ -1,0 +1,215 @@
+<!-- Toast -->
+<app-toast
+  [visible]="!!feedbackMessage()"
+  [type]="feedbackMessage()?.type ?? 'info'"
+  [message]="feedbackMessage()?.text ?? ''">
+</app-toast>
+
+<!-- Top Nav Bar -->
+<app-navbar
+  (menuClicked)="navDrawerOpen.set(true)"
+  (logoutClicked)="logout()"
+  (notificationClicked)="null">
+</app-navbar>
+
+<!-- Mobile Side Panel / Drawer -->
+<app-side-panel
+  [isOpen]="navDrawerOpen()"
+  (closed)="navDrawerOpen.set(false)"
+  (logoutClicked)="logout()">
+</app-side-panel>
+
+<!-- Main Canvas -->
+<main class="main-canvas">
+  <!-- Left Sidebar -->
+  <aside class="community-sidebar">
+    <div class="sidebar-card">
+      <div class="sidebar-card__header">
+        <div class="sidebar-card__meta">
+          <h2 class="sidebar-card__name">{{ community()?.name || 'Community' }}</h2>
+          <p class="sidebar-card__role">{{ canModerate() ? 'Admin Dashboard' : 'Member Hub' }}</p>
+        </div>
+      </div>
+
+      <nav class="sidebar-nav">
+        <button
+          class="sidebar-nav__item"
+          type="button"
+          [class.sidebar-nav__item--active]="activeTab() === 'tab-posts'"
+          (click)="switchTab('tab-posts')">
+          <span class="material-symbols-outlined"
+            [style.font-variation-settings]="activeTab() === 'tab-posts' ? '\'FILL\' 1' : '\'FILL\' 0'">forum</span>
+          <span>Feed</span>
+        </button>
+
+        @if (canModerate()) {
+          <button
+            class="sidebar-nav__item"
+            type="button"
+            [class.sidebar-nav__item--active]="activeTab() === 'tab-moderation'"
+            (click)="switchTab('tab-moderation')">
+            <span class="material-symbols-outlined"
+              [style.font-variation-settings]="activeTab() === 'tab-moderation' ? '\'FILL\' 1' : '\'FILL\' 0'">gavel</span>
+            <span>Moderation</span>
+            @if (pendingReportsCount() > 0) {
+              <span class="sidebar-nav__badge">{{ pendingReportsCount() }}</span>
+            }
+          </button>
+        }
+
+        <button
+          class="sidebar-nav__item"
+          type="button"
+          [class.sidebar-nav__item--active]="activeTab() === 'tab-members'"
+          (click)="switchTab('tab-members')">
+          <span class="material-symbols-outlined"
+            [style.font-variation-settings]="activeTab() === 'tab-members' ? '\'FILL\' 1' : '\'FILL\' 0'">groups</span>
+          <span>Members</span>
+        </button>
+
+        <button
+          class="sidebar-nav__item"
+          type="button"
+          [class.sidebar-nav__item--active]="activeTab() === 'tab-analytics'"
+          (click)="switchTab('tab-analytics')">
+          <span class="material-symbols-outlined"
+            [style.font-variation-settings]="activeTab() === 'tab-analytics' ? '\'FILL\' 1' : '\'FILL\' 0'">monitoring</span>
+          <span>Analytics</span>
+        </button>
+      </nav>
+    </div>
+
+    @if (canAnnounce()) {
+      <button
+        class="announce-btn"
+        type="button"
+        (click)="switchTab('tab-posts')">
+        <span class="material-symbols-outlined">campaign</span>
+        Create Announcement
+      </button>
+    }
+
+    <div class="sidebar-footer">
+      <nav class="flex flex-col gap-xs">
+        <a class="sidebar-footer__link" href="#">
+          <span class="material-symbols-outlined">help</span>
+          <span>Help</span>
+        </a>
+        <a class="sidebar-footer__link" href="#">
+          <span class="material-symbols-outlined">contact_support</span>
+          <span>Support</span>
+        </a>
+      </nav>
+    </div>
+  </aside>
+
+  <!-- Main Column -->
+  <div class="community-main">
+
+    <!-- Community Header (cover + info + tabs) -->
+    <app-community-header
+      [community]="community()"
+      [activeTab]="activeTab()"
+      [isJoined]="isJoined()"
+      [canModerate]="canModerate()"
+      [canAnnounce]="canAnnounce()"
+      (tabChanged)="switchTab($event)"
+      (joinToggled)="toggleJoin()"
+      (shared)="shareCommunity()">
+    </app-community-header>
+
+    <!-- Tab Contents -->
+    <div class="tab-wrapper">
+
+      <!-- POSTS TAB -->
+      @if (activeTab() === 'tab-posts') {
+        <app-community-feed
+          [community]="community()"
+          [posts]="posts()"
+          [canModerate]="canModerate()"
+          [canAnnounce]="canAnnounce()"
+          [isOwner]="isOwner()"
+          [loading]="loading()"
+          (postCreated)="onPostCreated()"
+          (postDeleted)="onPostDeleted($event)"
+          (postsUpdated)="onPostsUpdated($event)"
+          (openComments)="onOpenComments($event)"
+          (commentCountChanged)="onCommentCountChanged($event)"
+          (confirmDialogRequest)="onConfirmDialogRequest($event)"
+          (feedbackRequest)="onFeedbackRequest($event)"
+          (tabSwitchRequest)="switchTab($event)"
+          (shareRequested)="shareCommunity()">
+        </app-community-feed>
+      }
+
+      <!-- MEMBERS TAB -->
+      @if (activeTab() === 'tab-members') {
+        <app-community-members
+          [communityId]="communityId()"
+          [members]="members()"
+          [isOwner]="isOwner()"
+          (memberChanged)="onMemberChanged()"
+          (confirmDialogRequest)="onConfirmDialogRequest($event)"
+          (feedbackRequest)="onFeedbackRequest($event)">
+        </app-community-members>
+      }
+
+      <!-- MODERATION TAB -->
+      @if (activeTab() === 'tab-moderation' && canModerate()) {
+        <app-community-moderation
+          [communityId]="communityId()"
+          [community]="community()"
+          [reports]="reports()"
+          [posts]="posts()"
+          [canModerate]="canModerate()"
+          (reportsChanged)="onReportsChanged()"
+          (postsChanged)="onModerationPostsChanged()"
+          (membersChanged)="onModerationMembersChanged()"
+          (openComments)="onOpenComments($event)"
+          (tabSwitchRequest)="switchTab($event)"
+          (confirmDialogRequest)="onConfirmDialogRequest($event)"
+          (feedbackRequest)="onFeedbackRequest($event)">
+        </app-community-moderation>
+      }
+
+      <!-- ANALYTICS TAB -->
+      @if (activeTab() === 'tab-analytics') {
+        <app-community-analytics
+          [community]="community()"
+          [posts]="posts()"
+          [members]="members()"
+          [totalCommentsCount]="totalCommentsCount()"
+          [pendingReportsCount]="pendingReportsCount()">
+        </app-community-analytics>
+      }
+
+    </div>
+  </div>
+</main>
+
+<!-- Confirmation Dialog -->
+@if (confirmDialog(); as dialog) {
+  <div class="overlay">
+    <div class="dialog-card">
+      <h3 class="dialog-card__title">{{ dialog.title }}</h3>
+      <p class="dialog-card__message">{{ dialog.message }}</p>
+      <div class="dialog-card__actions">
+        <button class="btn btn--ghost" type="button" (click)="confirmDialog.set(null)">Cancel</button>
+        <button class="btn btn--primary" type="button" (click)="dialog.confirmAction()">
+          {{ dialog.confirmText || 'Confirm' }}
+        </button>
+      </div>
+    </div>
+  </div>
+}
+
+<!-- Comments Drawer -->
+@if (commentsPost(); as post) {
+  <app-comments-panel
+    [postId]="post.id"
+    [postAuthorId]="post.author?.id ?? null"
+    [isOpen]="true"
+    (closed)="closeComments()"
+    (commentCountChanged)="handleCommentCountChanged($event)">
+  </app-comments-panel>
+}

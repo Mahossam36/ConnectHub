@@ -1,0 +1,342 @@
+<header class="navbar">
+
+  <!-- ================================================= -->
+  <!-- LEFT -->
+  <!-- ================================================= -->
+
+  <div class="navbar-left">
+
+    <button
+      class="menu-button"
+      type="button"
+      aria-label="Open menu"
+      (click)="menuClicked.emit()"
+    >
+      <span class="material-symbols-outlined">
+        menu
+      </span>
+    </button>
+
+
+    <a
+      class="logo"
+      routerLink="/home"
+      aria-label="Yalla Home"
+    >
+      <img
+        src="/logo.png"
+        alt="Yalla"
+        class="logo-image"
+      />
+    </a>
+
+  </div>
+
+
+  <!-- ================================================= -->
+  <!-- DESKTOP NAVIGATION -->
+  <!-- ================================================= -->
+
+  <nav
+    class="desktop-nav"
+    aria-label="Main navigation"
+  >
+
+    <a
+      routerLink="/home"
+      routerLinkActive="active"
+      [routerLinkActiveOptions]="{ exact: true }"
+    >
+      Home
+    </a>
+
+    <a
+      routerLink="/discover"
+      routerLinkActive="active"
+    >
+      Discover
+    </a>
+
+    <a
+      routerLink="/communities"
+      routerLinkActive="active"
+    >
+      Communities
+    </a>
+
+  </nav>
+
+
+  <!-- ================================================= -->
+  <!-- RIGHT -->
+  <!-- ================================================= -->
+
+  <div class="navbar-right">
+
+
+    <!-- ================================================= -->
+    <!-- SEARCH -->
+    <!-- ================================================= -->
+
+    <div class="navbar-search">
+
+      <button
+        class="navbar-search__trigger"
+        type="button"
+        aria-label="Search"
+      >
+        <span class="material-symbols-outlined">
+          search
+        </span>
+      </button>
+
+
+      <div class="navbar-search__field">
+
+        <app-search
+          variant="navbar"
+          placeholder="Search..."
+          (search)="onSearch($event)"
+          (resultSelected)="onSearchResultSelected($event)"
+          (cleared)="onSearchCleared()"
+        />
+
+      </div>
+
+    </div>
+
+
+    <!-- ================================================= -->
+    <!-- NOTIFICATIONS -->
+    <!-- ================================================= -->
+
+    <div class="notification-wrapper">
+
+      <button
+        class="nav-icon notification"
+        type="button"
+        aria-label="Notifications"
+        aria-haspopup="menu"
+        (click)="notificationClicked.emit()"
+      >
+
+        <span class="material-symbols-outlined">
+          notifications
+        </span>
+
+      </button>
+
+
+      <!-- Notification dropdown -->
+
+      <div
+        class="notification-dropdown"
+        role="menu"
+      >
+
+        <div class="notification-dropdown__header">
+
+          <span class="notification-dropdown__title">
+            Notifications
+          </span>
+
+          <button
+            class="notification-dropdown__mark"
+            type="button"
+          >
+            Mark all as read
+          </button>
+
+        </div>
+
+
+        <div class="notification-dropdown__divider"></div>
+
+
+        <div class="notification-empty">
+
+          <span class="notification-empty__icon">
+
+            <span class="material-symbols-outlined">
+              notifications_none
+            </span>
+
+          </span>
+
+          <span class="notification-empty__title">
+            No notifications
+          </span>
+
+          <span class="notification-empty__message">
+            You're all caught up.
+          </span>
+
+        </div>
+
+
+        <div class="notification-dropdown__divider"></div>
+
+
+        <button
+          class="notification-view-all"
+          type="button"
+        >
+
+          <span>
+            View all notifications
+          </span>
+
+          <span class="material-symbols-outlined">
+            arrow_forward
+          </span>
+
+        </button>
+
+      </div>
+
+    </div>
+
+
+    <!-- ================================================= -->
+    <!-- PROFILE -->
+    <!-- ================================================= -->
+
+    <div class="profile-wrapper">
+
+      <button
+        class="profile-button"
+        type="button"
+        aria-label="Open profile menu"
+        aria-haspopup="menu"
+        (click)="profileClicked.emit()"
+      >
+
+        <!--
+          Real authenticated user image should be
+          connected here later.
+        -->
+
+        <span class="profile-placeholder">
+          <span class="material-symbols-outlined">
+            person
+          </span>
+        </span>
+
+      </button>
+
+
+      <!-- ================================================= -->
+      <!-- PROFILE DROPDOWN -->
+      <!-- ================================================= -->
+
+      <div
+        class="profile-dropdown"
+        role="menu"
+      >
+
+        <!-- User information will be supplied
+             by the authenticated user later. -->
+
+        <div class="profile-dropdown__header">
+
+          <span class="profile-dropdown__avatar">
+
+            <span class="material-symbols-outlined">
+              person
+            </span>
+
+          </span>
+
+          <div class="profile-dropdown__user">
+
+            <span class="profile-dropdown__name">
+              My Profile
+            </span>
+
+          </div>
+
+        </div>
+
+
+        <div class="profile-dropdown__divider"></div>
+
+
+        <a
+          class="profile-dropdown__item"
+          routerLink="/profile"
+          role="menuitem"
+        >
+
+          <span class="material-symbols-outlined">
+            person
+          </span>
+
+          <span>
+            Profile
+          </span>
+
+        </a>
+
+
+        <a
+          class="profile-dropdown__item"
+          routerLink="/saved"
+          role="menuitem"
+        >
+
+          <span class="material-symbols-outlined">
+            bookmark
+          </span>
+
+          <span>
+            Saved
+          </span>
+
+        </a>
+
+
+        <a
+          class="profile-dropdown__item"
+          routerLink="/settings"
+          role="menuitem"
+        >
+
+          <span class="material-symbols-outlined">
+            settings
+          </span>
+
+          <span>
+            Settings
+          </span>
+
+        </a>
+
+
+        <div class="profile-dropdown__divider"></div>
+
+
+        <button
+          class="profile-dropdown__item profile-dropdown__item--danger"
+          type="button"
+          role="menuitem"
+          (click)="logoutClicked.emit()"
+        >
+
+          <span class="material-symbols-outlined">
+            logout
+          </span>
+
+          <span>
+            Logout
+          </span>
+
+        </button>
+
+      </div>
+
+    </div>
+
+  </div>
+
+</header>
+

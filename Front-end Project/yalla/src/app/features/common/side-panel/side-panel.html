@@ -1,0 +1,257 @@
+<div
+  class="side-panel-overlay"
+  [class.visible]="isOpen"
+  (click)="closePanel()"
+></div>
+
+
+<aside
+  class="side-panel"
+  [class.open]="isOpen"
+  aria-label="Side navigation"
+>
+
+  <!-- ================================================= -->
+  <!-- HEADER -->
+  <!-- ================================================= -->
+
+  <div class="panel-header">
+
+    <div>
+
+      <a
+        class="panel-logo"
+        routerLink="/home"
+        (click)="closePanel()"
+        aria-label="Yalla Home"
+      >
+        <img
+          src="/logo.png"
+          alt="Yalla"
+          class="panel-logo-image"
+        />
+      </a>
+
+      <p>
+Connect. Talk. Belong.
+      </p>
+
+    </div>
+
+
+    <button
+      class="close-button"
+      type="button"
+      aria-label="Close menu"
+      (click)="closePanel()"
+    >
+      <span class="material-symbols-outlined">
+        close
+      </span>
+    </button>
+
+  </div>
+
+
+  <!-- ================================================= -->
+  <!-- NAVIGATION -->
+  <!-- ================================================= -->
+
+  <nav
+    class="panel-navigation"
+    aria-label="Side navigation"
+  >
+
+    <!-- ================================================= -->
+    <!-- HOME -->
+    <!-- ================================================= -->
+
+    <a
+      routerLink="/home"
+      routerLinkActive="active"
+      [routerLinkActiveOptions]="{ exact: true }"
+      (click)="closePanel()"
+    >
+      <span class="material-symbols-outlined">
+        home
+      </span>
+
+      <span>
+        Home
+      </span>
+    </a>
+
+
+    <!-- ================================================= -->
+    <!-- DISCOVER -->
+    <!-- ================================================= -->
+
+    <a
+      routerLink="/discover"
+      routerLinkActive="active"
+      (click)="closePanel()"
+    >
+      <span class="material-symbols-outlined">
+        explore
+      </span>
+
+      <span>
+        Discover
+      </span>
+    </a>
+
+
+    <!-- ================================================= -->
+    <!-- COMMUNITIES -->
+    <!-- ================================================= -->
+
+    <button
+      class="panel-link communities-button"
+      type="button"
+      [class.active]="isCommunitiesSectionActive"
+      [attr.aria-expanded]="communitiesExpanded"
+      aria-controls="communities-list"
+      (click)="toggleCommunities()"
+    >
+
+      <span class="link-content">
+
+        <span class="material-symbols-outlined">
+          groups
+        </span>
+
+        <span>
+          Communities
+        </span>
+
+      </span>
+
+
+      <span
+        class="material-symbols-outlined expand-icon"
+        [class.expanded]="communitiesExpanded"
+      >
+        expand_more
+      </span>
+
+    </button>
+
+
+    <!-- ================================================= -->
+    <!-- COMMUNITY LIST -->
+    <!-- ================================================= -->
+
+    <div
+      id="communities-list"
+      class="communities-list"
+      [class.expanded]="communitiesExpanded"
+    >
+
+      <div class="communities-list__content">
+
+        <!--
+          Real community data will be rendered here
+          from the communities data source.
+        -->
+
+        @if (isCommunitiesPage) {
+
+          <a
+            class="view-all"
+            routerLink="/communities"
+            (click)="closePanel()"
+          >
+
+            <span>
+              View all communities
+            </span>
+
+            <span class="material-symbols-outlined">
+              arrow_forward
+            </span>
+
+          </a>
+
+        }
+
+      </div>
+
+    </div>
+
+
+    <!-- ================================================= -->
+    <!-- DIVIDER -->
+    <!-- ================================================= -->
+
+    <div class="divider"></div>
+
+
+    <!-- ================================================= -->
+    <!-- SAVED -->
+    <!-- ================================================= -->
+
+    <a
+      routerLink="/saved"
+      routerLinkActive="active"
+      (click)="closePanel()"
+    >
+
+      <span class="material-symbols-outlined">
+        bookmark
+      </span>
+
+      <span>
+        Saved
+      </span>
+
+    </a>
+
+
+    <!-- ================================================= -->
+    <!-- SETTINGS -->
+    <!-- ================================================= -->
+
+    <a
+      routerLink="/settings"
+      routerLinkActive="active"
+      (click)="closePanel()"
+    >
+
+      <span class="material-symbols-outlined">
+        settings
+      </span>
+
+      <span>
+        Settings
+      </span>
+
+    </a>
+
+  </nav>
+
+
+  <!-- ================================================= -->
+  <!-- FOOTER -->
+  <!-- ================================================= -->
+
+  <div class="panel-footer">
+
+    <button
+      class="logout-button"
+      type="button"
+      (click)="logoutClicked.emit()"
+    >
+
+      <span class="material-symbols-outlined">
+        logout
+      </span>
+
+      <span>
+        Logout
+      </span>
+
+    </button>
+
+  </div>
+
+</aside>

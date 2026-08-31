@@ -7,4 +7,5 @@ public interface IAttachmentService
 {
     Task<Result<AttachmentResponseDto>> UploadAsync(Guid currentUserId, Stream stream, string fileName, string contentType, long fileSize, CancellationToken cancellationToken = default);
     Task<Result> DeleteAsync(Guid attachmentId, Guid currentUserId, CancellationToken cancellationToken = default);
+    Task<Result<(Stream Stream, string ContentType, string FileName)>> GetFileAsync(Guid attachmentId, CancellationToken cancellationToken = default);
 }

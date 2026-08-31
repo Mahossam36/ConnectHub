@@ -1,0 +1,23 @@
+<section class="mb-3xl">
+  <div class="mb-xl">
+    <h2 class="font-headline-md text-headline-md text-on-background mb-xs">{{ heading }}</h2>
+    <p class="font-body-md text-body-md text-on-surface-variant">{{ subtitle }}</p>
+  </div>
+
+  <div class="grid grid-cols-1 md:grid-cols-2 gap-gutter">
+    @for (community of communities; track community.id) {
+      <app-community-card [community]="community" (join)="join.emit($event)"></app-community-card>
+    }
+  </div>
+
+  @if (showLoadMore) {
+    <div class="mt-2xl flex justify-center">
+      <button
+        type="button"
+        class="px-8 py-3 rounded-full font-label-md text-label-md hover:bg-wine-dark transition-colors shadow-sm border border-burgundy-deep/20 hover:-translate-y-px text-burgundy-deep border-burgundy-deep bg-transparent"
+        (click)="loadMore.emit()">
+        Load More
+      </button>
+    </div>
+  }
+</section>

@@ -1,0 +1,529 @@
+:host {
+  display: block;
+}
+
+
+// =====================================================
+// OVERLAY
+// =====================================================
+
+.side-panel-overlay {
+  position: fixed;
+  inset: 0;
+
+  z-index: 1000;
+
+  background: rgba(40, 23, 23, 0.2);
+
+  backdrop-filter: blur(4px);
+  -webkit-backdrop-filter: blur(4px);
+
+  opacity: 0;
+  visibility: hidden;
+  pointer-events: none;
+
+  transition:
+    opacity 0.25s ease,
+    visibility 0.25s ease;
+
+  &.visible {
+    opacity: 1;
+    visibility: visible;
+    pointer-events: auto;
+  }
+}
+
+.side-panel {
+  position: fixed;
+
+  /* Must be higher than fixed-side-panel */
+  z-index: 1001;
+
+  top: 0;
+  left: 0;
+
+  width: 320px;
+  max-width: 85vw;
+  height: 100vh;
+
+  display: flex;
+  flex-direction: column;
+
+  box-sizing: border-box;
+
+  background: #fdfbf7;
+
+  box-shadow:
+    15px 0 40px rgba(40, 23, 23, 0.15);
+
+  transform: translateX(-100%);
+
+  transition: transform 0.3s ease;
+
+  font-family: "Be Vietnam Pro", sans-serif;
+
+  &.open {
+    transform: translateX(0);
+  }
+}
+
+
+// =====================================================
+// HEADER
+// =====================================================
+
+.panel-header {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+
+  padding: 22px 20px 18px;
+
+  background: #fff;
+
+  border-bottom: 1px solid rgba(128, 0, 32, 0.1);
+
+  p {
+    margin: 8px 0 0;
+
+    color: #584141;
+
+    font-size: 12px;
+    font-weight: 500;
+  }
+}
+
+
+// =====================================================
+// LOGO
+// =====================================================
+
+.panel-logo {
+  display: inline-flex;
+  align-items: center;
+
+  height: 38px;
+
+  text-decoration: none;
+}
+
+.panel-logo-image {
+  display: block;
+
+  width: auto;
+  height: 38px;
+
+  max-width: 150px;
+
+  object-fit: contain;
+}
+
+
+// =====================================================
+// CLOSE BUTTON
+// =====================================================
+
+.close-button {
+  width: 38px;
+  height: 38px;
+
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  flex-shrink: 0;
+
+  padding: 0;
+
+  border: 0;
+  border-radius: 50%;
+
+  background: transparent;
+
+  color: #584141;
+
+  cursor: pointer;
+
+  transition:
+    background-color 0.2s ease,
+    color 0.2s ease;
+
+  &:hover {
+    background: #fff0ef;
+    color: #800020;
+  }
+
+  &:focus-visible {
+    outline: 2px solid #d4af37;
+    outline-offset: 2px;
+  }
+
+  .material-symbols-outlined {
+    font-size: 22px;
+  }
+}
+
+
+// =====================================================
+// NAVIGATION
+// =====================================================
+
+.panel-navigation {
+  flex: 1;
+
+  overflow-y: auto;
+
+  padding: 16px 10px;
+
+  display: flex;
+  flex-direction: column;
+
+  gap: 5px;
+
+  scrollbar-width: thin;
+}
+
+
+// =====================================================
+// MAIN NAVIGATION LINKS
+// =====================================================
+
+.panel-navigation > a,
+.panel-link {
+  width: 100%;
+  min-height: 48px;
+
+  display: flex;
+  align-items: center;
+
+  gap: 12px;
+
+  padding: 0 14px;
+
+  box-sizing: border-box;
+
+  border: 0;
+  border-radius: 10px;
+
+  background: transparent;
+
+  color: #584141;
+
+  text-decoration: none;
+
+  font-family: inherit;
+
+  font-size: 14px;
+  font-weight: 600;
+
+  cursor: pointer;
+
+  transition:
+    background-color 0.18s ease,
+    color 0.18s ease,
+    transform 0.18s ease;
+
+  .material-symbols-outlined {
+    width: 22px;
+
+    flex-shrink: 0;
+
+    color: #800020;
+
+    font-size: 21px;
+  }
+
+  &:hover {
+    background: #fff0ef;
+
+    color: #800020;
+  }
+
+  &:focus-visible {
+    outline: 2px solid #d4af37;
+    outline-offset: -2px;
+  }
+
+  &.active {
+    background: #fff5f4;
+
+    color: #800020;
+
+    box-shadow:
+      0 2px 8px rgba(128, 0, 32, 0.06);
+
+    transform: translateX(3px);
+  }
+}
+
+
+// =====================================================
+// COMMUNITIES BUTTON
+// =====================================================
+
+.communities-button {
+  justify-content: space-between;
+
+  text-align: left;
+
+  .link-content {
+    display: flex;
+    align-items: center;
+
+    gap: 12px;
+  }
+}
+
+
+// =====================================================
+// EXPAND ICON
+// =====================================================
+
+.expand-icon {
+  width: auto !important;
+
+  color: #8a7777 !important;
+
+  font-size: 20px !important;
+
+  transition: transform 0.25s ease;
+
+  &.expanded {
+    transform: rotate(180deg);
+  }
+}
+
+
+// =====================================================
+// COMMUNITIES LIST
+// =====================================================
+
+.communities-list {
+  display: grid;
+
+  grid-template-rows: 0fr;
+
+  overflow: hidden;
+
+  padding-left: 20px;
+
+  transition:
+    grid-template-rows 0.28s ease;
+
+  &.expanded {
+    grid-template-rows: 1fr;
+  }
+}
+
+.communities-list__content {
+  min-height: 0;
+
+  overflow: hidden;
+
+  display: flex;
+  flex-direction: column;
+
+  gap: 2px;
+}
+
+
+// =====================================================
+// COMMUNITY LINKS
+// =====================================================
+
+.communities-list__content a {
+  min-height: 40px;
+
+  display: flex;
+  align-items: center;
+
+  gap: 9px;
+
+  padding: 0 10px;
+
+  border-radius: 8px;
+
+  box-sizing: border-box;
+
+  color: #6b5555;
+
+  text-decoration: none;
+
+  font-size: 12px;
+  font-weight: 500;
+
+  transition:
+    background-color 0.18s ease,
+    color 0.18s ease;
+
+  &:hover {
+    background: #fff0ef;
+
+    color: #800020;
+  }
+
+  &:focus-visible {
+    outline: 2px solid #d4af37;
+    outline-offset: -2px;
+  }
+}
+
+
+// =====================================================
+// COMMUNITY ICON
+// =====================================================
+
+.community-list-icon {
+  width: 28px;
+  height: 28px;
+
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  flex-shrink: 0;
+
+  border-radius: 7px;
+
+  background: #fff1ef;
+
+  color: #800020;
+
+  .material-symbols-outlined {
+    font-size: 16px;
+  }
+}
+
+
+// =====================================================
+// VIEW ALL COMMUNITIES
+// =====================================================
+
+.communities-list__content a.view-all {
+  justify-content: space-between;
+
+  margin-top: 4px;
+
+  color: #800020;
+
+  font-size: 12px;
+  font-weight: 700;
+
+  .material-symbols-outlined {
+    font-size: 17px;
+
+    transition: transform 0.18s ease;
+  }
+
+  &:hover {
+    background: #fff5f4;
+
+    .material-symbols-outlined {
+      transform: translateX(3px);
+    }
+  }
+}
+
+
+// =====================================================
+// DIVIDER
+// =====================================================
+
+.divider {
+  height: 1px;
+
+  flex-shrink: 0;
+
+  margin: 10px 12px;
+
+  background: rgba(128, 0, 32, 0.1);
+}
+
+
+// =====================================================
+// FOOTER
+// =====================================================
+
+.panel-footer {
+  flex-shrink: 0;
+
+  padding: 12px 10px 16px;
+
+  border-top: 1px solid rgba(128, 0, 32, 0.1);
+
+  background: #fff;
+}
+
+
+// =====================================================
+// LOGOUT
+// =====================================================
+
+.logout-button {
+  width: 100%;
+  min-height: 46px;
+
+  display: flex;
+  align-items: center;
+
+  gap: 12px;
+
+  padding: 0 14px;
+
+  box-sizing: border-box;
+
+  border: 0;
+  border-radius: 10px;
+
+  background: transparent;
+
+  color: #ba1a1a;
+
+  font-family: inherit;
+
+  font-size: 14px;
+  font-weight: 600;
+
+  text-align: left;
+
+  cursor: pointer;
+
+  transition:
+    background-color 0.18s ease,
+    color 0.18s ease;
+
+  &:hover {
+    background: #ffdad6;
+
+    color: #a32121;
+  }
+
+  &:focus-visible {
+    outline: 2px solid #d4af37;
+    outline-offset: -2px;
+  }
+
+  .material-symbols-outlined {
+    font-size: 21px;
+  }
+}
+
+
+// =====================================================
+// RESPONSIVE
+// =====================================================
+
+@media (max-width: 480px) {
+  .side-panel {
+    width: 290px;
+  }
+
+  .panel-header {
+    padding: 18px 16px 16px;
+  }
+
+  .panel-navigation {
+    padding-left: 8px;
+    padding-right: 8px;
+  }
+}

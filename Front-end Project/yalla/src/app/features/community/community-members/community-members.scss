@@ -1,0 +1,243 @@
+.members-panel {
+  background: #fff;
+  border-radius: 12px;
+  border: 1px solid rgba(252, 219, 218, 0.5);
+  box-shadow: 0 4px 20px rgba(128, 0, 32, 0.03);
+  padding: var(--spacing-lg);
+
+  // â”€â”€ Toolbar â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
+  &__toolbar {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+    margin-bottom: var(--spacing-lg);
+    padding-bottom: var(--spacing-md);
+    border-bottom: 1px solid rgba(224, 191, 191, 0.3);
+
+    @media (min-width: 640px) {
+      flex-direction: row;
+      align-items: center;
+      justify-content: space-between;
+    }
+  }
+}
+
+// â”€â”€ Search â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
+.members-search {
+  position: relative;
+  width: 100%;
+
+  @media (min-width: 640px) { width: 256px; }
+
+  &__icon {
+    position: absolute;
+    left: 12px;
+    top: 50%;
+    transform: translateY(-50%);
+    font-size: 20px;
+    color: #765d5e;
+    pointer-events: none;
+  }
+
+  &__input {
+    width: 100%;
+    padding: 8px 16px 8px 40px;
+    border-radius: 999px;
+    border: 1px solid transparent;
+    background: #f9f6f1;
+    font-size: 14px;
+    color: #281717;
+    outline: none;
+    transition: border-color 0.2s;
+
+    &:focus { border-color: rgba(128, 0, 32, 0.4); }
+    &::placeholder { color: rgba(118, 93, 94, 0.6); }
+  }
+}
+
+// â”€â”€ Role Filter â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
+.members-filter {
+  background: #f9f6f1;
+  border: none;
+  font-size: 13px;
+  font-weight: 500;
+  color: #281717;
+  border-radius: 999px;
+  padding: 8px 16px;
+  cursor: pointer;
+  outline: none;
+  appearance: none;
+  -webkit-appearance: none;
+}
+
+// â”€â”€ Section â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
+.member-section {
+  margin-bottom: var(--spacing-lg);
+
+  &__label {
+    font-size: 11px;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+    color: #765d5e;
+    margin-bottom: 16px;
+  }
+}
+
+.member-divider {
+  border-top: 1px solid rgba(224, 191, 191, 0.3);
+  margin: var(--spacing-lg) 0;
+}
+
+// â”€â”€ Member Row â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
+.member-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 12px;
+  border-radius: 12px;
+  transition: background 0.15s;
+  position: relative;
+
+  &:hover { background: #f9f6f1; }
+
+  &__identity {
+    display: flex;
+    align-items: center;
+    gap: var(--spacing-md);
+  }
+
+  &__avatar {
+    width: 48px;
+    height: 48px;
+    border-radius: 50%;
+    flex-shrink: 0;
+
+    &--img { object-fit: cover; }
+
+    &--initials {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-weight: 700;
+      font-size: 18px;
+      color: #fff;
+    }
+
+    &--owner { background: #800020; }
+    &--admin { background: var(--color-primary-container, #6b3a3a); }
+    &--member { background: #e0bfbf; color: #765d5e; }
+  }
+
+  &__name {
+    font-size: 14px;
+    font-weight: 600;
+    color: #281717;
+  }
+
+  &__handle {
+    font-size: 12px;
+    color: #765d5e;
+  }
+
+  &__actions {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+  }
+}
+
+// â”€â”€ Badges â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
+.member-badge {
+  padding: 3px 8px;
+  border-radius: 4px;
+  font-size: 10px;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+
+  &--owner {
+    background: rgba(128, 0, 32, 0.1);
+    color: #800020;
+  }
+
+  &--admin {
+    background: rgba(255, 225, 224, 0.1);
+    color: #ffe1e0;
+  }
+
+  &--member {
+    background: #e0bfbf;
+    color: #765d5e;
+  }
+}
+
+// â”€â”€ Context Menu â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
+.member-menu {
+  position: relative;
+
+  &__trigger {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 32px;
+    height: 32px;
+    border: none;
+    background: none;
+    cursor: pointer;
+    border-radius: 50%;
+    color: #765d5e;
+    transition: background 0.15s, color 0.15s;
+
+    &:hover {
+      background: rgba(224, 191, 191, 0.4);
+      color: #281717;
+    }
+  }
+
+  &__dropdown {
+    position: absolute;
+    right: 0;
+    top: 36px;
+    z-index: 30;
+    background: #fff;
+    border-radius: 12px;
+    box-shadow: 0 8px 32px rgba(0, 0, 0, 0.12);
+    border: 1px solid rgba(252, 219, 218, 0.5);
+    padding: 4px 0;
+    min-width: 180px;
+  }
+
+  &__item {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    width: 100%;
+    padding: 10px 16px;
+    font-size: 12px;
+    font-weight: 500;
+    color: #281717;
+    background: none;
+    border: none;
+    cursor: pointer;
+    text-align: left;
+    transition: background 0.15s;
+
+    .material-symbols-outlined { font-size: 16px; }
+
+    &:hover { background: #f9f6f1; }
+
+    &--danger {
+      color: #ba1a1a;
+      border-top: 1px solid rgba(224, 191, 191, 0.3);
+    }
+  }
+}
+
+// â”€â”€ Empty State â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
+.members-empty {
+  text-align: center;
+  padding: 24px;
+  font-size: 14px;
+  color: #765d5e;
+}

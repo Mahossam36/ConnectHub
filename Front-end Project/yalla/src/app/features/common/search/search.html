@@ -1,0 +1,434 @@
+<div
+  class="search"
+  [class.search--navbar]="variant === 'navbar'"
+  [class.search--page]="variant === 'page'"
+>
+
+  <!-- ================================================= -->
+  <!-- SEARCH BOX -->
+  <!-- ================================================= -->
+
+  <div
+    class="search-box"
+    [class.search-box--focused]="isFocused"
+  >
+
+    <span class="material-symbols-outlined search-icon">
+      search
+    </span>
+
+
+    <input
+      class="search-input"
+      type="search"
+      [value]="query"
+      [placeholder]="placeholder"
+      [disabled]="disabled"
+      autocomplete="off"
+      spellcheck="false"
+      aria-label="Search"
+
+      (focus)="onFocus()"
+      (blur)="onBlur()"
+      (input)="onInput($event)"
+    />
+
+
+    <!-- Clear -->
+
+    @if (query && !loading) {
+
+      <button
+        class="search-clear"
+        type="button"
+        aria-label="Clear search"
+
+        (mousedown)="$event.preventDefault()"
+        (click)="clearSearch()"
+      >
+
+        <span class="material-symbols-outlined">
+          close
+        </span>
+
+      </button>
+
+    }
+
+
+    <!-- Loading -->
+
+    @if (loading) {
+
+      <span
+        class="search-loading"
+        aria-label="Searching"
+      ></span>
+
+    }
+
+  </div>
+
+
+  <!-- ================================================= -->
+  <!-- SEARCH DROPDOWN -->
+  <!-- ================================================= -->
+
+  @if (showDropdown) {
+
+    <div
+      class="search-dropdown"
+      role="listbox"
+      aria-label="Search results"
+    >
+
+      <!-- ============================================= -->
+      <!-- LOADING -->
+      <!-- ============================================= -->
+
+      @if (loading) {
+
+        <div class="search-state search-state--loading">
+
+          <span class="search-spinner"></span>
+
+          <span>
+            Searching...
+          </span>
+
+        </div>
+
+      }
+
+
+      <!-- ============================================= -->
+      <!-- RESULTS -->
+      <!-- ============================================= -->
+
+      @else if (hasResults) {
+
+
+        <!-- =========================================== -->
+        <!-- CATEGORIES -->
+        <!-- =========================================== -->
+
+        @if (categories.length > 0) {
+
+          <section class="search-section">
+
+            <div class="search-section__header">
+
+              <span class="search-section__title">
+                Categories
+              </span>
+
+              <span class="search-section__count">
+                {{ categories.length }}
+              </span>
+
+            </div>
+
+
+            @for (
+              result of categories;
+              track trackByResult($index, result)
+            ) {
+
+              <button
+                class="search-result"
+                type="button"
+                role="option"
+
+                (mousedown)="$event.preventDefault()"
+                (click)="selectResult(result)"
+              >
+
+                <span
+                  class="search-result__icon
+                         search-result__icon--category"
+                >
+
+                  <span class="material-symbols-outlined">
+                    category
+                  </span>
+
+                </span>
+
+
+                <span class="search-result__content">
+
+                  <span class="search-result__name">
+                    {{ result.name }}
+                  </span>
+
+
+                  @if (result.description) {
+
+                    <span class="search-result__description">
+                      {{ result.description }}
+                    </span>
+
+                  }
+
+                </span>
+
+
+                <span
+                  class="material-symbols-outlined
+                         search-result__arrow"
+                >
+                  chevron_right
+                </span>
+
+              </button>
+
+            }
+
+          </section>
+
+        }
+
+
+        <!-- =========================================== -->
+        <!-- TAGS -->
+        <!-- =========================================== -->
+
+        @if (tags.length > 0) {
+
+          <section class="search-section">
+
+            <div class="search-section__header">
+
+              <span class="search-section__title">
+                Tags
+              </span>
+
+              <span class="search-section__count">
+                {{ tags.length }}
+              </span>
+
+            </div>
+
+
+            @for (
+              result of tags;
+              track trackByResult($index, result)
+            ) {
+
+              <button
+                class="search-result"
+                type="button"
+                role="option"
+
+                (mousedown)="$event.preventDefault()"
+                (click)="selectResult(result)"
+              >
+
+                <span
+                  class="search-result__icon
+                         search-result__icon--tag"
+                >
+
+                  <span class="material-symbols-outlined">
+                    tag
+                  </span>
+
+                </span>
+
+
+                <span class="search-result__content">
+
+                  <span class="search-result__name">
+                    #{{ result.name }}
+                  </span>
+
+
+                  @if (result.description) {
+
+                    <span class="search-result__description">
+                      {{ result.description }}
+                    </span>
+
+                  }
+
+                </span>
+
+
+                <span
+                  class="material-symbols-outlined
+                         search-result__arrow"
+                >
+                  chevron_right
+                </span>
+
+              </button>
+
+            }
+
+          </section>
+
+        }
+
+
+        <!-- =========================================== -->
+        <!-- COMMUNITIES -->
+        <!-- =========================================== -->
+
+        @if (communities.length > 0) {
+
+          <section class="search-section">
+
+            <div class="search-section__header">
+
+              <span class="search-section__title">
+                Communities
+              </span>
+
+              <span class="search-section__count">
+                {{ communities.length }}
+              </span>
+
+            </div>
+
+
+            @for (
+              result of communities;
+              track trackByResult($index, result)
+            ) {
+
+              <button
+                class="search-result search-result--community"
+                type="button"
+                role="option"
+
+                (mousedown)="$event.preventDefault()"
+                (click)="selectResult(result)"
+              >
+
+
+                @if (result.imageUrl) {
+
+                  <img
+                    class="community-avatar"
+                    [src]="result.imageUrl"
+                    [alt]="result.name"
+                  />
+
+                } @else {
+
+                  <span
+                    class="
+                      community-avatar
+                      community-avatar--fallback
+                    "
+                  >
+
+                    <span class="material-symbols-outlined">
+                      groups
+                    </span>
+
+                  </span>
+
+                }
+
+
+                <span class="search-result__content">
+
+                  <span class="search-result__name">
+                    {{ result.name }}
+                  </span>
+
+
+                  @if (result.memberCount !== undefined) {
+
+                    <span class="search-result__description">
+                      {{ result.memberCount | number }} members
+                    </span>
+
+                  } @else if (result.description) {
+
+                    <span class="search-result__description">
+                      {{ result.description }}
+                    </span>
+
+                  }
+
+                </span>
+
+
+                <span
+                  class="material-symbols-outlined
+                         search-result__arrow"
+                >
+                  chevron_right
+                </span>
+
+              </button>
+
+            }
+
+          </section>
+
+        }
+
+
+        <!-- =========================================== -->
+        <!-- VIEW ALL -->
+        <!-- =========================================== -->
+
+        <button
+          class="search-view-all"
+          type="button"
+
+          (mousedown)="$event.preventDefault()"
+          (click)="search.emit(query)"
+        >
+
+          <span>
+            View all results
+          </span>
+
+          <span class="material-symbols-outlined">
+            arrow_forward
+          </span>
+
+        </button>
+
+      }
+
+
+      <!-- ============================================= -->
+      <!-- EMPTY -->
+      <!-- ============================================= -->
+
+      @else {
+
+        <div class="search-state search-state--empty">
+
+          <span class="search-state__icon">
+
+            <span class="material-symbols-outlined">
+              search_off
+            </span>
+
+          </span>
+
+
+          <span class="search-state__title">
+            No results found
+          </span>
+
+
+          <span class="search-state__message">
+            Try another category, tag, or community.
+          </span>
+
+        </div>
+
+      }
+
+    </div>
+
+  }
+
+</div>

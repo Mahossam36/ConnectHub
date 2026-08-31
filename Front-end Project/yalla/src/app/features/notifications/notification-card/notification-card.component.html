@@ -1,0 +1,20 @@
+<div
+  class="notif-card"
+  [class.notif-card--unread]="!notification.isRead"
+  [class.notif-card--read]="notification.isRead"
+  (click)="onClick()">
+  @if (!notification.isRead) {
+    <div class="notif-card__accent"></div>
+  }
+
+  <div class="notif-card__body">
+    <div class="notif-card__icon">
+      <span class="material-symbols-outlined" [ngClass]="icon.colorClass">{{ icon.name }}</span>
+    </div>
+
+    <div class="notif-card__content">
+      <p class="notif-card__message">{{ notification.message }}</p>
+      <p class="notif-card__time">{{ notification.createdAt | date: 'medium' }}</p>
+    </div>
+  </div>
+</div>

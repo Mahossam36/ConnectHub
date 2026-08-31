@@ -1,0 +1,437 @@
+<div
+  class="comments-overlay"
+  *ngIf="isOpen"
+  (click)="close()"
+></div>
+
+<aside
+  class="comments-drawer"
+  [class.open]="isOpen"
+  aria-label="Comments"
+>
+  <!-- Header -->
+  <div class="comments-header">
+
+    <h2>
+      <span class="material-symbols-outlined">
+        forum
+      </span>
+
+      Comments
+
+      <span
+        *ngIf="totalComments > 0"
+        class="comment-count"
+      >
+        {{ totalComments }}
+      </span>
+    </h2>
+
+    <button
+      class="close-button"
+      type="button"
+      aria-label="Close comments"
+      (click)="close()"
+    >
+      <span class="material-symbols-outlined">
+        close
+      </span>
+    </button>
+
+  </div>
+
+  <!-- Error -->
+  <div
+    *ngIf="errorMessage"
+    class="error-message"
+    role="alert"
+  >
+    {{ errorMessage }}
+
+    <button
+      type="button"
+      (click)="loadComments()"
+    >
+      Retry
+    </button>
+  </div>
+
+  <!-- Loading -->
+  <div
+    *ngIf="isLoading"
+    class="loading-state"
+  >
+    <span class="spinner"></span>
+    <span>Loading comments...</span>
+  </div>
+
+  <!-- Empty -->
+  <div
+    *ngIf="
+      !isLoading &&
+      !errorMessage &&
+      comments.length === 0
+    "
+    class="empty-state"
+  >
+    <span class="material-symbols-outlined">
+      forum
+    </span>
+
+    <strong>No comments yet</strong>
+
+    <span>
+      Be the first to join the conversation.
+    </span>
+  </div>
+
+  <!-- Comments -->
+  <div
+    *ngIf="!isLoading && comments.length > 0"
+    class="comments-list"
+  >
+
+    <ng-container
+      *ngFor="
+        let comment of comments;
+        trackBy: trackByCommentId
+      "
+    >
+
+      <!-- Top-level comment -->
+      <article class="comment">
+
+        <!-- Avatar -->
+        <ng-container
+          *ngIf="
+            comment.author?.avatarUrl;
+            else commentInitial
+          "
+        >
+          <img
+            class="avatar avatar-sm"
+            [src]="comment.author.avatarUrl!"
+            [alt]="getDisplayName(comment.author)"
+          />
+        </ng-container>
+
+        <ng-template #commentInitial>
+          <div class="avatar avatar-sm letter-avatar">
+            {{ getInitial(comment.author) }}
+          </div>
+        </ng-template>
+
+        <!-- Content -->
+        <div class="comment-content">
+
+          <div class="comment-bubble">
+
+            <div class="comment-top">
+
+              <strong>
+                {{ getDisplayName(comment.author) }}
+              </strong>
+
+              <span>
+                {{ formatDate(comment.createdAt) }}
+              </span>
+
+            </div>
+
+            <!-- Editing -->
+            <ng-container
+              *ngIf="
+                editingCommentId === comment.id;
+                else commentText
+              "
+            >
+              <textarea
+                class="edit-input"
+                [(ngModel)]="editingText"
+                rows="3"
+                maxlength="2000"
+              ></textarea>
+
+              <div class="edit-actions">
+                <button
+                  type="button"
+                  (click)="cancelEditing()"
+                >
+                  Cancel
+                </button>
+
+                <button
+                  type="button"
+                  class="save-button"
+                  [disabled]="!editingText.trim()"
+                  (click)="saveEdit(comment)"
+                >
+                  Save
+                </button>
+              </div>
+            </ng-container>
+
+            <ng-template #commentText>
+              <p>
+                {{ comment.content }}
+              </p>
+            </ng-template>
+
+          </div>
+
+          <!-- Actions -->
+          <div
+            *ngIf="editingCommentId !== comment.id"
+            class="comment-actions"
+          >
+
+            <button
+              type="button"
+              (click)="startReply(comment)"
+            >
+              Reply
+            </button>
+
+            <button
+              type="button"
+              [class.liked]="comment.isLikedByCurrentUser"
+              (click)="toggleLike(comment)"
+            >
+              <span class="material-symbols-outlined">
+                {{
+                  comment.isLikedByCurrentUser
+                    ? 'favorite'
+                    : 'favorite_border'
+                }}
+              </span>
+
+              {{ comment.likeCount }}
+            </button>
+
+            <button
+              *ngIf="isCommentAuthor(comment)"
+              type="button"
+              (click)="startEditing(comment)"
+            >
+              Edit
+            </button>
+
+            <button
+              *ngIf="isCommentAuthor(comment)"
+              type="button"
+              class="delete-action"
+              (click)="deleteComment(comment)"
+            >
+              Delete
+            </button>
+
+          </div>
+
+          <!-- Replies -->
+          <div
+            *ngIf="
+              comment.replies?.length
+            "
+            class="replies"
+          >
+
+            <article
+              class="reply"
+              *ngFor="
+                let reply of comment.replies;
+                trackBy: trackByCommentId
+              "
+            >
+
+              <ng-container
+                *ngIf="
+                  reply.author?.avatarUrl;
+                  else replyInitial
+                "
+              >
+                <img
+                  class="avatar avatar-sm"
+                  [src]="reply.author.avatarUrl!"
+                  [alt]="getDisplayName(reply.author)"
+                />
+              </ng-container>
+
+              <ng-template #replyInitial>
+                <div
+                  class="avatar avatar-sm letter-avatar"
+                >
+                  {{ getInitial(reply.author) }}
+                </div>
+              </ng-template>
+
+              <div class="comment-content">
+
+                <div class="comment-bubble">
+
+                  <div class="comment-top">
+                    <strong>
+                      {{ getDisplayName(reply.author) }}
+                    </strong>
+
+                    <span>
+                      {{ formatDate(reply.createdAt) }}
+                    </span>
+                  </div>
+
+                  <p>
+                    {{ reply.content }}
+                  </p>
+
+                </div>
+
+                <div class="comment-actions">
+
+                  <button
+                    type="button"
+                    (click)="startReply(reply)"
+                  >
+                    Reply
+                  </button>
+
+                  <button
+                    type="button"
+                    [class.liked]="
+                      reply.isLikedByCurrentUser
+                    "
+                    (click)="toggleLike(reply)"
+                  >
+                    <span class="material-symbols-outlined">
+                      {{
+                        reply.isLikedByCurrentUser
+                          ? 'favorite'
+                          : 'favorite_border'
+                      }}
+                    </span>
+
+                    {{ reply.likeCount }}
+                  </button>
+
+                  <button
+                    *ngIf="isCommentAuthor(reply)"
+                    type="button"
+                    (click)="startEditing(reply)"
+                  >
+                    Edit
+                  </button>
+
+                  <button
+                    *ngIf="isCommentAuthor(reply)"
+                    type="button"
+                    class="delete-action"
+                    (click)="deleteComment(reply)"
+                  >
+                    Delete
+                  </button>
+
+                </div>
+
+              </div>
+
+            </article>
+
+          </div>
+
+        </div>
+
+      </article>
+
+    </ng-container>
+
+    <!-- Load more -->
+    <div
+      *ngIf="hasMoreComments()"
+      class="load-more"
+    >
+      <button
+        type="button"
+        [disabled]="isLoadingMore"
+        (click)="loadMore()"
+      >
+        <span
+          *ngIf="isLoadingMore"
+          class="small-spinner"
+        ></span>
+
+        {{
+          isLoadingMore
+            ? 'Loading...'
+            : 'Load more comments'
+        }}
+      </button>
+    </div>
+
+  </div>
+
+  <!-- Reply indicator -->
+  <div
+    *ngIf="replyingTo"
+    class="replying-to"
+  >
+    <div>
+      Replying to
+      <strong>
+        {{ getDisplayName(replyingTo.author) }}
+      </strong>
+    </div>
+
+    <button
+      type="button"
+      aria-label="Cancel reply"
+      (click)="cancelReply()"
+    >
+      <span class="material-symbols-outlined">
+        close
+      </span>
+    </button>
+  </div>
+
+  <!-- Comment input -->
+  <form
+    class="comment-input-container"
+    (ngSubmit)="submitComment()"
+  >
+
+    <input
+      id="comment-input"
+      type="text"
+      name="comment"
+      autocomplete="off"
+      maxlength="2000"
+      [(ngModel)]="commentText"
+      [disabled]="isSubmitting || !postId"
+      [placeholder]="
+        replyingTo
+          ? 'Write a reply...'
+          : 'Write a comment...'
+      "
+    />
+
+    <button
+      type="submit"
+      aria-label="Send comment"
+      [disabled]="
+        isSubmitting ||
+        !commentText.trim() ||
+        !postId
+      "
+    >
+      <span
+        *ngIf="!isSubmitting"
+        class="material-symbols-outlined"
+      >
+        send
+      </span>
+
+      <span
+        *ngIf="isSubmitting"
+        class="small-spinner"
+      ></span>
+    </button>
+
+  </form>
+</aside>

@@ -1,0 +1,12 @@
+<section class="bg-surface-container-low rounded-[24px] p-2xl text-center border border-secondary/10 relative overflow-hidden">
+  <div class="relative z-10 max-w-2xl mx-auto flex flex-col items-center">
+    <h3 class="font-headline-md text-headline-md text-on-background mb-sm">{{ title }}</h3>
+    <p class="font-body-md text-body-md text-on-surface-variant mb-xl">{{ description }}</p>
+    <button
+      type="button"
+      class="bg-burgundy-deep text-white px-8 py-4 rounded-full font-label-md text-label-md hover:bg-wine-dark transition-colors shadow-sm hover:-translate-y-px"
+      (click)="create.emit()">
+      + Create Community
+    </button>
+  </div>
+</section>

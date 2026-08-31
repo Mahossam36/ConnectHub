@@ -1,0 +1,223 @@
+<aside
+  class="side-panel"
+  aria-label="Fixed side navigation"
+>
+
+  <!-- ================================================= -->
+  <!-- HEADER -->
+  <!-- ================================================= -->
+
+  <header class="panel-header">
+
+    <a
+      class="panel-logo"
+      routerLink="/home"
+      aria-label="Yalla Home"
+    >
+      <img
+        src="/logo.png"
+        alt="Yalla"
+        class="panel-logo-image"
+      />
+    </a>
+
+  </header>
+
+
+  <!-- ================================================= -->
+  <!-- SLOGAN -->
+  <!-- ================================================= -->
+
+  <div class="panel-intro">
+
+    <p>
+      Connect. Talk. Belong.
+    </p>
+
+  </div>
+
+
+  <!-- ================================================= -->
+  <!-- NAVIGATION -->
+  <!-- ================================================= -->
+
+  <nav
+    class="panel-navigation"
+    aria-label="Fixed side navigation"
+  >
+
+    <!-- HOME -->
+
+    <a
+      class="panel-link"
+      routerLink="/home"
+      routerLinkActive="active"
+      [routerLinkActiveOptions]="{ exact: true }"
+    >
+
+      <span class="material-symbols-outlined">
+        home
+      </span>
+
+      <span>
+        Home
+      </span>
+
+    </a>
+
+
+    <!-- DISCOVER -->
+
+    <a
+      class="panel-link"
+      routerLink="/discover"
+      routerLinkActive="active"
+    >
+
+      <span class="material-symbols-outlined">
+        explore
+      </span>
+
+      <span>
+        Discover
+      </span>
+
+    </a>
+
+
+    <!-- COMMUNITIES -->
+
+    <button
+      class="panel-link communities-button"
+      type="button"
+      [class.active]="isCommunitiesSectionActive"
+      [attr.aria-expanded]="communitiesExpanded"
+      aria-controls="communities-list"
+      (click)="toggleCommunities()"
+    >
+
+      <span class="link-content">
+
+        <span class="material-symbols-outlined">
+          groups
+        </span>
+
+        <span>
+          Communities
+        </span>
+
+      </span>
+
+      <span
+        class="material-symbols-outlined expand-icon"
+        [class.expanded]="communitiesExpanded"
+      >
+        expand_more
+      </span>
+
+    </button>
+
+
+    <!-- COMMUNITY LIST -->
+
+    <div
+      id="communities-list"
+      class="communities-list"
+      [class.expanded]="communitiesExpanded"
+    >
+
+      <div class="communities-list__content">
+
+        @if (isCommunitiesPage) {
+
+          <a
+            class="view-all"
+            routerLink="/communities"
+          >
+
+            <span>
+              View all communities
+            </span>
+
+            <span class="material-symbols-outlined">
+              arrow_forward
+            </span>
+
+          </a>
+
+        }
+
+      </div>
+
+    </div>
+
+
+    <!-- DIVIDER -->
+
+    <div class="divider"></div>
+
+
+    <!-- SAVED -->
+
+    <a
+      class="panel-link"
+      routerLink="/saved"
+      routerLinkActive="active"
+    >
+
+      <span class="material-symbols-outlined">
+        bookmark
+      </span>
+
+      <span>
+        Saved
+      </span>
+
+    </a>
+
+
+    <!-- SETTINGS -->
+
+    <a
+      class="panel-link"
+      routerLink="/settings"
+      routerLinkActive="active"
+    >
+
+      <span class="material-symbols-outlined">
+        settings
+      </span>
+
+      <span>
+        Settings
+      </span>
+
+    </a>
+
+  </nav>
+
+
+  <!-- ================================================= -->
+  <!-- FOOTER -->
+  <!-- ================================================= -->
+
+  <footer class="panel-footer">
+
+    <button
+      class="create-community-button"
+      type="button"
+    >
+
+      <span class="material-symbols-outlined">
+        add
+      </span>
+
+      <span>
+        Create Community
+      </span>
+
+    </button>
+
+  </footer>
+
+</aside>

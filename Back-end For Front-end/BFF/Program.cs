@@ -149,6 +149,12 @@ builder.Services.AddCors(options => options.AddPolicy("Angular", policy => polic
 
 var app = builder.Build();
 
+app.Use(async (context, next) =>
+{
+    context.Request.EnableBuffering();
+    await next();
+});
+
 app.UseMiddleware<ErrorHandlingMiddleware>();
 if (app.Environment.IsDevelopment()) app.MapOpenApi();
 if (!app.Environment.IsDevelopment()) app.UseHttpsRedirection();

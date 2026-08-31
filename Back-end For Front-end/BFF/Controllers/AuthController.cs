@@ -31,11 +31,17 @@ public sealed class AuthController(
         var session = await sessionService.GetCurrentAsync(HttpContext, cancellationToken);
         if (session is not null)
         {
-            var result = await authenticationClient.LogoutAsync(session.RefreshToken, cancellationToken);
-            if (!result.Succeeded && result.StatusCode is not (StatusCodes.Status401Unauthorized or StatusCodes.Status404NotFound))
-                return new ContentResult { StatusCode = result.StatusCode, Content = result.ErrorBody, ContentType = "application/json" };
+            try
+            {
+                await authenticationClient.LogoutAsync(session.RefreshToken, cancellationToken);
+            }
+            catch
+            {
+                // Continue local session cleanup even if upstream logout is unreachable
+            }
         }
         await sessionService.RemoveCurrentAsync(HttpContext, cancellationToken);
+        sessionService.ClearCookie(HttpContext);
         return NoContent();
     }
 

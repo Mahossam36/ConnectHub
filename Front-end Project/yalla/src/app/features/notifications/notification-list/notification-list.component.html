@@ -1,0 +1,10 @@
+<div class="notif-list">
+  @for (notification of notifications; track notification.id) {
+    <app-notification-card
+      [notification]="notification"
+      (select)="selectNotification.emit(notification)">
+    </app-notification-card>
+  } @empty {
+    <p class="notif-list__empty">You're all caught up.</p>
+  }
+</div>

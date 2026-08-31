@@ -1,0 +1,97 @@
+<div class="community-header">
+  <!-- Cover Image -->
+  <div class="community-header__cover">
+    @if (community?.coverImageUrl) {
+      <img
+        [src]="resolveMediaUrl(community!.coverImageUrl)"
+        [alt]="community!.name"
+        class="community-header__cover-img" />
+    } @else {
+      <div class="community-header__cover-placeholder"></div>
+    }
+    <div class="community-header__cover-overlay"></div>
+  </div>
+
+  <!-- Info Section -->
+  <div class="community-header__info">
+    <div class="community-header__top-row">
+      <div class="community-header__title-block">
+        <h1 class="community-header__title">{{ community?.name || 'Loading Community...' }}</h1>
+        <div class="community-header__meta">
+          <span>{{ community?.category?.name || 'General' }}</span>
+          <span class="meta-dot">·</span>
+          <span>{{ getRoleLabel(community?.currentUserRole) }}</span>
+          <span class="meta-dot">·</span>
+          <span class="meta-members">{{ community?.memberCount || 0 }} members</span>
+        </div>
+      </div>
+
+      <div class="community-header__actions">
+        <button
+          class="btn-join"
+          type="button"
+          (click)="joinToggled.emit()">
+          @if (isJoined) {
+            <span class="material-symbols-outlined">check</span>
+            Joined
+          } @else {
+            <span class="material-symbols-outlined">add</span>
+            Join Community
+          }
+        </button>
+        <button
+          class="btn-share"
+          type="button"
+          (click)="shared.emit()">
+          Share
+        </button>
+      </div>
+    </div>
+
+    <p class="community-header__description">
+      {{ community?.description || 'Welcome to this community! Connect with peers, discuss insights, and collaborate.' }}
+    </p>
+
+    @if (community?.tags && community!.tags!.length > 0) {
+      <div class="community-header__tags">
+        @for (tag of community!.tags!; track tag.id) {
+          <span class="community-tag">{{ tag.name }}</span>
+        }
+      </div>
+    }
+  </div>
+
+  <!-- Tab Bar -->
+  <div class="community-header__tabs">
+    <button
+      class="tab-btn"
+      type="button"
+      [class.tab-btn--active]="activeTab === 'tab-posts'"
+      (click)="tabChanged.emit('tab-posts')">
+      Posts
+    </button>
+    <button
+      class="tab-btn"
+      type="button"
+      [class.tab-btn--active]="activeTab === 'tab-members'"
+      (click)="tabChanged.emit('tab-members')">
+      Members
+    </button>
+    @if (canModerate) {
+      <button
+        class="tab-btn"
+        type="button"
+        [class.tab-btn--active]="activeTab === 'tab-moderation'"
+        (click)="tabChanged.emit('tab-moderation')">
+        Moderation
+      </button>
+    }
+    <button
+      class="tab-btn"
+      type="button"
+      [class.tab-btn--active]="activeTab === 'tab-analytics'"
+      (click)="tabChanged.emit('tab-analytics')">
+      Analytics
+    </button>
+  </div>
+</div>

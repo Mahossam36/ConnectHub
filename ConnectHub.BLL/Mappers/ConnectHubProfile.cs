@@ -54,7 +54,7 @@ public class ConnectHubProfile : Profile
 
         // Attachment mappings
         CreateMap<Attachment, AttachmentResponseDto>()
-            .ForMember(dest => dest.FileUrl, opt => opt.MapFrom(src => string.IsNullOrEmpty(src.FilePath) ? string.Empty : $"/{src.FilePath}"));
+            .ForMember(dest => dest.FileUrl, opt => opt.MapFrom(src => string.IsNullOrEmpty(src.FilePath) ? string.Empty : $"/{src.FilePath.Replace('\\', '/').TrimStart('/')}"));
 
         // Notification mappings
         CreateMap<Notification, NotificationResponseDto>();

@@ -17,6 +17,21 @@ export class BffApiService {
     const url = `${environment.bff.baseUrl.replace(/\/$/, '')}/${path.replace(/^\//, '')}`;
     return this.http.post<TResponse>(url, body, { withCredentials: environment.bff.useCookieSession }).pipe(catchError((error) => this.toApiError(error)));
   }
+  put<TResponse>(path: string, body?: unknown): Observable<TResponse> {
+    if (!path) return throwError(() => ({ message: 'This BFF endpoint has not been configured yet.' } satisfies ApiError));
+    const url = `${environment.bff.baseUrl.replace(/\/$/, '')}/${path.replace(/^\//, '')}`;
+    return this.http.put<TResponse>(url, body, { withCredentials: environment.bff.useCookieSession }).pipe(catchError((error) => this.toApiError(error)));
+  }
+  delete<TResponse>(path: string): Observable<TResponse> {
+    if (!path) return throwError(() => ({ message: 'This BFF endpoint has not been configured yet.' } satisfies ApiError));
+    const url = `${environment.bff.baseUrl.replace(/\/$/, '')}/${path.replace(/^\//, '')}`;
+    return this.http.delete<TResponse>(url, { withCredentials: environment.bff.useCookieSession }).pipe(catchError((error) => this.toApiError(error)));
+  }
+  postForm<TResponse>(path: string, body: FormData): Observable<TResponse> {
+    if (!path) return throwError(() => ({ message: 'This BFF endpoint has not been configured yet.' } satisfies ApiError));
+    const url = `${environment.bff.baseUrl.replace(/\/$/, '')}/${path.replace(/^\//, '')}`;
+    return this.http.post<TResponse>(url, body, { withCredentials: environment.bff.useCookieSession }).pipe(catchError((error) => this.toApiError(error)));
+  }
   private toApiError(error: HttpErrorResponse): Observable<never> {
     const payload = error.error as { detail?: string; title?: string; errors?: Record<string, string[]> } | null;
     return throwError(() => ({

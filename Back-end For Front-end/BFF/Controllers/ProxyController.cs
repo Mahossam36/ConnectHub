@@ -9,6 +9,7 @@ namespace BFF.Controllers;
 
 [ApiController]
 [Route("api/{**path}")]
+[Route("uploads/{**path}")]
 public sealed class ProxyController(
     ISessionService sessionService,
     IAccessTokenService accessTokenService,
@@ -19,13 +20,38 @@ public sealed class ProxyController(
     [AcceptVerbs("GET", "POST", "PUT", "PATCH", "DELETE")]
     public async Task Proxy(string? path, CancellationToken cancellationToken)
     {
+        // Ensure request body can be read multiple times by downstream components
+        // (e.g. moderation) and by the integration forwarder.
+        Request.EnableBuffering();
+
+        // DEBUG: Log body state right after EnableBuffering
+        logger.LogInformation(
+            "[BODY-TRACE] After EnableBuffering — Method={Method}, Path={Path}, BodyType={BodyType}, CanSeek={CanSeek}, CanRead={CanRead}, Position={Position}, ContentLength={ContentLength}, ContentType={ContentType}",
+            Request.Method, path,
+            Request.Body.GetType().Name,
+            Request.Body.CanSeek,
+            Request.Body.CanRead,
+            Request.Body.CanSeek ? Request.Body.Position : -1,
+            Request.ContentLength,
+            Request.ContentType);
+
+        var isUploadsPath = Request.Path.StartsWithSegments("/uploads");
+        var isPublicAttachmentDownload = Request.Method.Equals("GET", StringComparison.OrdinalIgnoreCase)
+            && path?.StartsWith("Attachments/", StringComparison.OrdinalIgnoreCase) == true;
+        var allowsAnonymousMedia = isUploadsPath || isPublicAttachmentDownload;
         var session = await sessionService.GetCurrentAsync(HttpContext, cancellationToken);
-        if (session is null)
+        if (session is null && !allowsAnonymousMedia)
         {
             sessionService.ClearCookie(HttpContext);
             Response.StatusCode = StatusCodes.Status401Unauthorized;
             return;
         }
+
+        // DEBUG: Log body state after session retrieval
+        logger.LogInformation(
+            "[BODY-TRACE] After GetCurrentAsync — Position={Position}, Length={Length}",
+            Request.Body.CanSeek ? Request.Body.Position : -1,
+            Request.Body.CanSeek ? Request.Body.Length : -1);
 
         var moderation = await ModerateIfRequiredAsync(path, cancellationToken);
         if (moderation == ModerationOutcome.Invalid)
@@ -37,28 +63,57 @@ public sealed class ProxyController(
         if (moderation == ModerationOutcome.Flagged)
         {
             Response.StatusCode = StatusCodes.Status422UnprocessableEntity;
-            await Response.WriteAsJsonAsync(new { code = "CONTENT_MODERATION_FAILED", message = "This content doesn’t meet our community guidelines. Please try something else." }, cancellationToken);
+            await Response.WriteAsJsonAsync(new { code = "CONTENT_MODERATION_FAILED", message = "This content doesn't meet our community guidelines. Please try something else." }, cancellationToken);
             return;
         }
         if (moderation == ModerationOutcome.Unavailable)
         {
-            Response.StatusCode = StatusCodes.Status503ServiceUnavailable;
-            await Response.WriteAsJsonAsync(new { code = "MODERATION_UNAVAILABLE", message = "We couldn’t check your content right now. Please try again in a moment." }, cancellationToken);
-            return;
+            logger.LogWarning("Content moderation service was unavailable; proceeding with request.");
         }
 
-        session = await accessTokenService.GetSessionWithValidAccessTokenAsync(session, cancellationToken);
-        if (session is null)
+        // DEBUG: Log body state after moderation
+        logger.LogInformation(
+            "[BODY-TRACE] After Moderation — Position={Position}, Length={Length}",
+            Request.Body.CanSeek ? Request.Body.Position : -1,
+            Request.Body.CanSeek ? Request.Body.Length : -1);
+
+        if (session is not null)
         {
-            await sessionService.RemoveCurrentAsync(HttpContext, cancellationToken);
-            Response.StatusCode = StatusCodes.Status401Unauthorized;
-            return;
+            session = await accessTokenService.GetSessionWithValidAccessTokenAsync(session, cancellationToken);
+            if (session is null && !allowsAnonymousMedia)
+            {
+                await sessionService.RemoveCurrentAsync(HttpContext, cancellationToken);
+                Response.StatusCode = StatusCodes.Status401Unauthorized;
+                return;
+            }
         }
 
-        using var upstream = await integrationClient.ForwardAsync(Request, path, session, cancellationToken);
-        Response.StatusCode = (int)upstream.StatusCode;
-        CopyHeaders(upstream);
-        await upstream.Content.CopyToAsync(Response.Body, cancellationToken);
+        // DEBUG: Log body state before forwarding
+        logger.LogInformation(
+            "[BODY-TRACE] Before ForwardAsync — Position={Position}, Length={Length}",
+            Request.Body.CanSeek ? Request.Body.Position : -1,
+            Request.Body.CanSeek ? Request.Body.Length : -1);
+
+        try
+        {
+            var effectivePath = Request.Path.StartsWithSegments("/uploads") ? Request.Path.Value?.TrimStart('/') : path;
+            using var upstream = await integrationClient.ForwardAsync(Request, effectivePath ?? path, session, cancellationToken);
+            Response.StatusCode = (int)upstream.StatusCode;
+            CopyHeaders(upstream);
+            await upstream.Content.CopyToAsync(Response.Body, cancellationToken);
+        }
+        catch (OperationCanceledException)
+        {
+            // A newer debounced client request superseded this one, or the connection closed; no response is required.
+        }
+        catch (HttpRequestException ex) when (ex.InnerException is System.Net.Sockets.SocketException)
+        {
+            logger.LogWarning(ex, "Upstream connection aborted for /api/{Path}", path);
+            if (!Response.HasStarted)
+            {
+                Response.StatusCode = StatusCodes.Status502BadGateway;
+            }
+        }
     }
 
     private async Task<ModerationOutcome> ModerateIfRequiredAsync(string? path, CancellationToken cancellationToken)

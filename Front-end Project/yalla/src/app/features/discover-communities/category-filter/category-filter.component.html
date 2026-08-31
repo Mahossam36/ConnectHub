@@ -1,0 +1,21 @@
+<section class="mb-3xl">
+  <h2 class="font-headline-md text-headline-md text-on-background mb-lg">{{ heading }}</h2>
+  <div class="flex flex-wrap gap-sm">
+    @for (category of categories; track category.id) {
+      <button
+        type="button"
+        class="px-6 py-2 rounded-full font-label-md text-label-md transition-colors"
+        [class.bg-burgundy-deep]="selectedCategoryId === category.id"
+        [class.text-white]="selectedCategoryId === category.id"
+        [class.shadow-sm]="selectedCategoryId === category.id"
+        [class.bg-surface-container-lowest]="selectedCategoryId !== category.id"
+        [class.text-on-surface-variant]="selectedCategoryId !== category.id"
+        [class.border]="selectedCategoryId !== category.id"
+        [class.border-outline-variant]="selectedCategoryId !== category.id"
+        [class.hover:bg-surface-container-high]="selectedCategoryId !== category.id"
+        (click)="onSelect(category.id)">
+        {{ category.name }}
+      </button>
+    }
+  </div>
+</section>

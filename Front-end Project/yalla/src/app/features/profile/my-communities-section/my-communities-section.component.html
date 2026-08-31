@@ -1,0 +1,12 @@
+<section class="my-communities">
+  <div class="my-communities__header">
+    <h2 class="my-communities__heading">{{ heading }}</h2>
+    <span class="my-communities__badge">{{ communities.length }} Active</span>
+  </div>
+
+  <div class="my-communities__grid">
+    @for (community of communities; track community.id) {
+      <app-community-card [community]="community" [showRole]="true" />
+    }
+  </div>
+</section>

@@ -1,0 +1,322 @@
+<article
+  class="post-card"
+  (click)="closeMenu()"
+>
+  <!-- Post header -->
+  <header class="post-header">
+
+    <div class="author-section">
+
+      <!-- Avatar -->
+      <ng-container
+        *ngIf="
+          post.author?.avatarUrl;
+          else authorInitial
+        "
+      >
+        <img
+          class="avatar"
+          [src]="post.author.avatarUrl!"
+          [alt]="getDisplayName()"
+        />
+      </ng-container>
+
+      <ng-template #authorInitial>
+        <div class="avatar letter-avatar">
+          {{ getInitial() }}
+        </div>
+      </ng-template>
+
+      <!-- Author -->
+      <div class="author-info">
+
+        <strong>
+          {{ getDisplayName() }}
+        </strong>
+
+        <span>
+          {{ formatDate(post.createdAt) }}
+        </span>
+
+      </div>
+
+    </div>
+
+    <!-- Basic menu -->
+    <div
+      class="menu-wrapper"
+      (click)="$event.stopPropagation()"
+    >
+
+      <button
+        type="button"
+        class="menu-button"
+        aria-label="Post options"
+        [attr.aria-expanded]="menuOpen"
+        (click)="toggleMenu($event)"
+      >
+        <span class="material-symbols-outlined">
+          more_horiz
+        </span>
+      </button>
+
+      <div
+        *ngIf="menuOpen"
+        class="post-menu"
+      >
+
+        <!-- Owner action -->
+        <button
+          *ngIf="isOwnPost()"
+          type="button"
+          class="menu-item danger"
+          (click)="deletePost()"
+        >
+          <span class="material-symbols-outlined">
+            delete
+          </span>
+
+          Delete
+        </button>
+
+        <!-- Other users -->
+        <button
+          *ngIf="!isOwnPost()"
+          type="button"
+          class="menu-item"
+          (click)="reportPost()"
+        >
+          <span class="material-symbols-outlined">
+            flag
+          </span>
+
+          Report
+        </button>
+
+      </div>
+
+    </div>
+
+  </header>
+
+  <!-- Error -->
+  <div
+    *ngIf="errorMessage"
+    class="post-error"
+    role="alert"
+  >
+    {{ errorMessage }}
+  </div>
+
+  <!-- Post content -->
+  <div
+    *ngIf="post.content"
+    class="post-content"
+    [innerHTML]="post.content"
+  ></div>
+
+  <!-- Attachments -->
+  <div
+    *ngIf="post.attachments?.length"
+    class="attachments"
+    [class.single]="
+      post.attachments?.length === 1
+    "
+    [class.two]="
+      post.attachments?.length === 2
+    "
+  >
+
+    <ng-container
+      *ngFor="
+        let attachment of post.attachments;
+        trackBy: trackByAttachmentId
+      "
+    >
+
+      <!-- Image -->
+      <a
+        *ngIf="
+          isImage(attachment) &&
+          getAttachmentUrl(attachment)
+        "
+        class="image-attachment"
+        [href]="
+          getAttachmentUrl(attachment)
+        "
+        target="_blank"
+        rel="noopener noreferrer"
+        (click)="$event.stopPropagation()"
+      >
+        <img
+          [src]="
+            getAttachmentUrl(attachment)
+          "
+          [alt]="
+            attachment.fileName ||
+            'Post image'
+          "
+          loading="lazy"
+        />
+      </a>
+
+      <!-- Video -->
+      <video
+        *ngIf="
+          isVideo(attachment) &&
+          getAttachmentUrl(attachment)
+        "
+        class="video-attachment"
+        controls
+        preload="metadata"
+        (click)="$event.stopPropagation()"
+      >
+        <source
+          [src]="
+            getAttachmentUrl(attachment)
+          "
+          [type]="
+            attachment.contentType || ''
+          "
+        />
+
+        Your browser does not support
+        video playback.
+      </video>
+
+      <!-- PDF / document -->
+      <a
+        *ngIf="
+          !isImage(attachment) &&
+          !isVideo(attachment) &&
+          getAttachmentUrl(attachment)
+        "
+        class="file-attachment"
+        [href]="
+          getAttachmentUrl(attachment)
+        "
+        target="_blank"
+        rel="noopener noreferrer"
+        (click)="$event.stopPropagation()"
+      >
+
+        <span class="file-icon">
+          <span class="material-symbols-outlined">
+            {{
+              isPdf(attachment)
+                ? 'picture_as_pdf'
+                : getOtherAttachmentIcon(
+                    attachment
+                  )
+            }}
+          </span>
+        </span>
+
+        <span class="file-details">
+
+          <strong>
+            {{
+              attachment.fileName ||
+              'Attachment'
+            }}
+          </strong>
+
+          <small>
+            {{ attachment.fileSize / 1024 / 1024 | number:'1.0-2' }}
+            MB
+          </small>
+
+        </span>
+
+        <span
+          class="material-symbols-outlined"
+        >
+          open_in_new
+        </span>
+
+      </a>
+
+    </ng-container>
+
+  </div>
+
+  <!-- Actions -->
+  <footer class="post-actions">
+
+    <!-- Like -->
+    <button
+      type="button"
+      class="post-action"
+      [class.active]="
+        post.isLikedByCurrentUser
+      "
+      [disabled]="
+        isLiking || isDeleting
+      "
+      (click)="
+        toggleLike();
+        $event.stopPropagation()
+      "
+    >
+      <span
+        class="material-symbols-outlined"
+      >
+        {{
+          post.isLikedByCurrentUser
+            ? 'favorite'
+            : 'favorite_border'
+        }}
+      </span>
+
+      <span>
+        {{ post.likeCount }}
+      </span>
+    </button>
+
+    <!-- Comments -->
+    <button
+      type="button"
+      class="post-action"
+      [disabled]="isDeleting"
+      (click)="
+        openComments();
+        $event.stopPropagation()
+      "
+    >
+      <span
+        class="material-symbols-outlined"
+      >
+        chat_bubble_outline
+      </span>
+
+      <span>
+        {{ post.commentCount }}
+      </span>
+    </button>
+
+    <!-- Share -->
+    <button
+      type="button"
+      class="post-action"
+      disabled
+      title="Sharing is not available yet"
+    >
+      <span
+        class="material-symbols-outlined"
+      >
+        share
+      </span>
+    </button>
+
+  </footer>
+
+  <!-- Deleting state -->
+  <div
+    *ngIf="isDeleting"
+    class="deleting-overlay"
+  >
+    <span class="spinner"></span>
+    <span>Deleting post...</span>
+  </div>
+
+</article>
