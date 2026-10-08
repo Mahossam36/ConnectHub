@@ -1,16 +1,90 @@
-.notif-header {
-  margin-bottom: 28px;
+:host {
+  display: block;
+}
 
-  &__title {
-    margin: 0 0 8px;
-    font: 800 2rem 'Plus Jakarta Sans', sans-serif;
-    letter-spacing: -0.02em;
-    color: #800020;
+.notifications-header {
+  position: relative;
+
+  display: flex;
+  align-items: flex-start;
+
+  margin-bottom: 28px;
+  padding: 4px 0 0 18px;
+}
+
+.header-accent {
+  position: absolute;
+
+  top: 4px;
+  left: 0;
+
+  width: 4px;
+  height: 64px;
+
+  border-radius: 999px;
+
+  background: #800020;
+}
+
+.header-content {
+  min-width: 0;
+}
+
+.header-eyebrow {
+  display: block;
+
+  margin-bottom: 6px;
+
+  color: #800020;
+
+  font-size: 10px;
+  font-weight: 800;
+
+  letter-spacing: 0.14em;
+  line-height: 1.4;
+}
+
+.notifications-header h1 {
+  margin: 0 0 6px;
+
+  color: #321b1b;
+
+  font-size: 30px;
+  font-weight: 800;
+
+  letter-spacing: -0.025em;
+  line-height: 1.15;
+}
+
+.notifications-header p {
+  margin: 0;
+
+  color: #765f5f;
+
+  font-size: 14px;
+  line-height: 1.6;
+}
+
+/* =====================================================
+   MOBILE
+   ===================================================== */
+
+@media (max-width: 600px) {
+  .notifications-header {
+    margin-bottom: 22px;
+    padding-left: 15px;
   }
 
-  &__subtitle {
-    margin: 0;
-    color: #765d5e;
-    font-size: 0.95rem;
+  .header-accent {
+    height: 58px;
+  }
+
+  .notifications-header h1 {
+    font-size: 25px;
+  }
+
+  .notifications-header p {
+    font-size: 13px;
   }
 }
+

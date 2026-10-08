@@ -1,18 +1,32 @@
-// This file was empty, so nothing offset .main-content for the 320px-wide
-// fixed side panel (see fixed-side-panel.scss .side-panel width). Every routed
-// page was rendering underneath/behind it on desktop.
+:host {
+  display: block;
+}
+
+// =====================================================
+// PAGE AREA
+// =====================================================
+// Reserves space below the fixed navbar (64px) and to the
+// right of the fixed side panel (320px) so page content is
+// never rendered underneath either fixed element.
 
 .page-area {
-  display: flex;
-  min-height: 100dvh;
+  padding-top: 64px;
 }
 
 .main-content {
-  flex: 1;
-  min-width: 0;
-  margin-left: 320px;
+  min-height: calc(100dvh - 64px);
 }
 
+// Desktop: fixed side panel is visible, so main content
+// needs a left margin to clear it.
+@media (min-width: 901px) {
+  .main-content {
+    margin-left: 320px;
+  }
+}
+
+// Mobile: fixed side panel hides itself (see
+// fixed-side-panel.scss), so no left margin is needed.
 @media (max-width: 900px) {
   .main-content {
     margin-left: 0;

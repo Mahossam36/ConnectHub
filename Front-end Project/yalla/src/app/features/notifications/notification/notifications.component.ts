@@ -1,6 +1,6 @@
 import { Component, OnInit, signal } from '@angular/core';
 import { CommonModule } from '@angular/common';
-
+import { Router } from '@angular/router';
 import { Notification } from '../../../core/models/feed.models';
 import { FeedApiService } from '../../../core/services/feed-api.service';
 import { NotificationsHeaderComponent } from '../notifications-header/notifications-header.component';
@@ -17,7 +17,7 @@ export class NotificationsComponent implements OnInit {
   notifications = signal<Notification[]>([]);
   unreadCount = signal<number>(0);
 
-  constructor(private readonly feedApi: FeedApiService) {}
+  constructor(private readonly feedApi: FeedApiService, private router: Router) {}
 
   ngOnInit(): void {
     this.feedApi.getNotifications().subscribe((feed) => {
@@ -35,6 +35,8 @@ export class NotificationsComponent implements OnInit {
         this.unreadCount.update((count) => Math.max(0, count - 1));
       });
     }
-    // TODO: navigate to notification.targetUrl (e.g. this.router.navigateByUrl(...)) if present.
+
+
+
   }
 }

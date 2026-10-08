@@ -1,0 +1,215 @@
+scss
+// =====================================================
+// ADD / CREATE BUTTON
+// =====================================================
+
+.add-button {
+  width: 32px;
+  height: 32px;
+
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  flex-shrink: 0;
+
+  padding: 0;
+
+  border: 0;
+  border-radius: 8px;
+
+  background: transparent;
+  color: #800020;
+
+  cursor: pointer;
+
+  transition:
+    background-color 0.15s ease,
+    color 0.15s ease,
+    transform 0.15s ease;
+}
+
+.add-button:hover {
+  background: #fff0ef;
+  color: #6d001b;
+
+  transform: scale(1.05);
+}
+
+.add-button:active {
+  transform: scale(0.96);
+}
+
+.add-button .material-symbols-outlined {
+  font-size: 21px;
+  color: inherit;
+}
+
+
+// =====================================================
+// CREATE INPUT
+// =====================================================
+
+.create-input-wrapper {
+  height: 50px;
+
+  display: flex;
+  align-items: center;
+
+  gap: 9px;
+
+  padding: 0 9px 0 14px;
+
+  box-sizing: border-box;
+
+  border: 1px solid #800020;
+
+  border-radius: 11px;
+
+  background: #ffffff;
+
+  box-shadow:
+    0 0 0 3px rgba(128, 0, 32, 0.08);
+
+  animation:
+    createInputIn 0.18s ease;
+}
+
+@keyframes createInputIn {
+
+  from {
+    opacity: 0;
+    transform: translateY(-3px);
+  }
+
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+
+}
+
+.create-input-wrapper
+.material-symbols-outlined {
+  color: #800020;
+  font-size: 20px;
+  flex-shrink: 0;
+}
+
+.create-input-wrapper input {
+  width: 100%;
+  min-width: 0;
+
+  border: 0;
+  outline: 0;
+
+  background: transparent;
+
+  color: #321b1b;
+
+  font-family: inherit;
+  font-size: 13px;
+}
+
+.create-input-wrapper input::placeholder {
+  color: #a18d8d;
+}
+
+
+// =====================================================
+// CONFIRM CREATE
+// =====================================================
+
+.confirm-create-button,
+.cancel-create-button {
+  width: 32px;
+  height: 32px;
+
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  flex-shrink: 0;
+
+  padding: 0;
+
+  border: 0;
+  border-radius: 8px;
+
+  cursor: pointer;
+
+  transition:
+    background-color 0.15s ease,
+    color 0.15s ease;
+}
+
+.confirm-create-button {
+  background: #800020;
+  color: #ffffff;
+}
+
+.confirm-create-button:hover:not(:disabled) {
+  background: #6d001b;
+}
+
+.confirm-create-button:disabled {
+  opacity: 0.35;
+  cursor: not-allowed;
+}
+
+.confirm-create-button
+.material-symbols-outlined {
+  color: inherit;
+  font-size: 19px;
+}
+
+
+// =====================================================
+// CANCEL CREATE
+// =====================================================
+
+.cancel-create-button {
+  background: transparent;
+  color: #8a7777;
+}
+
+.cancel-create-button:hover {
+  background: #fff0ef;
+  color: #800020;
+}
+
+.cancel-create-button
+.material-symbols-outlined {
+  color: inherit;
+  font-size: 19px;
+}
+
+
+// =====================================================
+// CREATE ITEM
+// =====================================================
+
+.create-item {
+  margin-top: 4px;
+
+  border-top:
+    1px solid rgba(128, 0, 32, 0.08);
+
+  border-radius:
+    0 0 8px 8px;
+
+  color: #800020;
+
+  font-weight: 700;
+}
+
+.create-item:hover {
+  background: #800020;
+  color: #ffffff;
+}
+
+.create-item:hover
+.material-symbols-outlined {
+  color: #ffffff;
+}
+

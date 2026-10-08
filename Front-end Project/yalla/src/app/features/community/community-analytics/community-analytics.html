@@ -1,40 +1,131 @@
-<div class="analytics-layout">
-  <!-- Stat Cards Grid -->
+<section class="analytics-layout">
+
+  <!-- =====================================================
+       STATISTICS
+       ===================================================== -->
   <div class="stats-grid">
-    <div class="stat-card">
-      <span class="stat-card__label">Total Members</span>
-      <span class="stat-card__value">{{ totalMembers }}</span>
-    </div>
-    <div class="stat-card">
-      <span class="stat-card__label">Total Posts</span>
-      <span class="stat-card__value">{{ totalPosts }}</span>
-    </div>
-    <div class="stat-card">
-      <span class="stat-card__label">Total Comments</span>
-      <span class="stat-card__value">{{ totalCommentsCount }}</span>
-    </div>
-    <div class="stat-card stat-card--alert">
-      <span class="stat-card__label">Pending Reports</span>
-      <span class="stat-card__value stat-card__value--alert">{{ pendingReportsCount }}</span>
-    </div>
+
+    <article class="stat-card">
+
+      <div class="stat-card__label">
+        Total Members
+      </div>
+
+      <div class="stat-card__value">
+        {{ totalMembers }}
+      </div>
+
+    </article>
+
+
+    <article class="stat-card">
+
+      <div class="stat-card__label">
+        Total Posts
+      </div>
+
+      <div class="stat-card__value">
+        {{ totalPosts }}
+      </div>
+
+    </article>
+
+
+    <article class="stat-card">
+
+      <div class="stat-card__label">
+        Total Comments
+      </div>
+
+      <div class="stat-card__value">
+        {{ totalCommentsCount }}
+      </div>
+
+    </article>
+
+
+    <article class="stat-card stat-card--alert">
+
+      <div class="stat-card__label">
+        Pending Reports
+      </div>
+
+      <div class="stat-card__value stat-card__value--alert">
+        {{ pendingReportsCount }}
+      </div>
+
+    </article>
+
   </div>
 
-  <!-- Activity Chart -->
-  <div class="activity-chart-card">
-    <h3 class="activity-chart-card__title">Community Activity</h3>
-    <div class="bar-chart">
-      <div class="bar-chart__bars">
-        @for (bar of weeklyBars; track bar.day) {
-          <div class="bar-chart__bar-wrap">
-            <div class="bar-chart__bar" [style.height.%]="bar.height"></div>
-          </div>
-        }
+
+  <!-- =====================================================
+       ACTIVITY
+       ===================================================== -->
+  <section class="activity-chart-card">
+
+    <div class="activity-chart-card__header">
+
+      <div>
+
+        <h3 class="activity-chart-card__title">
+          Community Activity
+        </h3>
+
+        <p class="activity-chart-card__subtitle">
+          Weekly activity overview
+        </p>
+
       </div>
-      <div class="bar-chart__labels">
-        @for (bar of weeklyBars; track bar.day) {
-          <span class="bar-chart__label">{{ bar.day }}</span>
-        }
-      </div>
+
+      <span class="activity-chart-card__period">
+        This Week
+      </span>
+
     </div>
-  </div>
-</div>
+
+
+    <div class="bar-chart">
+
+      <div class="bar-chart__bars">
+
+        @for (
+          bar of weeklyBars;
+          track bar.day
+        ) {
+
+          <div class="bar-chart__bar-wrap">
+
+            <div
+              class="bar-chart__bar"
+              [style.height.%]="bar.height">
+
+            </div>
+
+          </div>
+
+        }
+
+      </div>
+
+
+      <div class="bar-chart__labels">
+
+        @for (
+          bar of weeklyBars;
+          track bar.day
+        ) {
+
+          <span class="bar-chart__label">
+            {{ bar.day }}
+          </span>
+
+        }
+
+      </div>
+
+    </div>
+
+  </section>
+
+</section>

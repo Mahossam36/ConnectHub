@@ -1,45 +1,186 @@
-.my-communities {
-  margin-bottom: 48px;
+:host {
+  display: block;
+}
 
-  &__header {
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
+
+// =====================================================
+// SECTION
+// =====================================================
+
+.my-communities-section {
+  width: 100%;
+  margin-bottom: 64px;
+}
+
+
+// =====================================================
+// SECTION HEADER
+// =====================================================
+
+.section-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+
+  margin-bottom: 32px;
+  padding-bottom: 16px;
+
+  border-bottom: 1px solid rgba(128, 0, 32, 0.10);
+}
+
+.section-header h2 {
+  margin: 0;
+
+  color: #281717;
+
+  font-family: "Plus Jakarta Sans", sans-serif;
+
+  font-size: 32px;
+  line-height: 40px;
+  font-weight: 700;
+
+  letter-spacing: -0.01em;
+}
+
+
+// =====================================================
+// ACTIVE COUNT
+// =====================================================
+
+.active-count {
+  display: inline-flex;
+  align-items: center;
+
+  min-height: 32px;
+
+  padding: 0 14px;
+
+  border-radius: 999px;
+
+  background: #ffe1e0;
+
+  color: #584141;
+
+  font-family: "Be Vietnam Pro", sans-serif;
+
+  font-size: 13px;
+  line-height: 20px;
+  font-weight: 600;
+}
+
+
+// =====================================================
+// COMMUNITY GRID
+// =====================================================
+
+.communities-grid {
+  display: grid;
+
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+
+  gap: 24px;
+
+  align-items: stretch;
+}
+
+
+// =====================================================
+// EMPTY STATE
+// =====================================================
+
+.empty-state {
+  min-height: 220px;
+
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+
+  padding: 32px;
+
+  border: 1px solid rgba(128, 0, 32, 0.08);
+  border-radius: 16px;
+
+  background: #ffffff;
+
+  text-align: center;
+}
+
+.empty-state .material-symbols-outlined {
+  margin-bottom: 12px;
+
+  color: #800020;
+
+  font-size: 42px;
+}
+
+.empty-state h3 {
+  margin: 0 0 8px;
+
+  color: #281717;
+
+  font-family: "Plus Jakarta Sans", sans-serif;
+
+  font-size: 20px;
+  font-weight: 700;
+}
+
+.empty-state p {
+  margin: 0;
+
+  color: #584141;
+
+  font-family: "Be Vietnam Pro", sans-serif;
+
+  font-size: 14px;
+}
+
+
+// =====================================================
+// TABLET
+// =====================================================
+
+@media (max-width: 1000px) {
+
+  .communities-grid {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+
+}
+
+
+// =====================================================
+// MOBILE
+// =====================================================
+
+@media (max-width: 640px) {
+
+  .my-communities-section {
+    margin-bottom: 40px;
+  }
+
+  .section-header {
     margin-bottom: 24px;
-    padding-bottom: 14px;
-    border-bottom: 1px solid rgba(128, 0, 32, 0.1);
+    padding-bottom: 12px;
   }
 
-  &__heading {
-    margin: 0;
-    font: 700 1.4rem 'Plus Jakarta Sans', sans-serif;
-    color: #281717;
+  .section-header h2 {
+    font-size: 24px;
+    line-height: 32px;
   }
 
-  &__badge {
-    padding: 5px 14px;
-    border-radius: 999px;
-    background: #ffe1e0;
-    color: #800020;
-    font-size: 0.8rem;
-    font-weight: 700;
+  .active-count {
+    min-height: 28px;
+
+    padding: 0 10px;
+
+    font-size: 11px;
   }
 
-  &__grid {
-    display: grid;
-    grid-template-columns: repeat(3, minmax(0, 1fr));
-    gap: 24px;
+  .communities-grid {
+    grid-template-columns: 1fr;
+
+    gap: 16px;
   }
 
-  @media (max-width: 1100px) {
-    &__grid {
-      grid-template-columns: repeat(2, minmax(0, 1fr));
-    }
-  }
-
-  @media (max-width: 640px) {
-    &__grid {
-      grid-template-columns: 1fr;
-    }
-  }
 }

@@ -1,10 +1,36 @@
-<div class="notif-list">
-  @for (notification of notifications; track notification.id) {
+<div class="notification-list">
+
+  @for (
+    notification of notifications;
+    track notification.id
+  ) {
+
     <app-notification-card
       [notification]="notification"
       (select)="selectNotification.emit(notification)">
     </app-notification-card>
+
   } @empty {
-    <p class="notif-list__empty">You're all caught up.</p>
+
+    <div class="empty-notifications">
+
+      <div class="empty-icon">
+        <span class="material-symbols-outlined">
+          notifications_none
+        </span>
+      </div>
+
+      <h3>
+        You're all caught up
+      </h3>
+
+      <p>
+        New notifications from your communities and connections
+        will appear here.
+      </p>
+
+    </div>
+
   }
+
 </div>

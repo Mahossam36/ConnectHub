@@ -1,10 +1,12 @@
-import { Component } from '@angular/core';
+import { Component, inject } from '@angular/core';
 
 import { Router, RouterLink, RouterLinkActive } from '@angular/router';
 
 import { NavigationEnd } from '@angular/router';
 
 import { filter } from 'rxjs';
+
+import { CommunityUiService } from '../../communities/community-ui.service';
 
 @Component({
   selector: 'app-fixed-side-panel',
@@ -18,6 +20,8 @@ import { filter } from 'rxjs';
   styleUrl: './fixed-side-panel.scss',
 })
 export class FixedSidePanelComponent {
+  private readonly communityUi = inject(CommunityUiService);
+
   // =====================================================
   // COMMUNITY STATE
   // =====================================================
@@ -66,5 +70,13 @@ export class FixedSidePanelComponent {
 
   toggleCommunities(): void {
     this.communitiesExpanded = !this.communitiesExpanded;
+  }
+
+  // =====================================================
+  // CREATE COMMUNITY
+  // =====================================================
+
+  openCreateCommunity(): void {
+    this.communityUi.openCreateDialog();
   }
 }

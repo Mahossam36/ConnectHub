@@ -4,16 +4,13 @@ import { authGuard } from './core/guards/auth.guard';
 
 import { LoginComponent } from './features/auth/login/login.component';
 import { RegisterComponent } from './features/auth/register/register.component';
-
-import { HomeComponent } from './features/home/Home/home.component';
+import { NotificationsComponent } from '../app/features/notifications/notification/notifications.component';
+import { HomeComponent } from './features/home/feed/feed.component';
 import { MainLayoutComponent } from './main-layout/main-layout';
-
-// NEW: pages that were built but never wired into routing.
-import { DiscoverCommunitiesComponent } from './features/communities/discover-communities.component';
 import { MyCommunitiesComponent } from './features/communities/my-communities.component';
-import { NotificationsComponent } from './features/notifications/notification/notifications.component';
-import { ProfileComponent } from './features/profile/profile/profile.component';
+import { DiscoverCommunitiesComponent } from './features/communities/discover-communities.component';
 import { CommunityComponent } from './features/community/community/community.component';
+import { ProfileComponent } from './features/profile/profile/profile.component';
 
 export const routes: Routes = [
   {
@@ -26,9 +23,10 @@ export const routes: Routes = [
     component: RegisterComponent,
   },
 
+  // CommunityComponent renders its own <app-navbar>/<app-side-panel>
+  // (it's a self-contained page), so it must NOT be nested under
+  // MainLayoutComponent — that would double up the navbar/side panel.
   {
-    // CommunityComponent renders its own <app-navbar>/<app-side-panel>, so it
-    // sits outside MainLayoutComponent to avoid a duplicated nav shell.
     path: 'community/:id',
     component: CommunityComponent,
     canActivate: [authGuard],
@@ -53,12 +51,12 @@ export const routes: Routes = [
         component: MyCommunitiesComponent,
       },
       {
-        path: 'notifications',
-        component: NotificationsComponent,
-      },
-      {
         path: 'profile',
         component: ProfileComponent,
+      },
+      {
+        path: 'notifications',
+        component: NotificationsComponent,
       },
     ],
   },

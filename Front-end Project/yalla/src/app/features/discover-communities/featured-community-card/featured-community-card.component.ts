@@ -2,6 +2,7 @@ import { Component, EventEmitter, Input, Output } from '@angular/core';
 import { CommonModule } from '@angular/common';
 
 import { Community } from '../../../core/models/feed.models';
+import { resolveMediaUrl } from '../../../core/utils/media-url.util';
 
 @Component({
   selector: 'app-featured-community-card',
@@ -16,5 +17,9 @@ export class FeaturedCommunityCardComponent {
 
   onJoin(): void {
     this.join.emit(this.community.id);
+  }
+
+  resolveCoverUrl(): string {
+    return resolveMediaUrl(this.community?.coverImageUrl);
   }
 }

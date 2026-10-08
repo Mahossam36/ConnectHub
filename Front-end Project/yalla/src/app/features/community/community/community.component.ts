@@ -28,6 +28,7 @@ import { NavbarComponent } from '../../common/navbar/navbar/navbar';
 import { SidePanelComponent } from '../../common/side-panel/side-panel';
 import { ToastComponent } from '../../common/toast/toast';
 import { environment } from '../../../../environments/environment';
+import { resolveMediaUrl as sharedResolveMediaUrl } from '../../../core/utils/media-url.util';
 
 import { CommunityHeaderComponent } from '../community-header/community-header';
 import { CommunityFeedComponent } from '../community-feed/community-feed';
@@ -70,7 +71,7 @@ export class CommunityComponent implements OnInit {
   readonly ReportStatus = ReportStatus;
   readonly ReportTargetType = ReportTargetType;
 
-  // ── State ──────────────────────────────────────────────────────────────────
+  // â”€â”€ State â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
   readonly communityId = signal<string>('');
   readonly community = signal<CommunityDetail | null>(null);
   readonly members = signal<GroupMember[]>([]);
@@ -91,7 +92,7 @@ export class CommunityComponent implements OnInit {
     confirmAction: () => void;
   } | null>(null);
 
-  // ── Permissions ────────────────────────────────────────────────────────────
+  // â”€â”€ Permissions â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
   readonly isOwner = computed(
     () => this.getRoleNumber(this.community()?.currentUserRole) === GroupRole.Owner,
   );
@@ -105,7 +106,7 @@ export class CommunityComponent implements OnInit {
   readonly canModerate = computed(() => this.isOwner() || this.isAdmin());
   readonly canAnnounce = computed(() => this.isOwner() || this.isAdmin());
 
-  // ── Derived ────────────────────────────────────────────────────────────────
+  // â”€â”€ Derived â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
   readonly pendingReportsCount = computed(
     () =>
       this.reports().filter((r) => this.getReportStatusNumber(r.status) === ReportStatus.Pending)
@@ -116,7 +117,7 @@ export class CommunityComponent implements OnInit {
     this.posts().reduce((acc, p) => acc + (p.commentCount || 0), 0),
   );
 
-  // ── Lifecycle ──────────────────────────────────────────────────────────────
+  // â”€â”€ Lifecycle â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
   ngOnInit(): void {
     this.route.paramMap.subscribe((params) => {
       const id = params.get('id');
@@ -127,7 +128,7 @@ export class CommunityComponent implements OnInit {
     });
   }
 
-  // ── Data Loading ───────────────────────────────────────────────────────────
+  // â”€â”€ Data Loading â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
   loadCommunity(id: string): void {
     this.loading.set(true);
     this.feedApi.getCommunityDetails(id).subscribe({
@@ -168,13 +169,13 @@ export class CommunityComponent implements OnInit {
     });
   }
 
-  // ── Tab Navigation ─────────────────────────────────────────────────────────
+  // â”€â”€ Tab Navigation â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
   switchTab(tab: ActiveTab): void {
     if (tab === 'tab-moderation' && !this.canModerate()) return;
     this.activeTab.set(tab);
   }
 
-  // ── Membership ─────────────────────────────────────────────────────────────
+  // â”€â”€ Membership â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
   toggleJoin(): void {
     const comm = this.community();
     if (!comm) return;
@@ -202,7 +203,7 @@ export class CommunityComponent implements OnInit {
     this.showFeedback('Community link copied to clipboard!', 'success');
   }
 
-  // ── Post Actions (delegated up from CommunityFeedComponent) ───────────────
+  // â”€â”€ Post Actions (delegated up from CommunityFeedComponent) â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
   onPostCreated(): void {
     const id = this.communityId();
     if (id) this.loadPosts(id);
@@ -239,7 +240,7 @@ export class CommunityComponent implements OnInit {
     this.showFeedback(payload.text, payload.type);
   }
 
-  // ── Member Management (delegated from CommunityMembersComponent) ───────────
+  // â”€â”€ Member Management (delegated from CommunityMembersComponent) â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
   onMemberChanged(): void {
     const id = this.communityId();
     if (id) {
@@ -248,7 +249,7 @@ export class CommunityComponent implements OnInit {
     }
   }
 
-  // ── Moderation (delegated from CommunityModerationComponent) ──────────────
+  // â”€â”€ Moderation (delegated from CommunityModerationComponent) â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
   onReportsChanged(): void {
     this.loadReports();
   }
@@ -266,7 +267,7 @@ export class CommunityComponent implements OnInit {
     }
   }
 
-  // ── Comments ───────────────────────────────────────────────────────────────
+  // â”€â”€ Comments â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
   closeComments(): void {
     this.commentsPost.set(null);
   }
@@ -280,7 +281,7 @@ export class CommunityComponent implements OnInit {
     }
   }
 
-  // ── Auth ───────────────────────────────────────────────────────────────────
+  // â”€â”€ Auth â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
   logout(): void {
     this.auth.logout().subscribe({
       next: () => this.router.navigateByUrl('/login'),
@@ -291,7 +292,7 @@ export class CommunityComponent implements OnInit {
     });
   }
 
-  // ── Helpers ────────────────────────────────────────────────────────────────
+  // â”€â”€ Helpers â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
   getRoleNumber(role?: GroupRole | number | string | null): number {
     if (role === null || role === undefined) return 0;
     if (typeof role === 'number') return role;
@@ -316,9 +317,6 @@ export class CommunityComponent implements OnInit {
   }
 
   resolveMediaUrl(url?: string | null): string {
-    if (!url) return '';
-    if (url.startsWith('http://') || url.startsWith('https://')) return url;
-    const base = environment.bff.baseUrl.replace(/\/$/, '');
-    return `${base}/${url.replace(/^\//, '')}`;
+    return sharedResolveMediaUrl(url);
   }
 }

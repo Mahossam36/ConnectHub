@@ -1,105 +1,326 @@
-.analytics-layout {
-  display: flex;
-  flex-direction: column;
-  gap: var(--spacing-lg);
+:host {
+  display: block;
 }
 
-// â”€â”€ Stat Grid â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
+.analytics-layout {
+  display: flex;
+
+  flex-direction: column;
+
+  gap: 24px;
+}
+
+
+/* =========================================================
+   STAT GRID
+   ========================================================= */
+
 .stats-grid {
   display: grid;
-  grid-template-columns: repeat(2, 1fr);
-  gap: var(--spacing-md);
 
-  @media (min-width: 768px) {
-    grid-template-columns: repeat(4, 1fr);
-  }
+  grid-template-columns:
+    repeat(4, minmax(0, 1fr));
+
+  gap: 16px;
 }
 
 .stat-card {
-  background: #fff;
-  border-radius: 12px;
-  border: 1px solid rgba(252, 219, 218, 0.5);
-  box-shadow: 0 4px 20px rgba(128, 0, 32, 0.03);
-  padding: var(--spacing-lg);
+  min-height: 130px;
+
   display: flex;
+
   flex-direction: column;
-  gap: 10px;
 
-  &__label {
-    font-size: 11px;
-    font-weight: 700;
-    text-transform: uppercase;
-    letter-spacing: 0.08em;
-    color: #765d5e;
-  }
+  justify-content: space-between;
 
-  &__value {
-    font-size: 32px;
-    font-weight: 800;
-    color: #800020;
-    line-height: 1;
+  padding: 24px;
 
-    &--alert { color: #ba1a1a; }
-  }
-}
+  background: #ffffff;
 
-// â”€â”€ Activity Chart â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
-.activity-chart-card {
-  background: #fff;
+  border:
+    1px solid rgba(252, 219, 218, 0.5);
+
   border-radius: 12px;
-  border: 1px solid rgba(252, 219, 218, 0.5);
-  box-shadow: 0 4px 20px rgba(128, 0, 32, 0.03);
-  padding: var(--spacing-lg);
 
-  &__title {
-    font-size: 18px;
-    font-weight: 700;
-    color: #281717;
-    margin-bottom: var(--spacing-lg);
+  box-shadow:
+    0 4px 20px rgba(128, 0, 32, 0.03);
+
+  transition:
+    transform 0.2s ease,
+    box-shadow 0.2s ease;
+
+  &:hover {
+    transform: translateY(-2px);
+
+    box-shadow:
+      0 7px 24px rgba(128, 0, 32, 0.055);
   }
 }
+
+.stat-card__label {
+  margin-bottom: 10px;
+
+  color: #584141;
+
+  font-size: 11px;
+
+  line-height: 16px;
+
+  font-weight: 700;
+
+  text-transform: uppercase;
+
+  letter-spacing: 0.08em;
+}
+
+.stat-card__value {
+  color: #800020;
+
+  font-family:
+    "Plus Jakarta Sans",
+    sans-serif;
+
+  font-size: 32px;
+
+  line-height: 40px;
+
+  font-weight: 700;
+
+  letter-spacing: -0.02em;
+}
+
+.stat-card--alert {
+  .stat-card__value {
+    color: #ba1a1a;
+  }
+}
+
+
+/* =========================================================
+   CHART CARD
+   ========================================================= */
+
+.activity-chart-card {
+  padding: 24px;
+
+  background: #ffffff;
+
+  border:
+    1px solid rgba(252, 219, 218, 0.5);
+
+  border-radius: 12px;
+
+  box-shadow:
+    0 4px 20px rgba(128, 0, 32, 0.03);
+}
+
+.activity-chart-card__header {
+  display: flex;
+
+  align-items: flex-start;
+
+  justify-content: space-between;
+
+  gap: 16px;
+
+  margin-bottom: 24px;
+}
+
+.activity-chart-card__title {
+  margin: 0;
+
+  color: #281717;
+
+  font-family:
+    "Plus Jakarta Sans",
+    sans-serif;
+
+  font-size: 18px;
+
+  line-height: 26px;
+
+  font-weight: 600;
+}
+
+.activity-chart-card__subtitle {
+  margin: 3px 0 0;
+
+  color: #584141;
+
+  font-size: 12px;
+
+  line-height: 18px;
+}
+
+.activity-chart-card__period {
+  padding:
+    5px
+    10px;
+
+  border-radius: 999px;
+
+  background: #fff0ef;
+
+  color: #800020;
+
+  font-size: 11px;
+
+  line-height: 16px;
+
+  font-weight: 600;
+}
+
+
+/* =========================================================
+   BAR CHART
+   ========================================================= */
 
 .bar-chart {
-  position: relative;
+  width: 100%;
+}
 
-  &__bars {
-    display: flex;
-    align-items: flex-end;
-    justify-content: space-between;
-    gap: 8px;
-    height: 224px;
-    padding: 16px var(--spacing-md) 0;
-    border-bottom: 1px solid rgba(224, 191, 191, 0.5);
-    border-left: 1px solid rgba(224, 191, 191, 0.5);
+.bar-chart__bars {
+  height: 256px;
+
+  display: flex;
+
+  align-items: flex-end;
+
+  justify-content: space-between;
+
+  gap: 12px;
+
+  padding:
+    16px
+    16px
+    24px;
+
+  border-left:
+    1px solid rgba(252, 219, 218, 0.6);
+
+  border-bottom:
+    1px solid rgba(252, 219, 218, 0.6);
+}
+
+.bar-chart__bar-wrap {
+  height: 100%;
+
+  flex: 1;
+
+  display: flex;
+
+  align-items: flex-end;
+}
+
+.bar-chart__bar {
+  width: 100%;
+
+  min-height: 4px;
+
+  border-radius:
+    4px
+    4px
+    0
+    0;
+
+  background:
+    rgba(128, 0, 32, 0.2);
+
+  transition:
+    background 0.2s ease,
+    opacity 0.2s ease;
+
+  &:hover {
+    background:
+      rgba(128, 0, 32, 0.4);
+  }
+}
+
+.bar-chart__labels {
+  display: flex;
+
+  align-items: center;
+
+  gap: 12px;
+
+  padding:
+    10px
+    16px
+    0;
+}
+
+.bar-chart__label {
+  flex: 1;
+
+  text-align: center;
+
+  color: #584141;
+
+  font-size: 12px;
+
+  line-height: 16px;
+}
+
+
+/* =========================================================
+   RESPONSIVE
+   ========================================================= */
+
+@media (max-width: 900px) {
+  .stats-grid {
+    grid-template-columns:
+      repeat(2, minmax(0, 1fr));
+  }
+}
+
+@media (max-width: 600px) {
+  .analytics-layout {
+    gap: 16px;
   }
 
-  &__bar-wrap {
-    flex: 1;
-    display: flex;
-    align-items: flex-end;
-    height: 100%;
+  .stats-grid {
+    grid-template-columns: 1fr 1fr;
+
+    gap: 10px;
   }
 
-  &__bar {
-    width: 100%;
-    background: rgba(128, 0, 32, 0.2);
-    border-radius: 4px 4px 0 0;
-    transition: background 0.2s;
-    cursor: default;
+  .stat-card {
+    min-height: 110px;
 
-    &:hover { background: rgba(128, 0, 32, 0.4); }
+    padding: 16px;
   }
 
-  &__labels {
-    display: flex;
-    justify-content: space-between;
-    padding: 10px var(--spacing-md) 0;
+  .stat-card__value {
+    font-size: 25px;
+
+    line-height: 32px;
   }
 
-  &__label {
-    flex: 1;
-    text-align: center;
-    font-size: 12px;
-    color: #765d5e;
+  .activity-chart-card {
+    padding: 16px;
+  }
+
+  .activity-chart-card__period {
+    display: none;
+  }
+
+  .bar-chart__bars {
+    height: 200px;
+
+    gap: 6px;
+
+    padding-left: 8px;
+    padding-right: 8px;
+  }
+
+  .bar-chart__labels {
+    gap: 6px;
+
+    padding-left: 8px;
+    padding-right: 8px;
+  }
+
+  .bar-chart__label {
+    font-size: 10px;
   }
 }

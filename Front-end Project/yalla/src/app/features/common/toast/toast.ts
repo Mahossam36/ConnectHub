@@ -19,10 +19,10 @@ export class ToastComponent {
   get icon(): string {
     switch (this.type) {
       case 'success':
-        return '✓';
+        return 'âœ“';
 
       case 'error':
-        return '×';
+        return 'Ã—';
 
       case 'warning':
         return '!';

@@ -25,16 +25,16 @@ export class NotificationCardComponent {
   get icon(): NotificationIcon {
     switch (this.notification.type) {
       case 'PostLike':
-        return { name: 'favorite', colorClass: 'icon-like' };
+        return { name: 'favorite', colorClass: 'text-error' };
       case 'PostComment':
-        return { name: 'chat_bubble', colorClass: 'icon-comment' };
+        return { name: 'chat_bubble', colorClass: 'text-primary' };
       case 'GroupInvite':
       case 'GroupAdd':
-        return { name: 'group_add', colorClass: 'icon-invite' };
+        return { name: 'group_add', colorClass: 'text-gold-metallic' };
       case 'Mention':
-        return { name: 'alternate_email', colorClass: 'icon-mention' };
+        return { name: 'alternate_email', colorClass: 'text-secondary' };
       default:
-        return { name: 'notifications', colorClass: 'icon-default' };
+        return { name: 'notifications', colorClass: 'text-on-surface-variant' };
     }
   }
 

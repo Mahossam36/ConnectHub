@@ -2,17 +2,15 @@
 
   <!-- NAVBAR -->
   <app-navbar
-    (menuClicked)="sidePanelOpen = true">
+    (menuClicked)="sidePanelOpen = true"
+    (logoutClicked)="logout()">
   </app-navbar>
 
 
   <!-- PAGE AREA -->
   <div class="page-area">
 
-    <!-- ALWAYS VISIBLE SIDE PANEL -->
-    <!-- This was commented out, so the "Yalla" left nav (Home/Discover/Communities/
-         Notifications/Settings/Help + Create Post button) from every mockup screen
-         was never actually rendered. Re-enabled. -->
+    <!-- ALWAYS VISIBLE SIDE PANEL (desktop only, hidden on mobile via SCSS) -->
     <app-fixed-side-panel></app-fixed-side-panel>
 
 
@@ -27,7 +25,12 @@
   <!-- OVERLAY SIDE PANEL (mobile) -->
   <app-side-panel
     [isOpen]="sidePanelOpen"
-    (closed)="sidePanelOpen = false">
+    (closed)="sidePanelOpen = false"
+    (logoutClicked)="logout()">
   </app-side-panel>
+
+
+  <!-- GLOBAL CREATE-COMMUNITY MODAL (shared across all pages) -->
+  <app-create-community-modal [active]="true" />
 
 </div>

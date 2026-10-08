@@ -2,6 +2,7 @@ import { Component, EventEmitter, Input, Output } from '@angular/core';
 import { CommonModule } from '@angular/common';
 
 import { AuthenticatedUser } from '../../../core/models/auth.models';
+import { resolveMediaUrl } from '../../../core/utils/media-url.util';
 
 // AuthenticatedUser currently only has id/email/displayName/avatarUrl - it has no
 // username handle or bio field yet. Widening it here rather than inventing a
@@ -23,4 +24,8 @@ export class ProfileHeaderComponent {
   @Input({ required: true }) user!: ProfileUser;
   @Output() editProfile = new EventEmitter<void>();
   @Output() share = new EventEmitter<void>();
+
+  resolveAvatarUrl(): string {
+    return resolveMediaUrl(this.user?.avatarUrl);
+  }
 }

@@ -1,5 +1,6 @@
 import { DecimalPipe } from '@angular/common';
 import { ChangeDetectionStrategy, Component, EventEmitter, Input, Output } from '@angular/core';
+import { resolveMediaUrl } from '../../../core/utils/media-url.util';
 
 export type SearchVariant = 'navbar' | 'page';
 
@@ -123,5 +124,9 @@ export class SearchComponent {
 
   trackByResult(_index: number, result: SearchResult): string {
     return result.id;
+  }
+
+  resolveMediaUrl(url?: string | null): string {
+    return resolveMediaUrl(url);
   }
 }

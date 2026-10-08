@@ -1,33 +1,88 @@
+
 <section class="profile-header">
-  <div class="profile-header__avatar-wrap">
+
+  <!-- Decorative background -->
+  <div class="profile-decoration"></div>
+
+
+  <!-- AVATAR -->
+  <div class="profile-avatar">
+
     @if (user.avatarUrl) {
+
       <img
-        class="profile-header__avatar"
-        [src]="user.avatarUrl"
-        [alt]="user.displayName" />
+        [src]="resolveAvatarUrl()"
+        [alt]="user.displayName"
+      />
+
     } @else {
-      <div class="profile-header__avatar profile-header__avatar--placeholder">
-        <span class="material-symbols-outlined">person</span>
+
+      <div class="avatar-placeholder">
+
+        <span class="material-symbols-outlined">
+          person
+        </span>
+
       </div>
+
     }
+
   </div>
 
-  <div class="profile-header__info">
-    <h1 class="profile-header__name">{{ user.displayName }}</h1>
+
+  <!-- INFORMATION -->
+  <div class="profile-information">
+
+    <h1>
+      {{ user.displayName }}
+    </h1>
+
+
     @if (user.username) {
-      <p class="profile-header__handle">&#64;{{ user.username }}</p>
-    }
-    @if (user.bio) {
-      <p class="profile-header__bio">{{ user.bio }}</p>
+
+      <p class="username">
+        &#64;{{ user.username }}
+      </p>
+
     }
 
-    <div class="profile-header__actions">
-      <button type="button" class="profile-header__edit-btn" (click)="editProfile.emit()">
+
+    @if (user.bio) {
+
+      <p class="bio">
+        {{ user.bio }}
+      </p>
+
+    }
+
+
+    <!-- ACTIONS -->
+    <div class="profile-actions">
+
+      <button
+        type="button"
+        class="edit-button"
+        (click)="editProfile.emit()">
+
         Edit Profile
+
       </button>
-      <button type="button" class="profile-header__share-btn" (click)="share.emit()">
-        <span class="material-symbols-outlined">share</span>
+
+
+      <button
+        type="button"
+        class="share-button"
+        aria-label="Share profile"
+        (click)="share.emit()">
+
+        <span class="material-symbols-outlined">
+          share
+        </span>
+
       </button>
+
     </div>
+
   </div>
+
 </section>

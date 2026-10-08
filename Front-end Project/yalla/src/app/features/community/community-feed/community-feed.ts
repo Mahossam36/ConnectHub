@@ -13,6 +13,7 @@ import { SessionService } from '../../../core/auth/session.service';
 import { CommunityDetail, FeedPost, ReportTargetType } from '../../../core/models/feed.models';
 import { FeedApiService } from '../../../core/services/feed-api.service';
 import { environment } from '../../../../environments/environment';
+import { resolveMediaUrl as sharedResolveMediaUrl } from '../../../core/utils/media-url.util';
 import { ActiveTab } from '../community/community.component';
 
 @Component({
@@ -29,7 +30,6 @@ export class CommunityFeedComponent {
 
   readonly ReportTargetType = ReportTargetType;
 
-  // ── Inputs ─────────────────────────────────────────────────────────────────
   @Input() community: CommunityDetail | null = null;
   @Input() posts: FeedPost[] = [];
   @Input() canModerate = false;
@@ -37,7 +37,6 @@ export class CommunityFeedComponent {
   @Input() isOwner = false;
   @Input() loading = false;
 
-  // ── Outputs ────────────────────────────────────────────────────────────────
   @Output() postCreated = new EventEmitter<void>();
   @Output() postDeleted = new EventEmitter<string>();
   @Output() postsUpdated = new EventEmitter<FeedPost[]>();
@@ -54,14 +53,14 @@ export class CommunityFeedComponent {
   @Output() shareRequested = new EventEmitter<void>();
   @Output() reportRequested = new EventEmitter<{ type: number; id: string; name?: string }>();
 
-  // ── Local State ────────────────────────────────────────────────────────────
+  // â”€â”€ Local State â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
   readonly postText = new FormControl('', { nonNullable: true });
   readonly pendingFile = signal<File | null>(null);
   readonly pendingPreviewUrl = signal<string | null>(null);
   readonly announcementMode = signal<boolean>(false);
   readonly failedMediaUrls = signal<Set<string>>(new Set());
 
-  // ── File Handling ──────────────────────────────────────────────────────────
+  // â”€â”€ File Handling â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
   onFileSelected(event: Event): void {
     const input = event.target as HTMLInputElement;
     if (!input.files || input.files.length === 0) return;
@@ -93,7 +92,7 @@ export class CommunityFeedComponent {
     this.announcementMode.set(true);
   }
 
-  // ── Create Post ────────────────────────────────────────────────────────────
+  // â”€â”€ Create Post â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
   createPost(): void {
     const comm = this.community;
     const text = this.postText.value.trim();
@@ -145,7 +144,7 @@ export class CommunityFeedComponent {
     });
   }
 
-  // ── Post Actions ───────────────────────────────────────────────────────────
+  // â”€â”€ Post Actions â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
   toggleLike(post: FeedPost): void {
     const op = post.isLikedByCurrentUser
       ? this.feedApi.unlike(post.id)
@@ -210,12 +209,9 @@ export class CommunityFeedComponent {
     this.reportRequested.emit({ type, id, name });
   }
 
-  // ── Media Helpers ──────────────────────────────────────────────────────────
+  // â”€â”€ Media Helpers â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
   resolveMediaUrl(url?: string | null): string {
-    if (!url) return '';
-    if (url.startsWith('http://') || url.startsWith('https://')) return url;
-    const base = environment.bff.baseUrl.replace(/\/$/, '');
-    return `${base}/${url.replace(/^\//, '')}`;
+    return sharedResolveMediaUrl(url);
   }
 
   getAttachmentMediaUrl(attachment: {

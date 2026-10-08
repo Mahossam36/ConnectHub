@@ -35,14 +35,14 @@ export class CommunityModerationComponent {
   readonly ReportStatus = ReportStatus;
   readonly ReportTargetType = ReportTargetType;
 
-  // ── Inputs ─────────────────────────────────────────────────────────────────
+  // â”€â”€ Inputs â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
   @Input() communityId = '';
   @Input() community: CommunityDetail | null = null;
   @Input() reports: Report[] = [];
   @Input() posts: FeedPost[] = [];
   @Input() canModerate = false;
 
-  // ── Outputs ────────────────────────────────────────────────────────────────
+  // â”€â”€ Outputs â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
   @Output() reportsChanged = new EventEmitter<void>();
   @Output() postsChanged = new EventEmitter<void>();
   @Output() membersChanged = new EventEmitter<void>();
@@ -56,10 +56,10 @@ export class CommunityModerationComponent {
   }>();
   @Output() feedbackRequest = new EventEmitter<{ text: string; type: 'success' | 'error' }>();
 
-  // ── Local State ────────────────────────────────────────────────────────────
+  // â”€â”€ Local State â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
   readonly moderationFilter = signal<ModerationFilter>('All');
 
-  // ── Computed ───────────────────────────────────────────────────────────────
+  // â”€â”€ Computed â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
   readonly filteredReports = computed(() => {
     const f = this.moderationFilter();
     return this.reports.filter((r) => {
@@ -75,7 +75,7 @@ export class CommunityModerationComponent {
     () => this.reports.filter((r) => this.statusNum(r.status) === ReportStatus.Pending).length,
   );
 
-  // ── Actions ────────────────────────────────────────────────────────────────
+  // â”€â”€ Actions â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
   dismissReport(report: Report): void {
     this.feedApi.resolveReport(report.id, ReportStatus.Dismissed).subscribe({
       next: () => {
@@ -172,7 +172,7 @@ export class CommunityModerationComponent {
     }
   }
 
-  // ── Helpers ────────────────────────────────────────────────────────────────
+  // â”€â”€ Helpers â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
   statusNum(status?: ReportStatus | number | string): number {
     if (typeof status === 'number') return status;
     if (status === 'Pending' || status === '1') return ReportStatus.Pending;

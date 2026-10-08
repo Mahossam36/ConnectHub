@@ -4,40 +4,6 @@
 >
 
   <!-- ================================================= -->
-  <!-- HEADER -->
-  <!-- ================================================= -->
-
-  <header class="panel-header">
-
-    <a
-      class="panel-logo"
-      routerLink="/home"
-      aria-label="Yalla Home"
-    >
-      <img
-        src="/logo.png"
-        alt="Yalla"
-        class="panel-logo-image"
-      />
-    </a>
-
-  </header>
-
-
-  <!-- ================================================= -->
-  <!-- SLOGAN -->
-  <!-- ================================================= -->
-
-  <div class="panel-intro">
-
-    <p>
-      Connect. Talk. Belong.
-    </p>
-
-  </div>
-
-
-  <!-- ================================================= -->
   <!-- NAVIGATION -->
   <!-- ================================================= -->
 
@@ -157,25 +123,6 @@
     <div class="divider"></div>
 
 
-    <!-- SAVED -->
-
-    <a
-      class="panel-link"
-      routerLink="/saved"
-      routerLinkActive="active"
-    >
-
-      <span class="material-symbols-outlined">
-        bookmark
-      </span>
-
-      <span>
-        Saved
-      </span>
-
-    </a>
-
-
     <!-- SETTINGS -->
 
     <a
@@ -206,6 +153,7 @@
     <button
       class="create-community-button"
       type="button"
+      (click)="openCreateCommunity()"
     >
 
       <span class="material-symbols-outlined">

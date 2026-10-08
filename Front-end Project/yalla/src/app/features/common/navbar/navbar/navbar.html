@@ -96,6 +96,8 @@
         <app-search
           variant="navbar"
           placeholder="Search..."
+          [results]="results"
+          [loading]="loading"
           (search)="onSearch($event)"
           (resultSelected)="onSearchResultSelected($event)"
           (cleared)="onSearchCleared()"
@@ -177,20 +179,19 @@
         <div class="notification-dropdown__divider"></div>
 
 
-        <button
-          class="notification-view-all"
-          type="button"
-        >
+      <button
+  class="notification-view-all"
+  type="button"
+  routerLink="/notifications"
+>
+  <span>
+    View all notifications
+  </span>
 
-          <span>
-            View all notifications
-          </span>
-
-          <span class="material-symbols-outlined">
-            arrow_forward
-          </span>
-
-        </button>
+  <span class="material-symbols-outlined">
+    arrow_forward
+  </span>
+</button>
 
       </div>
 
@@ -280,23 +281,6 @@
 
         <a
           class="profile-dropdown__item"
-          routerLink="/saved"
-          role="menuitem"
-        >
-
-          <span class="material-symbols-outlined">
-            bookmark
-          </span>
-
-          <span>
-            Saved
-          </span>
-
-        </a>
-
-
-        <a
-          class="profile-dropdown__item"
           routerLink="/settings"
           role="menuitem"
         >
@@ -339,4 +323,3 @@
   </div>
 
 </header>
-

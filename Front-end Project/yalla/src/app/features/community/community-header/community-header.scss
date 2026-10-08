@@ -1,177 +1,478 @@
+:host {
+  display: block;
+  width: 100%;
+}
+
 .community-header {
-  background: #fff;
-  border-radius: 16px;
+  width: 100%;
+
   overflow: hidden;
-  border: 1px solid rgba(252, 219, 218, 0.5);
-  box-shadow: 0 4px 20px rgba(128, 0, 32, 0.03);
 
-  // â”€â”€ Cover â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
-  &__cover {
-    height: 192px;
-    width: 100%;
-    position: relative;
+  background: #ffffff;
+
+  border:
+    1px solid rgba(252, 219, 218, 0.5);
+
+  border-radius: 16px;
+
+  box-shadow:
+    0 4px 20px rgba(128, 0, 32, 0.03);
+}
+
+
+/* =========================================================
+   COVER
+   ========================================================= */
+
+.community-header__cover {
+  width: 100%;
+
+  height: 192px;
+
+  position: relative;
+
+  overflow: hidden;
+}
+
+.community-header__cover-img {
+  position: absolute;
+  inset: 0;
+
+  width: 100%;
+  height: 100%;
+
+  object-fit: cover;
+}
+
+.community-header__cover-placeholder {
+  position: absolute;
+  inset: 0;
+
+  overflow: hidden;
+
+  background:
+    linear-gradient(
+      115deg,
+      #570013 0%,
+      #800020 48%,
+      #af2b3e 100%
+    );
+}
+
+
+/* Decorative cover shapes */
+
+.cover-decoration {
+  position: absolute;
+
+  border-radius: 50%;
+
+  border:
+    1px solid rgba(255, 255, 255, 0.12);
+
+  pointer-events: none;
+
+  &--one {
+    width: 420px;
+    height: 420px;
+
+    right: -130px;
+    top: -260px;
   }
 
-  &__cover-img {
-    width: 100%;
-    height: 100%;
-    object-fit: cover;
-    position: absolute;
-    inset: 0;
+  &--two {
+    width: 300px;
+    height: 300px;
+
+    right: -40px;
+    bottom: -220px;
+
+    border-color:
+      rgba(254, 214, 91, 0.12);
   }
 
-  &__cover-placeholder {
-    position: absolute;
-    inset: 0;
-    background: linear-gradient(to right, #5e1914, #800020);
-  }
+  &--three {
+    width: 180px;
+    height: 180px;
 
-  &__cover-overlay {
-    position: absolute;
-    inset: 0;
-    background: linear-gradient(to top, rgba(0, 0, 0, 0.6), transparent);
-  }
+    left: 12%;
+    bottom: -150px;
 
-  // â”€â”€ Info â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
-  &__info {
-    padding: 20px 28px 28px;
-  }
-
-  &__top-row {
-    display: flex;
-    flex-direction: column;
-    gap: 16px;
-    margin-bottom: 16px;
-
-    @media (min-width: 768px) {
-      flex-direction: row;
-      justify-content: space-between;
-      align-items: flex-end;
-    }
-  }
-
-  &__title {
-    font-size: 28px;
-    font-weight: 800;
-    color: #0d0d0d;
-    margin-bottom: 6px;
-    line-height: 1.2;
-  }
-
-  &__meta {
-    display: flex;
-    align-items: center;
-    gap: 6px;
-    font-size: 13px;
-    color: #765d5e;
-  }
-
-  &__description {
-    font-size: 14px;
-    line-height: 1.6;
-    color: #765d5e;
-    max-width: 720px;
-    margin-top: 12px;
-  }
-
-  &__tags {
-    display: flex;
-    flex-wrap: wrap;
-    gap: 8px;
-    margin-top: 12px;
-  }
-
-  &__actions {
-    display: flex;
-    align-items: center;
-    gap: 10px;
-    flex-shrink: 0;
-  }
-
-  // â”€â”€ Tab Bar â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
-  &__tabs {
-    display: flex;
-    border-top: 1px solid rgba(224, 191, 191, 0.3);
-    padding: 0 28px;
-    overflow-x: auto;
-    scrollbar-width: none;
-
-    &::-webkit-scrollbar { display: none; }
+    background:
+      rgba(255, 255, 255, 0.025);
   }
 }
 
-// â”€â”€ Meta helpers â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
-.meta-dot { opacity: 0.4; }
+.community-header__cover-overlay {
+  position: absolute;
+  inset: 0;
 
-.meta-members {
-  font-weight: 600;
-  color: #800020;
+  background:
+    linear-gradient(
+      to top,
+      rgba(0, 0, 0, 0.6),
+      transparent
+    );
 }
 
-// â”€â”€ Tags â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
-.community-tag {
-  padding: 4px 12px;
-  background: #f9f6f1;
-  color: #800020;
-  border-radius: 6px;
-  font-size: 12px;
-  font-weight: 500;
-  border: 1px solid rgba(224, 191, 191, 0.5);
+
+/* =========================================================
+   INFO
+   ========================================================= */
+
+.community-header__info {
+  padding:
+    20px
+    28px
+    28px;
 }
 
-// â”€â”€ Join / Share buttons â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
-.btn-join {
+.community-header__top-row {
+  display: flex;
+
+  justify-content: space-between;
+
+  align-items: flex-end;
+
+  gap: 24px;
+
+  margin-bottom: 16px;
+}
+
+.community-header__title-block {
+  min-width: 0;
+}
+
+.community-header__title {
+  margin: 0 0 6px;
+
+  color: #0d0d0d;
+
+  font-family:
+    "Plus Jakarta Sans",
+    sans-serif;
+
+  font-size: 28px;
+
+  line-height: 34px;
+
+  font-weight: 800;
+
+  letter-spacing: -0.02em;
+}
+
+.community-header__meta {
   display: flex;
   align-items: center;
-  gap: 6px;
-  padding: 8px 18px;
-  border-radius: 999px;
-  border: 1.5px solid #800020;
-  background: transparent;
-  color: #800020;
-  font-size: 14px;
-  font-weight: 600;
-  cursor: pointer;
-  transition: background 0.2s;
 
-  &:hover { background: rgba(128, 0, 32, 0.06); }
+  gap: 6px;
+
+  color: #584141;
+
+  font-family:
+    "Be Vietnam Pro",
+    sans-serif;
+
+  font-size: 12px;
+
+  line-height: 18px;
+}
+
+.meta-dot {
+  opacity: 0.45;
+}
+
+.meta-members {
+  color: #800020;
+
+  font-weight: 600;
+}
+
+
+/* =========================================================
+   DESCRIPTION
+   ========================================================= */
+
+.community-header__description {
+  max-width: 720px;
+
+  margin: 0;
+
+  color: #584141;
+
+  font-family:
+    "Be Vietnam Pro",
+    sans-serif;
+
+  font-size: 14px;
+
+  line-height: 22px;
+}
+
+
+/* =========================================================
+   TAGS
+   ========================================================= */
+
+.community-header__tags {
+  display: flex;
+  flex-wrap: wrap;
+
+  gap: 8px;
+
+  margin-top: 12px;
+}
+
+.community-tag {
+  display: inline-flex;
+  align-items: center;
+
+  padding:
+    4px
+    12px;
+
+  border:
+    1px solid rgba(252, 219, 218, 0.5);
+
+  border-radius: 6px;
+
+  background: #fff0ef;
+
+  color: #800020;
+
+  font-family:
+    "Be Vietnam Pro",
+    sans-serif;
+
+  font-size: 12px;
+
+  line-height: 16px;
+
+  font-weight: 500;
+}
+
+
+/* =========================================================
+   ACTIONS
+   ========================================================= */
+
+.community-header__actions {
+  display: flex;
+
+  align-items: center;
+
+  gap: 8px;
+
+  flex-shrink: 0;
+}
+
+.btn-join,
+.btn-share {
+  min-height: 38px;
+
+  display: inline-flex;
+
+  align-items: center;
+  justify-content: center;
+
+  gap: 6px;
+
+  padding:
+    8px
+    18px;
+
+  border-radius: 999px;
+
+  font-family:
+    "Be Vietnam Pro",
+    sans-serif;
+
+  font-size: 13px;
+
+  line-height: 20px;
+
+  font-weight: 600;
+
+  cursor: pointer;
+
+  transition:
+    background 0.2s ease,
+    color 0.2s ease,
+    box-shadow 0.2s ease,
+    transform 0.2s ease;
+
+  .material-symbols-outlined {
+    font-size: 18px;
+  }
+}
+
+.btn-join {
+  border:
+    1.5px solid #800020;
+
+  background: transparent;
+
+  color: #800020;
+
+  &:hover {
+    background: #fff0ef;
+  }
+
+  &--joined {
+    background: #800020;
+
+    color: #ffffff;
+
+    &:hover {
+      background: #5e1914;
+
+      box-shadow:
+        0 4px 12px rgba(128, 0, 32, 0.2);
+    }
+  }
 }
 
 .btn-share {
-  padding: 8px 18px;
-  border-radius: 999px;
-  border: 1.5px solid rgba(224, 191, 191, 0.6);
-  background: transparent;
-  color: #281717;
-  font-size: 14px;
-  font-weight: 600;
-  cursor: pointer;
-  transition: background 0.2s;
+  border:
+    1.5px solid #fcdbda;
 
-  &:hover { background: #f9f6f1; }
+  background: transparent;
+
+  color: #281717;
+
+  &:hover {
+    background: #fff0ef;
+  }
 }
 
-// â”€â”€ Tab buttons â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
+
+/* =========================================================
+   TABS
+   ========================================================= */
+
+.community-header__tabs {
+  display: flex;
+
+  align-items: stretch;
+
+  padding: 0 28px;
+
+  border-top:
+    1px solid rgba(252, 219, 218, 0.5);
+
+  overflow-x: auto;
+
+  scrollbar-width: none;
+
+  &::-webkit-scrollbar {
+    display: none;
+  }
+}
+
 .tab-btn {
-  padding: 16px 24px;
-  font-size: 14px;
-  font-weight: 500;
-  color: #584141;
-  border: none;
+  position: relative;
+
+  min-height: 56px;
+
+  padding:
+    16px
+    24px;
+
+  border: 0;
+
+  border-bottom:
+    2px solid transparent;
+
   background: transparent;
-  cursor: pointer;
-  border-bottom: 2px solid transparent;
+
+  color: #584141;
+
+  font-family:
+    "Be Vietnam Pro",
+    sans-serif;
+
+  font-size: 14px;
+
+  line-height: 20px;
+
+  font-weight: 500;
+
   white-space: nowrap;
-  transition: color 0.2s, background 0.15s;
+
+  cursor: pointer;
+
+  transition:
+    color 0.2s ease,
+    background 0.2s ease;
 
   &:hover:not(.tab-btn--active) {
     color: #800020;
+
     background: #fff0ef;
   }
 
   &--active {
     color: #800020;
+
     border-bottom-color: #800020;
+
     font-weight: 700;
+  }
+}
+
+
+/* =========================================================
+   RESPONSIVE
+   ========================================================= */
+
+@media (max-width: 767px) {
+  .community-header__cover {
+    height: 160px;
+  }
+
+  .community-header__info {
+    padding:
+      18px
+      18px
+      22px;
+  }
+
+  .community-header__top-row {
+    flex-direction: column;
+
+    align-items: flex-start;
+
+    gap: 16px;
+  }
+
+  .community-header__actions {
+    width: 100%;
+  }
+
+  .btn-join,
+  .btn-share {
+    flex: 1;
+  }
+
+  .community-header__tabs {
+    padding: 0 10px;
+  }
+
+  .tab-btn {
+    padding:
+      15px
+      16px;
+  }
+}
+
+@media (max-width: 480px) {
+  .community-header__title {
+    font-size: 24px;
+
+    line-height: 31px;
+  }
+
+  .community-header__meta {
+    flex-wrap: wrap;
   }
 }

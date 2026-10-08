@@ -5,108 +5,177 @@
   [message]="feedbackMessage()?.text ?? ''">
 </app-toast>
 
-<!-- Top Nav Bar -->
+<!-- Global Navbar -->
 <app-navbar
   (menuClicked)="navDrawerOpen.set(true)"
   (logoutClicked)="logout()"
   (notificationClicked)="null">
 </app-navbar>
 
-<!-- Mobile Side Panel / Drawer -->
+<!-- Mobile navigation drawer -->
 <app-side-panel
   [isOpen]="navDrawerOpen()"
   (closed)="navDrawerOpen.set(false)"
   (logoutClicked)="logout()">
 </app-side-panel>
 
-<!-- Main Canvas -->
-<main class="main-canvas">
-  <!-- Left Sidebar -->
+<main class="community-page">
+
+  <!-- =====================================================
+       LEFT COMMUNITY SIDEBAR
+       ===================================================== -->
   <aside class="community-sidebar">
+
     <div class="sidebar-card">
+
       <div class="sidebar-card__header">
+        <div class="sidebar-community-mark">
+          <span class="material-symbols-outlined">groups</span>
+        </div>
+
         <div class="sidebar-card__meta">
-          <h2 class="sidebar-card__name">{{ community()?.name || 'Community' }}</h2>
-          <p class="sidebar-card__role">{{ canModerate() ? 'Admin Dashboard' : 'Member Hub' }}</p>
+          <h2 class="sidebar-card__name">
+            {{ community()?.name || 'Community' }}
+          </h2>
+
+          <p class="sidebar-card__role">
+            {{ canModerate() ? 'Admin Dashboard' : 'Member Hub' }}
+          </p>
         </div>
       </div>
 
       <nav class="sidebar-nav">
+
+        <!-- Feed -->
         <button
-          class="sidebar-nav__item"
           type="button"
+          class="sidebar-nav__item"
           [class.sidebar-nav__item--active]="activeTab() === 'tab-posts'"
           (click)="switchTab('tab-posts')">
-          <span class="material-symbols-outlined"
-            [style.font-variation-settings]="activeTab() === 'tab-posts' ? '\'FILL\' 1' : '\'FILL\' 0'">forum</span>
+
+          <span
+            class="material-symbols-outlined"
+            [style.font-variation-settings]="
+              activeTab() === 'tab-posts'
+                ? '\'FILL\' 1'
+                : '\'FILL\' 0'
+            ">
+            forum
+          </span>
+
           <span>Feed</span>
         </button>
 
+        <!-- Moderation -->
         @if (canModerate()) {
           <button
-            class="sidebar-nav__item"
             type="button"
+            class="sidebar-nav__item"
             [class.sidebar-nav__item--active]="activeTab() === 'tab-moderation'"
             (click)="switchTab('tab-moderation')">
-            <span class="material-symbols-outlined"
-              [style.font-variation-settings]="activeTab() === 'tab-moderation' ? '\'FILL\' 1' : '\'FILL\' 0'">gavel</span>
+
+            <span
+              class="material-symbols-outlined"
+              [style.font-variation-settings]="
+                activeTab() === 'tab-moderation'
+                  ? '\'FILL\' 1'
+                  : '\'FILL\' 0'
+              ">
+              gavel
+            </span>
+
             <span>Moderation</span>
+
             @if (pendingReportsCount() > 0) {
-              <span class="sidebar-nav__badge">{{ pendingReportsCount() }}</span>
+              <span class="sidebar-nav__badge">
+                {{ pendingReportsCount() }}
+              </span>
             }
           </button>
         }
 
+        <!-- Members -->
         <button
-          class="sidebar-nav__item"
           type="button"
+          class="sidebar-nav__item"
           [class.sidebar-nav__item--active]="activeTab() === 'tab-members'"
           (click)="switchTab('tab-members')">
-          <span class="material-symbols-outlined"
-            [style.font-variation-settings]="activeTab() === 'tab-members' ? '\'FILL\' 1' : '\'FILL\' 0'">groups</span>
+
+          <span
+            class="material-symbols-outlined"
+            [style.font-variation-settings]="
+              activeTab() === 'tab-members'
+                ? '\'FILL\' 1'
+                : '\'FILL\' 0'
+            ">
+            groups
+          </span>
+
           <span>Members</span>
         </button>
 
+        <!-- Analytics -->
         <button
-          class="sidebar-nav__item"
           type="button"
+          class="sidebar-nav__item"
           [class.sidebar-nav__item--active]="activeTab() === 'tab-analytics'"
           (click)="switchTab('tab-analytics')">
-          <span class="material-symbols-outlined"
-            [style.font-variation-settings]="activeTab() === 'tab-analytics' ? '\'FILL\' 1' : '\'FILL\' 0'">monitoring</span>
+
+          <span
+            class="material-symbols-outlined"
+            [style.font-variation-settings]="
+              activeTab() === 'tab-analytics'
+                ? '\'FILL\' 1'
+                : '\'FILL\' 0'
+            ">
+            monitoring
+          </span>
+
           <span>Analytics</span>
         </button>
+
       </nav>
     </div>
 
+    <!-- Announcement -->
     @if (canAnnounce()) {
       <button
-        class="announce-btn"
         type="button"
+        class="announce-btn"
         (click)="switchTab('tab-posts')">
-        <span class="material-symbols-outlined">campaign</span>
+
+        <span class="material-symbols-outlined">
+          campaign
+        </span>
+
         Create Announcement
       </button>
     }
 
+    <!-- Sidebar footer -->
     <div class="sidebar-footer">
-      <nav class="flex flex-col gap-xs">
-        <a class="sidebar-footer__link" href="#">
-          <span class="material-symbols-outlined">help</span>
-          <span>Help</span>
-        </a>
-        <a class="sidebar-footer__link" href="#">
-          <span class="material-symbols-outlined">contact_support</span>
-          <span>Support</span>
-        </a>
-      </nav>
+
+      <a class="sidebar-footer__link" href="#">
+        <span class="material-symbols-outlined">help</span>
+        <span>Help</span>
+      </a>
+
+      <a class="sidebar-footer__link" href="#">
+        <span class="material-symbols-outlined">contact_support</span>
+        <span>Support</span>
+      </a>
+
     </div>
+
   </aside>
 
-  <!-- Main Column -->
-  <div class="community-main">
 
-    <!-- Community Header (cover + info + tabs) -->
+  <!-- =====================================================
+       MAIN COMMUNITY CONTENT
+       ===================================================== -->
+  <section class="community-main">
+
+    <!-- Community Header -->
     <app-community-header
       [community]="community()"
       [activeTab]="activeTab()"
@@ -118,11 +187,15 @@
       (shared)="shareCommunity()">
     </app-community-header>
 
-    <!-- Tab Contents -->
+
+    <!-- ===================================================
+         TAB CONTENT
+         =================================================== -->
     <div class="tab-wrapper">
 
-      <!-- POSTS TAB -->
+      <!-- POSTS -->
       @if (activeTab() === 'tab-posts') {
+
         <app-community-feed
           [community]="community()"
           [posts]="posts()"
@@ -130,6 +203,7 @@
           [canAnnounce]="canAnnounce()"
           [isOwner]="isOwner()"
           [loading]="loading()"
+
           (postCreated)="onPostCreated()"
           (postDeleted)="onPostDeleted($event)"
           (postsUpdated)="onPostsUpdated($event)"
@@ -140,28 +214,36 @@
           (tabSwitchRequest)="switchTab($event)"
           (shareRequested)="shareCommunity()">
         </app-community-feed>
+
       }
 
-      <!-- MEMBERS TAB -->
+
+      <!-- MEMBERS -->
       @if (activeTab() === 'tab-members') {
+
         <app-community-members
           [communityId]="communityId()"
           [members]="members()"
           [isOwner]="isOwner()"
+
           (memberChanged)="onMemberChanged()"
           (confirmDialogRequest)="onConfirmDialogRequest($event)"
           (feedbackRequest)="onFeedbackRequest($event)">
         </app-community-members>
+
       }
 
-      <!-- MODERATION TAB -->
+
+      <!-- MODERATION -->
       @if (activeTab() === 'tab-moderation' && canModerate()) {
+
         <app-community-moderation
           [communityId]="communityId()"
           [community]="community()"
           [reports]="reports()"
           [posts]="posts()"
           [canModerate]="canModerate()"
+
           (reportsChanged)="onReportsChanged()"
           (postsChanged)="onModerationPostsChanged()"
           (membersChanged)="onModerationMembersChanged()"
@@ -170,10 +252,13 @@
           (confirmDialogRequest)="onConfirmDialogRequest($event)"
           (feedbackRequest)="onFeedbackRequest($event)">
         </app-community-moderation>
+
       }
 
-      <!-- ANALYTICS TAB -->
+
+      <!-- ANALYTICS -->
       @if (activeTab() === 'tab-analytics') {
+
         <app-community-analytics
           [community]="community()"
           [posts]="posts()"
@@ -181,30 +266,76 @@
           [totalCommentsCount]="totalCommentsCount()"
           [pendingReportsCount]="pendingReportsCount()">
         </app-community-analytics>
+
       }
 
     </div>
-  </div>
+
+  </section>
+
 </main>
 
-<!-- Confirmation Dialog -->
+
+<!-- =======================================================
+     CONFIRMATION DIALOG
+     ======================================================= -->
 @if (confirmDialog(); as dialog) {
-  <div class="overlay">
-    <div class="dialog-card">
-      <h3 class="dialog-card__title">{{ dialog.title }}</h3>
-      <p class="dialog-card__message">{{ dialog.message }}</p>
+
+  <div class="dialog-overlay">
+
+    <div
+      class="dialog-card"
+      role="dialog"
+      aria-modal="true">
+
+      <div class="dialog-card__icon">
+        <span class="material-symbols-outlined">
+          warning
+        </span>
+      </div>
+
+      <div class="dialog-card__content">
+
+        <h3 class="dialog-card__title">
+          {{ dialog.title }}
+        </h3>
+
+        <p class="dialog-card__message">
+          {{ dialog.message }}
+        </p>
+
+      </div>
+
       <div class="dialog-card__actions">
-        <button class="btn btn--ghost" type="button" (click)="confirmDialog.set(null)">Cancel</button>
-        <button class="btn btn--primary" type="button" (click)="dialog.confirmAction()">
+
+        <button
+          type="button"
+          class="dialog-btn dialog-btn--ghost"
+          (click)="confirmDialog.set(null)">
+          Cancel
+        </button>
+
+        <button
+          type="button"
+          class="dialog-btn dialog-btn--danger"
+          (click)="dialog.confirmAction()">
           {{ dialog.confirmText || 'Confirm' }}
         </button>
+
       </div>
+
     </div>
+
   </div>
+
 }
 
-<!-- Comments Drawer -->
+
+<!-- =======================================================
+     COMMENTS DRAWER
+     ======================================================= -->
 @if (commentsPost(); as post) {
+
   <app-comments-panel
     [postId]="post.id"
     [postAuthorId]="post.author?.id ?? null"
@@ -212,4 +343,5 @@
     (closed)="closeComments()"
     (commentCountChanged)="handleCommentCountChanged($event)">
   </app-comments-panel>
+
 }

@@ -8,14 +8,8 @@ import { PostComponent, PostResponse } from '../post/post';
 
 import { CommentsPanelComponent } from '../comments-panel/comments-panel';
 
-import { BffApiService } from '../../../core/services/bff-api.service';
-
-interface PostPagedResult {
-  items: PostResponse[] | null;
-  total: number;
-  skip: number;
-  take: number;
-}
+import { FeedApiService } from '../../../core/services/feed-api.service';
+import { Community, FeedPost } from '../../../core/models/feed.models';
 
 @Component({
   selector: 'app-home',
@@ -24,18 +18,12 @@ interface PostPagedResult {
 
   imports: [CommonModule, PostComponent, CommentsPanelComponent],
 
-  templateUrl: './home.component.html',
+  templateUrl: './feed.component.html',
 
-  styleUrls: ['./home.component.scss'],
+  styleUrls: ['./feed.component.scss'],
 })
 export class HomeComponent implements OnInit, OnDestroy {
   posts: PostResponse[] = [];
-
-  totalPosts = 0;
-
-  skip = 0;
-
-  readonly take = 20;
 
   isLoading = false;
 
@@ -63,9 +51,15 @@ export class HomeComponent implements OnInit, OnDestroy {
    */
   reportMessage = '';
 
+  // Communities the current user belongs to — used to page in more
+  // posts once the initial recent feed has been shown.
+  private joinedCommunities: Community[] = [];
+  private feedSkip = 0;
+  private readonly feedPageSize = 20;
+
   private readonly destroy$ = new Subject<void>();
 
-  constructor(private readonly bffApi: BffApiService) {}
+  constructor(private readonly feedApi: FeedApiService) {}
 
   ngOnInit(): void {
     this.loadPosts();
@@ -82,28 +76,22 @@ export class HomeComponent implements OnInit, OnDestroy {
 
   loadPosts(): void {
     this.isLoading = true;
-
     this.errorMessage = '';
 
-    this.bffApi
-      .get<PostPagedResult>(`/api/Posts?skip=0&take=${this.take}`)
-
+    this.feedApi
+      .getRecentFeed()
       .pipe(takeUntil(this.destroy$))
-
       .subscribe({
-        next: (result) => {
-          this.posts = result.items ?? [];
-
-          this.totalPosts = result.total ?? 0;
-
-          this.skip = result.skip + this.posts.length;
-
+        next: ({ posts, communities }) => {
+          console.log('[Home] posts:', posts.length, 'communities:', communities.length);
+          this.joinedCommunities = communities;
+          this.posts = posts.map((post) => this.toPostResponse(post));
+          this.feedSkip = this.feedPageSize;
           this.isLoading = false;
         },
-
         error: (error) => {
+          console.error('[Home] getRecentFeed failed:', error);
           this.errorMessage = error?.message ?? 'Unable to load posts.';
-
           this.isLoading = false;
         },
       });
@@ -114,7 +102,7 @@ export class HomeComponent implements OnInit, OnDestroy {
   // =====================================================
 
   loadMorePosts(): void {
-    if (this.isLoading || this.isLoadingMore || !this.hasMorePosts()) {
+    if (this.isLoading || this.isLoadingMore || !this.joinedCommunities.length) {
       return;
     }
 
@@ -122,20 +110,16 @@ export class HomeComponent implements OnInit, OnDestroy {
 
     this.errorMessage = '';
 
-    this.bffApi
-      .get<PostPagedResult>(`/api/Posts?skip=${this.skip}&take=${this.take}`)
+    this.feedApi
+      .getMoreFeed(this.joinedCommunities, this.feedSkip)
 
       .pipe(takeUntil(this.destroy$))
 
       .subscribe({
-        next: (result) => {
-          const newPosts = result.items ?? [];
+        next: (newPosts) => {
+          this.posts = [...this.posts, ...newPosts.map((post) => this.toPostResponse(post))];
 
-          this.posts = [...this.posts, ...newPosts];
-
-          this.totalPosts = result.total ?? 0;
-
-          this.skip += newPosts.length;
+          this.feedSkip += this.feedPageSize;
 
           this.isLoadingMore = false;
         },
@@ -153,7 +137,7 @@ export class HomeComponent implements OnInit, OnDestroy {
   // =====================================================
 
   hasMorePosts(): boolean {
-    return this.posts.length < this.totalPosts;
+    return this.joinedCommunities.length > 0;
   }
 
   // =====================================================
@@ -192,8 +176,6 @@ export class HomeComponent implements OnInit, OnDestroy {
 
   removePost(postId: string): void {
     this.posts = this.posts.filter((post) => post.id !== postId);
-
-    this.totalPosts = Math.max(0, this.totalPosts - 1);
 
     if (this.selectedPost?.id === postId) {
       this.closeComments();
@@ -235,11 +217,9 @@ export class HomeComponent implements OnInit, OnDestroy {
   // =====================================================
 
   retry(): void {
-    this.skip = 0;
-
     this.posts = [];
 
-    this.totalPosts = 0;
+    this.feedSkip = 0;
 
     this.loadPosts();
   }
@@ -250,5 +230,37 @@ export class HomeComponent implements OnInit, OnDestroy {
 
   trackByPostId(_: number, post: PostResponse): string {
     return post.id;
+  }
+
+  // =====================================================
+  // MAPPING — FeedPost (feed.models) -> PostResponse (post.ts)
+  // =====================================================
+
+  private toPostResponse(post: FeedPost): PostResponse {
+    return {
+      id: post.id,
+      groupId: post.groupId,
+      content: post.content,
+      isPinned: post.isPinned,
+      author: {
+        id: post.author.id,
+        displayName: post.author.displayName,
+        avatarUrl:
+          post.author.avatarUrl ?? post.author.profileImageUrl ?? post.author.profileImage ?? null,
+      },
+      likeCount: post.likeCount,
+      commentCount: post.commentCount,
+      isLikedByCurrentUser: post.isLikedByCurrentUser,
+      attachments: (post.attachments ?? []).map((attachment) => ({
+        id: attachment.id ?? '',
+        fileName: attachment.fileName ?? null,
+        fileUrl: attachment.fileUrl ?? attachment.filePath ?? null,
+        contentType: attachment.contentType ?? null,
+        fileSize: 0,
+        uploadedAt: post.createdAt,
+      })),
+      createdAt: post.createdAt,
+      updatedAt: post.updatedAt ?? null,
+    };
   }
 }

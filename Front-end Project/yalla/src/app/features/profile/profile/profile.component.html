@@ -1,19 +1,25 @@
-<div class="profile-page">
-  <!-- The mobile top nav and desktop side nav / top header from the mockup are your
-       existing common/navbar + common/side-panel components (rendered by main-layout),
-       not duplicated here. -->
+<main class="profile-page">
 
-  @if (user()) {
-    <app-profile-header
-      [user]="user()!"
-      (editProfile)="onEditProfile()"
-      (share)="onShareProfile()">
-    </app-profile-header>
-  }
+  <div class="profile-container">
 
-  <app-my-communities-section
-    heading="My Communities"
-    [communities]="myCommunities()"
-    (selectCommunity)="onSelectCommunity($event)">
-  </app-my-communities-section>
-</div>
+    <!-- PROFILE HEADER -->
+    @if (user()) {
+
+      <app-profile-header
+        [user]="user()!"
+        (editProfile)="onEditProfile()"
+        (share)="onShareProfile()">
+      </app-profile-header>
+
+    }
+
+
+    <!-- MY COMMUNITIES -->
+    <app-my-communities-section
+      heading="My Communities"
+      [communities]="myCommunities()">
+    </app-my-communities-section>
+
+  </div>
+
+</main>

@@ -7,7 +7,7 @@ import { NotificationCardComponent } from '../notification-card/notification-car
 @Component({
   selector: 'app-notification-list',
   standalone: true,
-  imports: [CommonModule,NotificationCardComponent],
+  imports: [CommonModule, NotificationCardComponent],
   templateUrl: './notification-list.component.html',
   styleUrl: './notification-list.component.scss',
 })

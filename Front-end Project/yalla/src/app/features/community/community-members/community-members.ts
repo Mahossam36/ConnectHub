@@ -17,6 +17,7 @@ import { SessionService } from '../../../core/auth/session.service';
 import { GroupMember, GroupRole } from '../../../core/models/feed.models';
 import { FeedApiService } from '../../../core/services/feed-api.service';
 import { environment } from '../../../../environments/environment';
+import { resolveMediaUrl as sharedResolveMediaUrl } from '../../../core/utils/media-url.util';
 
 type RoleFilter = 'All Roles' | 'Admins' | 'Members';
 
@@ -34,12 +35,12 @@ export class CommunityMembersComponent implements OnChanges {
 
   readonly GroupRole = GroupRole;
 
-  // ── Inputs ─────────────────────────────────────────────────────────────────
+  // â”€â”€ Inputs â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
   @Input() communityId = '';
   @Input() members: GroupMember[] = [];
   @Input() isOwner = false;
 
-  // ── Outputs ────────────────────────────────────────────────────────────────
+  // â”€â”€ Outputs â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
   @Output() memberChanged = new EventEmitter<void>();
   @Output() confirmDialogRequest = new EventEmitter<{
     title: string;
@@ -49,7 +50,7 @@ export class CommunityMembersComponent implements OnChanges {
   }>();
   @Output() feedbackRequest = new EventEmitter<{ text: string; type: 'success' | 'error' }>();
 
-  // ── Local State ────────────────────────────────────────────────────────────
+  // â”€â”€ Local State â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
   readonly membersSearch = new FormControl('', { nonNullable: true });
   readonly searchFilter = signal('');
   readonly roleFilter = signal<RoleFilter>('All Roles');
@@ -66,7 +67,7 @@ export class CommunityMembersComponent implements OnChanges {
     this.activeMenuMemberId.set(null);
   }
 
-  // ── Filtered Lists ─────────────────────────────────────────────────────────
+  // â”€â”€ Filtered Lists â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
   readonly filteredMembers = computed(() => {
     const q = this.searchFilter().trim().toLowerCase();
     const rf = this.roleFilter();
@@ -92,7 +93,7 @@ export class CommunityMembersComponent implements OnChanges {
     this.filteredMembers().filter((m) => this.roleNum(m.role) === GroupRole.Member),
   );
 
-  // ── Actions ────────────────────────────────────────────────────────────────
+  // â”€â”€ Actions â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
   toggleMemberMenu(memberId: string): void {
     this.activeMenuMemberId.update((curr) => (curr === memberId ? null : memberId));
   }
@@ -155,7 +156,7 @@ export class CommunityMembersComponent implements OnChanges {
     });
   }
 
-  // ── Helpers ────────────────────────────────────────────────────────────────
+  // â”€â”€ Helpers â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
   roleNum(role?: GroupRole | number | string | null): number {
     if (role === null || role === undefined) return 0;
     if (typeof role === 'number') return role;
@@ -166,10 +167,7 @@ export class CommunityMembersComponent implements OnChanges {
   }
 
   resolveMediaUrl(url?: string | null): string {
-    if (!url) return '';
-    if (url.startsWith('http://') || url.startsWith('https://')) return url;
-    const base = environment.bff.baseUrl.replace(/\/$/, '');
-    return `${base}/${url.replace(/^\//, '')}`;
+    return sharedResolveMediaUrl(url);
   }
 
   setRoleFilter(value: string): void {

@@ -1,12 +1,451 @@
-<section class="bg-surface-container-low rounded-[24px] p-2xl text-center border border-secondary/10 relative overflow-hidden">
-  <div class="relative z-10 max-w-2xl mx-auto flex flex-col items-center">
-    <h3 class="font-headline-md text-headline-md text-on-background mb-sm">{{ title }}</h3>
-    <p class="font-body-md text-body-md text-on-surface-variant mb-xl">{{ description }}</p>
-    <button
-      type="button"
-      class="bg-burgundy-deep text-white px-8 py-4 rounded-full font-label-md text-label-md hover:bg-wine-dark transition-colors shadow-sm hover:-translate-y-px"
-      (click)="create.emit()">
-      + Create Community
-    </button>
+html
+<section class="create-community-card">
+  <div class="card-content">
+
+    <!-- ================= HEADER ================= -->
+
+    <div class="card-header">
+      <div>
+        <span class="eyebrow">CREATE A COMMUNITY</span>
+        <h3>{{ title }}</h3>
+        <p>{{ description }}</p>
+      </div>
+    </div>
+
+    <!-- ================= CATEGORY ================= -->
+
+    <div class="field-group">
+
+      <label class="field-label">
+        Category
+        <span>Choose one</span>
+      </label>
+
+      <div class="search-select">
+
+        <!-- SEARCH / CREATE INPUT -->
+
+        @if (!creatingCategory) {
+
+          <div class="search-input-wrapper">
+
+            <span class="material-symbols-outlined">
+              category
+            </span>
+
+            <input
+              type="text"
+              [value]="categorySearch"
+              placeholder="Search categories..."
+              (input)="onCategorySearch($event)"
+              (focus)="categoryDropdownOpen = true"
+            />
+
+            @if (categorySearch) {
+              <button
+                type="button"
+                class="clear-button"
+                (click)="clearCategorySearch()">
+
+                <span class="material-symbols-outlined">
+                  close
+                </span>
+
+              </button>
+            }
+
+            <!-- ADD CATEGORY -->
+
+            <button
+              type="button"
+              class="add-button"
+              title="Create new category"
+              (click)="startCreateCategory($event)">
+
+              <span class="material-symbols-outlined">
+                add
+              </span>
+
+            </button>
+
+          </div>
+
+        }
+
+        <!-- CREATE CATEGORY INPUT -->
+
+        @if (creatingCategory) {
+
+          <div class="create-input-wrapper">
+
+            <span class="material-symbols-outlined">
+              category
+            </span>
+
+            <input
+              #categoryCreateInput
+              type="text"
+              [(ngModel)]="newCategoryName"
+              placeholder="Enter new category..."
+              (keydown.enter)="createCategory()"
+              (keydown.escape)="cancelCreateCategory()"
+            />
+
+            <button
+              type="button"
+              class="confirm-create-button"
+              [disabled]="!newCategoryName.trim()"
+              title="Create category"
+              (click)="createCategory()">
+
+              <span class="material-symbols-outlined">
+                check
+              </span>
+
+            </button>
+
+            <button
+              type="button"
+              class="cancel-create-button"
+              title="Cancel"
+              (click)="cancelCreateCategory()">
+
+              <span class="material-symbols-outlined">
+                close
+              </span>
+
+            </button>
+
+          </div>
+
+        }
+
+        <!-- CATEGORY DROPDOWN -->
+
+        @if (categoryDropdownOpen && !creatingCategory) {
+
+          <div class="dropdown">
+
+            @for (
+              category of filteredCategories;
+              track category.id
+            ) {
+
+              <button
+                type="button"
+                class="dropdown-item"
+                (click)="selectCategory(category)">
+
+                <span class="material-symbols-outlined">
+                  category
+                </span>
+
+                <span>{{ category.name }}</span>
+
+              </button>
+
+            }
+
+            @if (
+              !filteredCategories.length &&
+              categorySearch.trim()
+            ) {
+
+              <button
+                type="button"
+                class="create-item"
+                (click)="startCreateCategory($event)">
+
+                <span class="material-symbols-outlined">
+                  add
+                </span>
+
+                <span>
+                  Create "{{ categorySearch.trim() }}"
+                </span>
+
+              </button>
+
+            }
+
+            @if (
+              !filteredCategories.length &&
+              !categorySearch.trim()
+            ) {
+
+              <div class="empty-result">
+                Start typing to search categories
+              </div>
+
+            }
+
+          </div>
+
+        }
+
+      </div>
+
+      <!-- SELECTED CATEGORY -->
+
+      @if (selectedCategory) {
+
+        <div class="selected-category">
+
+          <span class="material-symbols-outlined">
+            category
+          </span>
+
+          <span>{{ selectedCategory.name }}</span>
+
+          <button
+            type="button"
+            (click)="removeCategory()">
+
+            <span class="material-symbols-outlined">
+              close
+            </span>
+
+          </button>
+
+        </div>
+
+      }
+
+    </div>
+
+
+    <!-- ================= TAGS ================= -->
+
+    <div class="field-group">
+
+      <label class="field-label">
+        Tags
+        <span>Choose multiple</span>
+      </label>
+
+      <div class="search-select">
+
+        <!-- SEARCH TAGS -->
+
+        @if (!creatingTag) {
+
+          <div class="search-input-wrapper">
+
+            <span class="material-symbols-outlined">
+              sell
+            </span>
+
+            <input
+              type="text"
+              [value]="tagSearch"
+              placeholder="Search tags..."
+              (input)="onTagSearch($event)"
+              (focus)="tagDropdownOpen = true"
+            />
+
+            @if (tagSearch) {
+
+              <button
+                type="button"
+                class="clear-button"
+                (click)="clearTagSearch()">
+
+                <span class="material-symbols-outlined">
+                  close
+                </span>
+
+              </button>
+
+            }
+
+            <!-- ADD TAG -->
+
+            <button
+              type="button"
+              class="add-button"
+              title="Create new tag"
+              (click)="startCreateTag($event)">
+
+              <span class="material-symbols-outlined">
+                add
+              </span>
+
+            </button>
+
+          </div>
+
+        }
+
+        <!-- CREATE TAG -->
+
+        @if (creatingTag) {
+
+          <div class="create-input-wrapper">
+
+            <span class="material-symbols-outlined">
+              sell
+            </span>
+
+            <input
+              #tagCreateInput
+              type="text"
+              [(ngModel)]="newTagName"
+              placeholder="Enter new tag..."
+              (keydown.enter)="createTag()"
+              (keydown.escape)="cancelCreateTag()"
+            />
+
+            <button
+              type="button"
+              class="confirm-create-button"
+              [disabled]="!newTagName.trim()"
+              title="Create tag"
+              (click)="createTag()">
+
+              <span class="material-symbols-outlined">
+                check
+              </span>
+
+            </button>
+
+            <button
+              type="button"
+              class="cancel-create-button"
+              title="Cancel"
+              (click)="cancelCreateTag()">
+
+              <span class="material-symbols-outlined">
+                close
+              </span>
+
+            </button>
+
+          </div>
+
+        }
+
+        <!-- TAG DROPDOWN -->
+
+        @if (tagDropdownOpen && !creatingTag) {
+
+          <div class="dropdown">
+
+            @for (
+              tag of filteredTags;
+              track tag.id
+            ) {
+
+              <button
+                type="button"
+                class="dropdown-item"
+                [class.selected]="isTagSelected(tag)"
+                (click)="toggleTag(tag)">
+
+                <span class="material-symbols-outlined">
+                  {{ isTagSelected(tag) ? 'check_circle' : 'sell' }}
+                </span>
+
+                <span>{{ tag.name }}</span>
+
+              </button>
+
+            }
+
+            @if (
+              !filteredTags.length &&
+              tagSearch.trim()
+            ) {
+
+              <button
+                type="button"
+                class="create-item"
+                (click)="startCreateTag($event)">
+
+                <span class="material-symbols-outlined">
+                  add
+                </span>
+
+                <span>
+                  Create "{{ tagSearch.trim() }}"
+                </span>
+
+              </button>
+
+            }
+
+            @if (
+              !filteredTags.length &&
+              !tagSearch.trim()
+            ) {
+
+              <div class="empty-result">
+                Start typing to search tags
+              </div>
+
+            }
+
+          </div>
+
+        }
+
+      </div>
+
+
+      <!-- SELECTED TAGS -->
+
+      @if (selectedTags.length) {
+
+        <div class="selected-tags">
+
+          @for (
+            tag of selectedTags;
+            track tag.id
+          ) {
+
+            <div class="tag-chip">
+
+              <span>{{ tag.name }}</span>
+
+              <button
+                type="button"
+                (click)="removeTag(tag)">
+
+                <span class="material-symbols-outlined">
+                  close
+                </span>
+
+              </button>
+
+            </div>
+
+          }
+
+        </div>
+
+      }
+
+    </div>
+
+
+    <!-- ================= ACTION ================= -->
+
+    <div class="card-actions">
+
+      <button
+        type="button"
+        class="create-button"
+        (click)="create.emit()">
+
+        <span class="material-symbols-outlined">
+          add
+        </span>
+
+        Create Community
+
+      </button>
+
+    </div>
+
   </div>
 </section>
+

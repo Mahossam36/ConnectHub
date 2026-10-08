@@ -2,6 +2,7 @@ import { ChangeDetectionStrategy, Component, EventEmitter, Input, Output } from 
 import { CommonModule } from '@angular/common';
 import { CommunityDetail, GroupRole } from '../../../core/models/feed.models';
 import { environment } from '../../../../environments/environment';
+import { resolveMediaUrl as sharedResolveMediaUrl } from '../../../core/utils/media-url.util';
 import { ActiveTab } from '../community/community.component';
 
 @Component({
@@ -24,10 +25,7 @@ export class CommunityHeaderComponent {
   @Output() shared = new EventEmitter<void>();
 
   resolveMediaUrl(url?: string | null): string {
-    if (!url) return '';
-    if (url.startsWith('http://') || url.startsWith('https://')) return url;
-    const base = environment.bff.baseUrl.replace(/\/$/, '');
-    return `${base}/${url.replace(/^\//, '')}`;
+    return sharedResolveMediaUrl(url);
   }
 
   getRoleLabel(role?: GroupRole | number | string | null): string {

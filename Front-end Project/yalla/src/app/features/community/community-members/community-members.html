@@ -1,148 +1,431 @@
-<div class="members-panel">
-  <!-- Toolbar -->
-  <div class="members-panel__toolbar">
-    <div class="members-search">
-      <span class="material-symbols-outlined members-search__icon">search</span>
-      <input
-        [formControl]="membersSearch"
-        class="members-search__input"
-        placeholder="Search members..."
-        type="text" />
+<section class="members-panel">
+
+  <!-- =====================================================
+       TOOLBAR
+       ===================================================== -->
+  <div class="members-toolbar">
+
+    <div class="members-toolbar__heading">
+
+      <h2>
+        Community Members
+      </h2>
+
+      <p>
+        Manage the people who are part of this community.
+      </p>
+
     </div>
 
-    <select
-      class="members-filter"
-      [value]="roleFilter()"
-      (change)="setRoleFilter($any($event.target).value)">
-      <option value="All Roles">All Roles</option>
-      <option value="Admins">Admins</option>
-      <option value="Members">Members</option>
-    </select>
+
+    <div class="members-toolbar__controls">
+
+      <!-- Search -->
+      <div class="members-search">
+
+        <span class="material-symbols-outlined">
+          search
+        </span>
+
+        <input
+          [formControl]="membersSearch"
+          placeholder="Search members..."
+          type="text" />
+
+      </div>
+
+
+      <!-- Role -->
+      <select
+        class="members-filter"
+        [value]="roleFilter()"
+        (change)="setRoleFilter($any($event.target).value)">
+
+        <option value="All Roles">
+          All Roles
+        </option>
+
+        <option value="Admins">
+          Admins
+        </option>
+
+        <option value="Members">
+          Members
+        </option>
+
+      </select>
+
+    </div>
+
   </div>
 
-  <!-- Owner Section -->
+
+  <!-- =====================================================
+       OWNER
+       ===================================================== -->
   @if (ownerMembers().length > 0) {
+
     <section class="member-section">
-      <h3 class="member-section__label">Owner</h3>
+
+      <h3 class="member-section__label">
+        Owner
+      </h3>
+
       @for (member of ownerMembers(); track member.id) {
+
         <div class="member-row">
+
           <div class="member-row__identity">
-            @if (member.user.profileImageUrl || member.user.profileImage) {
+
+            @if (
+              member.user.profileImageUrl ||
+              member.user.profileImage
+            ) {
+
               <img
-                [src]="resolveMediaUrl(member.user.profileImageUrl || member.user.profileImage)"
+                [src]="resolveMediaUrl(
+                  member.user.profileImageUrl ||
+                  member.user.profileImage
+                )"
                 [alt]="member.user.displayName"
-                class="member-row__avatar member-row__avatar--img" />
+                class="member-row__avatar" />
+
             } @else {
+
               <div class="member-row__avatar member-row__avatar--initials member-row__avatar--owner">
                 {{ member.user.displayName.slice(0, 1).toUpperCase() }}
               </div>
-            }
-            <div>
-              <div class="member-row__name">{{ member.user.displayName }}</div>
-              <div class="member-row__handle">{{ member.user.userName ? '@' + member.user.userName : '@owner' }}</div>
-            </div>
-          </div>
-          <span class="member-badge member-badge--owner">Owner</span>
-        </div>
-      }
-    </section>
-    <div class="member-divider"></div>
-  }
 
-  <!-- Admins Section -->
-  @if (adminMembers().length > 0) {
-    <section class="member-section">
-      <h3 class="member-section__label">Admins</h3>
-      @for (member of adminMembers(); track member.id) {
-        <div class="member-row">
-          <div class="member-row__identity">
-            @if (member.user.profileImageUrl || member.user.profileImage) {
-              <img
-                [src]="resolveMediaUrl(member.user.profileImageUrl || member.user.profileImage)"
-                [alt]="member.user.displayName"
-                class="member-row__avatar member-row__avatar--img" />
-            } @else {
-              <div class="member-row__avatar member-row__avatar--initials member-row__avatar--admin">
-                {{ member.user.displayName.slice(0, 1).toUpperCase() }}
-              </div>
             }
-            <div>
-              <div class="member-row__name">{{ member.user.displayName }}</div>
-              <div class="member-row__handle">{{ member.user.userName ? '@' + member.user.userName : '@admin' }}</div>
+
+
+            <div class="member-row__details">
+
+              <div class="member-row__name">
+                {{ member.user.displayName }}
+              </div>
+
+              <div class="member-row__handle">
+                {{
+                  member.user.userName
+                    ? '@' + member.user.userName
+                    : '@owner'
+                }}
+              </div>
+
             </div>
+
           </div>
+
 
           <div class="member-row__actions">
-            <span class="member-badge member-badge--admin">Admin</span>
-            @if (isOwner && canManageMember(member)) {
-              <div class="member-menu">
-                <button class="member-menu__trigger" type="button" (click)="toggleMemberMenu(member.id)">
-                  <span class="material-symbols-outlined">more_horiz</span>
-                </button>
-                @if (activeMenuMemberId() === member.id) {
-                  <div class="member-menu__dropdown">
-                    <button type="button" class="member-menu__item" (click)="removeAdmin(member)">
-                      <span class="material-symbols-outlined">person_remove</span> Remove Admin
-                    </button>
-                    <button type="button" class="member-menu__item member-menu__item--danger" (click)="removeMember(member)">
-                      <span class="material-symbols-outlined">delete</span> Remove from Community
-                    </button>
-                  </div>
-                }
-              </div>
-            }
+
+            <span class="member-badge member-badge--owner">
+              Owner
+            </span>
+
           </div>
+
         </div>
+
       }
+
     </section>
+
     <div class="member-divider"></div>
+
   }
 
-  <!-- Members Section -->
-  <section class="member-section">
-    <h3 class="member-section__label">Members</h3>
-    @for (member of normalMembers(); track member.id) {
-      <div class="member-row">
-        <div class="member-row__identity">
-          @if (member.user.profileImageUrl || member.user.profileImage) {
-            <img
-              [src]="resolveMediaUrl(member.user.profileImageUrl || member.user.profileImage)"
-              [alt]="member.user.displayName"
-              class="member-row__avatar member-row__avatar--img" />
-          } @else {
-            <div class="member-row__avatar member-row__avatar--initials member-row__avatar--member">
-              {{ member.user.displayName.slice(0, 1).toUpperCase() }}
+
+  <!-- =====================================================
+       ADMINS
+       ===================================================== -->
+  @if (adminMembers().length > 0) {
+
+    <section class="member-section">
+
+      <h3 class="member-section__label">
+        Admins
+      </h3>
+
+      <div class="member-list">
+
+        @for (member of adminMembers(); track member.id) {
+
+          <div class="member-row">
+
+            <div class="member-row__identity">
+
+              @if (
+                member.user.profileImageUrl ||
+                member.user.profileImage
+              ) {
+
+                <img
+                  [src]="resolveMediaUrl(
+                    member.user.profileImageUrl ||
+                    member.user.profileImage
+                  )"
+                  [alt]="member.user.displayName"
+                  class="member-row__avatar" />
+
+              } @else {
+
+                <div class="member-row__avatar member-row__avatar--initials member-row__avatar--admin">
+                  {{ member.user.displayName.slice(0, 1).toUpperCase() }}
+                </div>
+
+              }
+
+
+              <div class="member-row__details">
+
+                <div class="member-row__name">
+                  {{ member.user.displayName }}
+                </div>
+
+                <div class="member-row__handle">
+                  {{
+                    member.user.userName
+                      ? '@' + member.user.userName
+                      : '@admin'
+                  }}
+                </div>
+
+              </div>
+
             </div>
-          }
-          <div>
-            <div class="member-row__name">{{ member.user.displayName }}</div>
-            <div class="member-row__handle">{{ member.user.userName ? '@' + member.user.userName : '@member' }}</div>
+
+
+            <div class="member-row__actions">
+
+              <span class="member-badge member-badge--admin">
+                Admin
+              </span>
+
+
+              @if (
+                isOwner &&
+                canManageMember(member)
+              ) {
+
+                <div class="member-menu">
+
+                  <button
+                    type="button"
+                    class="member-menu__trigger"
+                    (click)="toggleMemberMenu(member.id)">
+
+                    <span class="material-symbols-outlined">
+                      more_horiz
+                    </span>
+
+                  </button>
+
+
+                  @if (
+                    activeMenuMemberId() === member.id
+                  ) {
+
+                    <div class="member-menu__dropdown">
+
+                      <button
+                        type="button"
+                        class="member-menu__item"
+                        (click)="removeAdmin(member)">
+
+                        <span class="material-symbols-outlined">
+                          person_remove
+                        </span>
+
+                        Remove Admin
+
+                      </button>
+
+
+                      <button
+                        type="button"
+                        class="member-menu__item member-menu__item--danger"
+                        (click)="removeMember(member)">
+
+                        <span class="material-symbols-outlined">
+                          delete
+                        </span>
+
+                        Remove from Community
+
+                      </button>
+
+                    </div>
+
+                  }
+
+                </div>
+
+              }
+
+            </div>
+
           </div>
+
+        }
+
+      </div>
+
+    </section>
+
+    <div class="member-divider"></div>
+
+  }
+
+
+  <!-- =====================================================
+       MEMBERS
+       ===================================================== -->
+  <section class="member-section">
+
+    <h3 class="member-section__label">
+      Members
+    </h3>
+
+    <div class="member-list">
+
+      @for (member of normalMembers(); track member.id) {
+
+        <div class="member-row">
+
+          <div class="member-row__identity">
+
+            @if (
+              member.user.profileImageUrl ||
+              member.user.profileImage
+            ) {
+
+              <img
+                [src]="resolveMediaUrl(
+                  member.user.profileImageUrl ||
+                  member.user.profileImage
+                )"
+                [alt]="member.user.displayName"
+                class="member-row__avatar" />
+
+            } @else {
+
+              <div class="member-row__avatar member-row__avatar--initials member-row__avatar--member">
+                {{ member.user.displayName.slice(0, 1).toUpperCase() }}
+              </div>
+
+            }
+
+
+            <div class="member-row__details">
+
+              <div class="member-row__name">
+                {{ member.user.displayName }}
+              </div>
+
+              <div class="member-row__handle">
+                {{
+                  member.user.userName
+                    ? '@' + member.user.userName
+                    : '@member'
+                }}
+              </div>
+
+            </div>
+
+          </div>
+
+
+          <div class="member-row__actions">
+
+            <span class="member-badge member-badge--member">
+              Member
+            </span>
+
+
+            @if (
+              isOwner &&
+              canManageMember(member)
+            ) {
+
+              <div class="member-menu">
+
+                <button
+                  type="button"
+                  class="member-menu__trigger"
+                  (click)="toggleMemberMenu(member.id)">
+
+                  <span class="material-symbols-outlined">
+                    more_horiz
+                  </span>
+
+                </button>
+
+
+                @if (
+                  activeMenuMemberId() === member.id
+                ) {
+
+                  <div class="member-menu__dropdown">
+
+                    <button
+                      type="button"
+                      class="member-menu__item"
+                      (click)="addAdmin(member)">
+
+                      <span class="material-symbols-outlined">
+                        shield_person
+                      </span>
+
+                      Add Admin
+
+                    </button>
+
+
+                    <button
+                      type="button"
+                      class="member-menu__item member-menu__item--danger"
+                      (click)="removeMember(member)">
+
+                      <span class="material-symbols-outlined">
+                        delete
+                      </span>
+
+                      Remove from Community
+
+                    </button>
+
+                  </div>
+
+                }
+
+              </div>
+
+            }
+
+          </div>
+
         </div>
 
-        <div class="member-row__actions">
-          <span class="member-badge member-badge--member">Member</span>
-          @if (isOwner && canManageMember(member)) {
-            <div class="member-menu">
-              <button class="member-menu__trigger" type="button" (click)="toggleMemberMenu(member.id)">
-                <span class="material-symbols-outlined">more_horiz</span>
-              </button>
-              @if (activeMenuMemberId() === member.id) {
-                <div class="member-menu__dropdown">
-                  <button type="button" class="member-menu__item" (click)="addAdmin(member)">
-                    <span class="material-symbols-outlined">shield_person</span> Add Admin
-                  </button>
-                  <button type="button" class="member-menu__item member-menu__item--danger" (click)="removeMember(member)">
-                    <span class="material-symbols-outlined">delete</span> Remove from Community
-                  </button>
-                </div>
-              }
-            </div>
-          }
+      } @empty {
+
+        <div class="members-empty">
+
+          <span class="material-symbols-outlined">
+            group_off
+          </span>
+
+          <p>
+            No members found matching your search.
+          </p>
+
         </div>
-      </div>
-    } @empty {
-      <p class="members-empty">No members found matching your search.</p>
-    }
+
+      }
+
+    </div>
+
   </section>
-</div>
+
+</section>
